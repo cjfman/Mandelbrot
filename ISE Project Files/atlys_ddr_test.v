@@ -184,9 +184,9 @@ module mainController(
 			end
 		10: begin
 			count <= 12'd0;
-			c3_p0_cmd_bl <= 6'd16;
-			c3_p0_cmd_byte_addr <= 30'd16;
-			c3_p0_cmd_instr <= 3'b001;
+			c3_p0_cmd_bl <= 6'd16; // 16 bytes
+			c3_p0_cmd_byte_addr <= 30'd16; // From Address 16
+			c3_p0_cmd_instr <= 3'b001; // Read
 			c3_p0_cmd_en <= 1;
 			state <= 11;
 			end

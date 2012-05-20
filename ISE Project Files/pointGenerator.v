@@ -25,7 +25,7 @@ parameter HBI = 64;
 	
 module pointGenerator(
     input CLK,
-    input reset,
+    input start,
     input [HBS:0] re_scale,
 	 input [HBS:0] im_scale,
     input [11:0] x,
@@ -66,7 +66,7 @@ module pointGenerator(
 	end
 	
 	always @(posedge CLK) begin
-		if (reset) begin
+		if (start) begin
 			iteration <= 'b0;
 			re <= 'b0;
 			im <= 'b0;
