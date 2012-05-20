@@ -18,7 +18,7 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module mainController(
+module ddrMemoryTest(
 
 	output DDR2CLK_P,
 	output DDR2CLK_N,

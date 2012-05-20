@@ -1,0 +1,14 @@
+
+
+
+// Instantiate the module
+mandelbrotRederingEngine instance_name (
+    .CLK(CLK), 
+    .send_data(send_data), 
+    .start_render(start_render), 
+    .data(data), 
+    .ready(ready), 
+    .frame_ready(frame_ready)
+    );
+
+
