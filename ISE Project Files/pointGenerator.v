@@ -21,20 +21,20 @@
 
 parameter HBP = 64;
 parameter HBS = 64;
-parameter HBI = 64;
+parameter HBI = 32;
 	
 module pointGenerator(
     input CLK,
     input start,
-    input [HBS:0] re_scale,
-	 input [HBS:0] im_scale,
+    input [HBS - 1 : 0] re_scale,
+	 input [HBS - 1 : 0] im_scale,
     input [11:0] x,
     input [11:0] y,
-    input [HBI:0] max_iterations,
-    input signed [HBP:0] re_start,
-    input signed [HBP:0] im_start,
-    output ready,
-    output [HBI:0] iteration
+    input [HBI - 1 : 0] max_iterations,
+    input signed [HBP - 1 : 0] re_start,
+    input signed [HBP - 1 : 0] im_start,
+    output wire ready,
+    output reg [HBI - 1 : 0] iteration
     );
 	 
 	// re, im, re_start, and im_start are signed decimal numbers.
@@ -42,20 +42,20 @@ module pointGenerator(
 	// are to the right
 	 
 	// Output
-	reg [HBI:0] iteration;
-	wire ready;
+	//reg [HBI:0] iteration;
+	//wire ready;
 
 	// Complex value
-	reg [HBP:0] re;
-	reg [HBP:0] im;
+	reg [HBP - 1 : 0] re;
+	reg [HBP - 1 : 0] im;
 	
 	// Complex position
-	reg signed [HBP:0] re_pos;
-	reg signed [HBP:0] im_pos;
+	reg signed [HBP - 1 : 0] re_pos;
+	reg signed [HBP - 1 : 0] im_pos;
 			
 	// Ready Signal
 	wire max_reached = (iteration == max_iterations);
-	wire over = ((re**2 + im**2) > (3'h4 << (HBS -3))); 
+	wire over = ((re**2 + im**2) > (3'h4 << (HBS - 3))); 
 	assign ready = max_reached || over;
 	
 	// Initial values for regs

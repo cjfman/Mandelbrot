@@ -33,10 +33,10 @@ module videoRam(
 	output [12:0] DDR2A,
 	inout [15:0] DDR2DQ,
 
-	inout DDR2UDQS_P,
-	inout DDR2UDQS_N,
-	inout DDR2LDQS_P,
-	inout DDR2LDQS_N,
+	output DDR2UDQS_P,
+	output DDR2UDQS_N,
+	output DDR2LDQS_P,
+	output DDR2LDQS_N,
 	output DDR2LDM,
 	output DDR2UDM,
 	output DDR2ODT,
@@ -53,6 +53,7 @@ module videoRam(
 	output wire [6:0] p0_rd_count,
 	input wire p0_rd_en,
 	output wire p0_rd_empty,
+	output wire p0_wr_full,
 	input wire p0_wr_en,
 
 	input wire [2:0] p1_cmd_instr,
@@ -76,25 +77,25 @@ module videoRam(
 	wire rst0; // It's an output
 	 
 	ramModule # (
-    .P0_MASK_SIZE(4),
-    .P0_DATA_PORT_SIZE(32),
-    .P1_MASK_SIZE(4),
-    .P1_DATA_PORT_SIZE(32),
+    .C3_P0_MASK_SIZE(4),
+    .C3_P0_DATA_PORT_SIZE(32),
+    .C3_P1_MASK_SIZE(4),
+    .C3_P1_DATA_PORT_SIZE(32),
     .DEBUG_EN(0),
-    .MEMCLK_PERIOD(3000),
-    .CALIB_SOFT_IP("TRUE"),
-    .SIMULATION("FALSE"),
-    .RST_ACT_LOW(0),
-    .INPUT_CLK_TYPE("SINGLE_ENDED"),
-    .MEM_ADDR_ORDER("ROW_BANK_COLUMN"),
-    .NUM_DQ_PINS(16),
-    .MEM_ADDR_WIDTH(13),
-    .MEM_BANKADDR_WIDTH(3)
+    .C3_MEMCLK_PERIOD(3000),
+    .C3_CALIB_SOFT_IP("TRUE"),
+    .C3_SIMULATION("FALSE"),
+    .C3_RST_ACT_LOW(0),
+    .C3_INPUT_CLK_TYPE("SINGLE_ENDED"),
+    .C3_MEM_ADDR_ORDER("ROW_BANK_COLUMN"),
+    .C3_NUM_DQ_PINS(16),
+    .C3_MEM_ADDR_WIDTH(13),
+    .C3_MEM_BANKADDR_WIDTH(3)
 	)
 	u_ramModule (
 
-	  .sys_clk           (clk),
-	  .sys_rst_i           (reset),                        
+	  .c3_sys_clk           (clk),
+	  .c3_sys_rst_i           (reset),                        
 	  
 	   .mcb3_dram_dq           (DDR2DQ),  
 		.mcb3_dram_a            (DDR2A),  
@@ -114,61 +115,61 @@ module videoRam(
 		.mcb3_dram_dm           (DDR2LDM),
 	  
 	  
-	  .clk0		        (clk0),
-	  .rst0		        (rst0),
-	  .calib_done          (calib_done),
+	  .c3_clk0		        (clk0),
+	  .c3_rst0		        (rst0),
+	  .c3_calib_done          (calib_done),
 	  .mcb3_rzq               (rzq3),
 	  .mcb3_zio               (zio3),
 						
-		.p0_cmd_clk                          (clk0),					// Clock
-		.p0_cmd_en                           (p0_cmd_en),
-		.p0_cmd_instr                        (p0_cmd_instr),
-		.p0_cmd_bl                           (p0_cmd_bl),
-		.p0_cmd_byte_addr                    (p0_cmd_byte_addr),
-		.p0_cmd_empty                        (p0_cmd_empty),
-		.p0_cmd_full                         (p0_cmd_full),
-		.p0_wr_clk                           (clk0),					// Clock
-		.p0_wr_en                            (p0_wr_en),
-		.p0_wr_mask                          (p0_wr_mask),
-		.p0_wr_data                          (p0_wr_data),
-		.p0_wr_full                          (p0_wr_full),
-		.p0_wr_empty                         (p0_wr_empty),
-		.p0_wr_count                         (p0_wr_count),
-		.p0_wr_underrun                      (p0_wr_underrun),
-		.p0_wr_error                         (p0_wr_error),
-		.p0_rd_clk                           (clk0),					// Clock
-		.p0_rd_en                            (p0_rd_en),
-		.p0_rd_data                          (p0_rd_data),
-		.p0_rd_full                          (p0_rd_full),
-		.p0_rd_empty                         (p0_rd_empty),
-		.p0_rd_count                         (p0_rd_count),
-		.p0_rd_overflow                      (p0_rd_overflow),
-		.p0_rd_error                         (p0_rd_error),
+		.c3_p0_cmd_clk                          (clk0),					// Clock
+		.c3_p0_cmd_en                           (p0_cmd_en),
+		.c3_p0_cmd_instr                        (p0_cmd_instr),
+		.c3_p0_cmd_bl                           (p0_cmd_bl),
+		.c3_p0_cmd_byte_addr                    (p0_cmd_byte_addr),
+		.c3_p0_cmd_empty                        (p0_cmd_empty),
+		.c3_p0_cmd_full                         (p0_cmd_full),
+		.c3_p0_wr_clk                           (clk0),					// Clock
+		.c3_p0_wr_en                            (p0_wr_en),
+		.c3_p0_wr_mask                          (p0_wr_mask),
+		.c3_p0_wr_data                          (p0_wr_data),
+		.c3_p0_wr_full                          (p0_wr_full),
+		.c3_p0_wr_empty                         (p0_wr_empty),
+		.c3_p0_wr_count                         (p0_wr_count),
+		.c3_p0_wr_underrun                      (p0_wr_underrun),
+		.c3_p0_wr_error                         (p0_wr_error),
+		.c3_p0_rd_clk                           (clk0),					// Clock
+		.c3_p0_rd_en                            (p0_rd_en),
+		.c3_p0_rd_data                          (p0_rd_data),
+		.c3_p0_rd_full                          (p0_rd_full),
+		.c3_p0_rd_empty                         (p0_rd_empty),
+		.c3_p0_rd_count                         (p0_rd_count),
+		.c3_p0_rd_overflow                      (p0_rd_overflow),
+		.c3_p0_rd_error                         (p0_rd_error),
 		
-		.p1_cmd_clk                          (clk0),					// Clock
-		.p1_cmd_en                           (p1_cmd_en),
-		.p1_cmd_instr                        (p1_cmd_instr),
-		.p1_cmd_bl                           (p1_cmd_bl),
-		.p1_cmd_byte_addr                    (p1_cmd_byte_addr),
-		.p1_cmd_empty                        (p1_cmd_empty),
-		.p1_cmd_full                         (p1_cmd_full),
-		.p1_wr_clk                           (clk0),					// Clock
-		.p1_wr_en                            (p1_wr_en),
-		.p1_wr_mask                          (p1_wr_mask),
-		.p1_wr_data                          (p1_wr_data),
-		.p1_wr_full                          (p1_wr_full),
-		.p1_wr_empty                         (p1_wr_empty),
-		.p1_wr_count                         (p1_wr_count),
-		.p1_wr_underrun                      (p1_wr_underrun),
-		.p1_wr_error                         (p1_wr_error),
-		.p1_rd_clk                           (clk0),					// Clock
-		.p1_rd_en                            (p1_rd_en),
-		.p1_rd_data                          (p1_rd_data),
-		.p1_rd_full                          (p1_rd_full),
-		.p1_rd_empty                         (p1_rd_empty),
-		.p1_rd_count                         (p1_rd_count),
-		.p1_rd_overflow                      (p1_rd_overflow),
-		.p1_rd_error                         (p1_rd_error)
+		.c3_p1_cmd_clk                          (clk0),					// Clock
+		.c3_p1_cmd_en                           (p1_cmd_en),
+		.c3_p1_cmd_instr                        (p1_cmd_instr),
+		.c3_p1_cmd_bl                           (p1_cmd_bl),
+		.c3_p1_cmd_byte_addr                    (p1_cmd_byte_addr),
+		.c3_p1_cmd_empty                        (p1_cmd_empty),
+		.c3_p1_cmd_full                         (p1_cmd_full),
+		.c3_p1_wr_clk                           (clk0),					// Clock
+		.c3_p1_wr_en                            (p1_wr_en),
+		.c3_p1_wr_mask                          (p1_wr_mask),
+		.c3_p1_wr_data                          (p1_wr_data),
+		.c3_p1_wr_full                          (p1_wr_full),
+		.c3_p1_wr_empty                         (p1_wr_empty),
+		.c3_p1_wr_count                         (p1_wr_count),
+		.c3_p1_wr_underrun                      (p1_wr_underrun),
+		.c3_p1_wr_error                         (p1_wr_error),
+		.c3_p1_rd_clk                           (clk0),					// Clock
+		.c3_p1_rd_en                            (p1_rd_en),
+		.c3_p1_rd_data                          (p1_rd_data),
+		.c3_p1_rd_full                          (p1_rd_full),
+		.c3_p1_rd_empty                         (p1_rd_empty),
+		.c3_p1_rd_count                         (p1_rd_count),
+		.c3_p1_rd_overflow                      (p1_rd_overflow),
+		.c3_p1_rd_error                         (p1_rd_error)
 	);
 
 

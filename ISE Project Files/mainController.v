@@ -33,15 +33,16 @@ module mainController(
 	output [12:0] DDR2A,
 	inout [15:0] DDR2DQ,
 
-	inout DDR2UDQS_P,
-	inout DDR2UDQS_N,
-	inout DDR2LDQS_P,
-	inout DDR2LDQS_N,
+	output DDR2UDQS_P,
+	output DDR2UDQS_N,
+	output DDR2LDQS_P,
+	output DDR2LDQS_N,
 	output DDR2LDM,
 	output DDR2UDM,
 	output DDR2ODT,
 
 	input clk // 100 MHz oscillator = 10ns period (top level pin)
+	//input nreset
 
     );
 	 
@@ -68,13 +69,15 @@ module mainController(
 	wire [63:0] p0_rd_data;
 	wire [6:0] p0_rd_count;
 	wire p0_rd_empty;
+	wire p0_wr_full;
+	wire p0_wr_empty;
 	wire [6:0] p1_wr_count;
 	wire [63:0] p1_rd_data;
 	wire [6:0] p1_rd_count;
 	wire p1_rd_empty;
-	wire calib_done;
+	wire mem_calib_done;
 	wire clk0;
-	wire CLK = clk;
+	//wire CLK = clk;
 
 
 	// Instantiate the Unit Under Test (UUT)
@@ -107,7 +110,8 @@ module mainController(
 		.p0_rd_data(p0_rd_data), 
 		.p0_rd_count(p0_rd_count), 
 		.p0_rd_en(p0_rd_en), 
-		.p0_rd_empty(p0_rd_empty), 
+		.p0_rd_empty(p0_rd_empty),
+		.p0_wr_full(p0_wr_full),
 		.p0_wr_en(p0_wr_en), 
 		.p1_cmd_instr(p1_cmd_instr), 
 		.p1_cmd_bl(p1_cmd_bl), 
@@ -118,20 +122,24 @@ module mainController(
 		.p1_rd_data(p1_rd_data), 
 		.p1_rd_count(p1_rd_count), 
 		.p1_rd_en(p1_rd_en), 
-		.p1_rd_empty(p1_rd_empty), 
+		.p1_rd_empty(p1_rd_empty),
 		.p1_wr_en(p1_wr_en), 
 		.p0_cmd_en(p0_cmd_en), 
-		.calib_done(calib_done), 
-		.reset(reset),
+		.calib_done(mem_calib_done), 
+		.reset(nreset),
 		.clk0(clk0)
 	);
 	
+	// Inputs
+	reg send_data;
+	
 	// Outputs
 	wire ready;
+	wire frame_ready;
 	wire [31:0] point_data;
 	
 	mandelbrotRederingEngine instance_name (
-    .CLK(CLK), 
+    .CLK(clk0), 
     .send_data(send_data), 
     .start_render(start_render), 
     .data(data), 
@@ -140,30 +148,66 @@ module mainController(
     );
 	
 	// Memory Variables
-	reg [29:0] mem_base_pointer;
-	reg [29:0] mem_pointer;
+	wire [29:0] write_base_pointer = (memory_frame) ? 0 : 70560;
+	reg [29:0] write_pointer;
 	reg [1:0] calib_done;
+	reg [5:0] write_count;
+	reg memory_frame;
 	
 	initial begin
-		mem_base_pointer <= 'd0;
+		memory_frame <= 'd0;
 	end
 	
 	always @(posedge clk0)
-		calib_done <= {calib_done[0], calib_done};
+		calib_done <= {calib_done[0], mem_calib_done};
 
-	reg [4:0] state = 0;
+	reg [4:0] write_state = 0;
 	reg [11:0] count;
 	
 	always @(posedge clk0)
-		case(state)
+		case(write_state)
 		0: begin
 			reset <= 0;
-			if (calib_done[1]) state <= 1;
+			if (calib_done[1]) write_state <= 1;
 		end
 		1: begin
-			if (!wr_full && ready) begin
+			if (frame_ready) begin
+				memory_frame <= ~memory_frame;
+			end if (!p0_wr_full && ready) begin
 				p0_wr_data <= data;
+				write_count <= write_count + 'd1;
+				p0_wr_en <= 1;
+				write_state <= 2;
+				send_data <= 1;
+			end else begin
+				write_state <= 3;
 			end
+		end
+		2: begin
+			if (p0_wr_full || !ready) begin
+				p0_wr_en <= 0;
+				send_data <= 0;
+				write_state <= 1;
+			end else begin
+				p0_wr_data <= data;
+				write_count <= write_count + 'd1;
+			end
+		end
+		3: begin
+			p0_cmd_instr <= 0;
+			p0_cmd_en <= 1;
+			p0_cmd_bl <= write_count;
+			p0_cmd_byte_addr <= write_pointer;
+			write_pointer <= write_pointer + (write_count << 2);
+			write_count <= 0;
+			write_state <= 4;
+		end
+		4: begin
+			p0_cmd_en <= 0;
+			write_state <= 5;
+		end
+		5: begin
+			if (p0_wr_empty) write_state <= 1;
 		end
 		/*1: begin
 			p0_wr_en <= 1;

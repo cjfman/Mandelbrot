@@ -22,9 +22,9 @@ module mandelbrotRederingEngine(
     input CLK,
 	 input send_data,
 	 input start_render,
-    output [31:0] data,
-    output ready,
-	 output frame_ready
+    output wire [31:0] data,
+    output wire ready,
+	 output wire frame_ready
     );
 
 	parameter HBP = 64;
@@ -33,13 +33,13 @@ module mandelbrotRederingEngine(
 	parameter set_size = 256;
 	
 	// Things that need to be labled better
-	wire start = (render_state == 0);
+	wire start = (render_state == 1);
 	
 	// Output data controller
-	wire [32:0] data = iterations_reg[base_output];				// The data to be written to memory
+	assign data = iterations_reg[base_output];			// The data to be written to memory
 	reg [23:0] base_output;												// The pixel number that is being output
-	wire ready = (output_state == 'd1 && data_available);		// The data is ready to be written to memory
-	wire frame_ready = (base_output >= total_pixels);			// Every pixel has been calculated
+	assign ready = (output_state == 'd1 && data_available);	// The data is ready to be written to memory
+	assign frame_ready = (base_output >= total_pixels);		// Every pixel has been calculated
 	
 	// States
 	reg [7:0] render_state;
@@ -69,7 +69,7 @@ module mandelbrotRederingEngine(
 	// Pixels
 	wire [23:0] total_pixels = x_size * y_size;
 	reg  [23:0] base_pixel;
-	wire data_available = (base_pixel > base_output);
+	wire data_available = (base_pixel >= base_output);
 	reg done;			
 	
 	genvar i;
@@ -84,7 +84,7 @@ module mandelbrotRederingEngine(
 				.x(x[i]),
 				.y(y[i]),
 				.max_iterations(max_iterations),
-				.re_start(re.start),
+				.re_start(re_start),
 				.im_start(im_start),
 				.ready(set_ready[i]),
 				.iteration(iterations[i])
@@ -93,6 +93,9 @@ module mandelbrotRederingEngine(
 	endgenerate
 	
 	// Initialize
+	
+	integer j;
+
 	initial begin
 		max_iterations <= 'd255;
 		x_size <= 'd1680;
@@ -105,10 +108,11 @@ module mandelbrotRederingEngine(
 		render_state <= 'd0;
 		output_state <= 'd0;
 		base_output <= 'd0;
+		for (j = 0; j < set_size; j = j + 1) begin
+			iterations_reg[j] <= 'd0;
+		end
 	end
-	
-	integer j;
-	
+		
 	// Rendering block
 	always @(posedge CLK) begin
 		case(render_state)
@@ -127,6 +131,7 @@ module mandelbrotRederingEngine(
 		2: begin
 			if (frame_ready) begin
 				render_state <= 'd0;
+				base_pixel <= 0;
 			end else if (&set_ready && done) begin
 				for (j = 0; j < set_size; j = j + 1) begin
 					iterations_reg[j] <= iterations[j];
@@ -148,11 +153,12 @@ module mandelbrotRederingEngine(
 			end
 		end
 		1: begin
-			if (data_available && send_data) begin
+			if (send_data) begin
 				base_output <= base_output + 'd1;
-			end else begin
+			end else if (!data_available) begin
 				output_state <= 'd0;
 				done <= 1;
+				if (frame_ready) base_output <= 0;
 			end
 		end
 		endcase
