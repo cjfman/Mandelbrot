@@ -118,8 +118,8 @@ module videoRam(
 	  .c3_clk0		        (clk0),
 	  .c3_rst0		        (rst0),
 	  .c3_calib_done          (calib_done),
-	  .mcb3_rzq               (rzq3),
-	  .mcb3_zio               (zio3),
+	  .mcb3_rzq               (DDR2RZQ),
+	  .mcb3_zio               (DDR2ZIO),
 						
 		.c3_p0_cmd_clk                          (clk0),					// Clock
 		.c3_p0_cmd_en                           (p0_cmd_en),

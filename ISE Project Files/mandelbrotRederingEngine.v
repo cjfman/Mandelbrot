@@ -123,8 +123,8 @@ module mandelbrotRederingEngine(
 		1: begin
 		// Set up the point_gen units and wait untill they are done
 			for (j = 0; j < set_size; j = j + 1) begin
-				x[j] <= base_pixel % x_size;
-				y[j] <= base_pixel / x_size;
+				x[j] <= (base_pixel + j) % x_size;
+				y[j] <= (base_pixel + j) / x_size;
 			end
 			render_state <= 'd2;
 		end

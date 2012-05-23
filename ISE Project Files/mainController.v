@@ -41,9 +41,10 @@ module mainController(
 	output DDR2UDM,
 	output DDR2ODT,
 
-	input clk // 100 MHz oscillator = 10ns period (top level pin)
-	//input nreset
-
+	input clk, // 100 MHz oscillator = 10ns period (top level pin)
+	//input nreset,
+	input [5:0] btn,
+	input [7:0] sw
     );
 	 
 	 
