@@ -40,3 +40,11 @@ xst
 *_summary.xml
 *.xreport
 */tmp/*
+/ISE Project Files/mainController_envsettings.html
+/ISE Project Files/ipcore_dir/tmp/_cg/xil_7076_5.in
+/ISE Project Files/ipcore_dir/tmp/_cg/xil_7076_5.out
+/ISE Project Files/mainController.pad
+/ISE Project Files/mainController.ptwx
+/ISE Project Files/mainController.xpi
+/ISE Project Files/mainController_bitgen.xwbt
+/ISE Project Files/maincontroller.bit
