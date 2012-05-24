@@ -1,0 +1,23 @@
+
+
+
+// Instantiate the module
+ddrPort0Controller instance_name (
+    .clk(clk), 
+    .data(data), 
+    .ready(ready), 
+    .frame_ready(frame_ready), 
+    .send_data(send_data), 
+    .mem_calib_done(mem_calib_done), 
+    .p0_wr_full(p0_wr_full), 
+    .p0_wr_empty(p0_wr_empty), 
+    .reset(reset), 
+    .p0_wr_en(p0_wr_en), 
+    .p0_cmd_instr(p0_cmd_instr), 
+    .p0_cmd_en(p0_cmd_en), 
+    .p0_cmd_bl(p0_cmd_bl), 
+    .p0_cmd_byte_addr(p0_cmd_byte_addr), 
+    .p0_wr_data(p0_wr_data)
+    );
+
+

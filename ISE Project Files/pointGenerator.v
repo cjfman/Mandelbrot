@@ -19,8 +19,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 
-parameter HBP = 64;
-parameter HBS = 64;
+parameter HBP = 32;
+parameter HBS = 32;
 parameter HBI = 32;
 	
 module pointGenerator(
@@ -43,7 +43,6 @@ module pointGenerator(
 	 
 	// Output
 	//reg [HBI:0] iteration;
-	//wire ready;
 
 	// Complex value
 	reg [HBP - 1 : 0] re;
@@ -55,8 +54,12 @@ module pointGenerator(
 			
 	// Ready Signal
 	wire max_reached = (iteration == max_iterations);
-	wire over = ((re**2 + im**2) > (3'h4 << (HBS - 3))); 
-	assign ready = max_reached || over;
+	wire over = ((re2 + im2) > (3'h4 << (HBS - 3))); 
+	assign ready = (max_reached || over);
+	
+	// Pre calculations
+	wire [HBP - 1 : 0] re2 = re*re;
+	wire [HBP - 1 : 0] im2 = im*im;
 	
 	// Initial values for regs
 	initial begin
@@ -74,7 +77,7 @@ module pointGenerator(
 			im_pos <= (y * im_scale) + im_start;
 		end else if (!ready) begin
 			iteration <= iteration + 'b1;
-			re <= re**2 - im**2 + re_pos;
+			re <= re2 - im2 + re_pos;
 			im <= 2*re*im + im_pos;
 		end	
 	end

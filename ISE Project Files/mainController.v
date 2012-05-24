@@ -47,33 +47,35 @@ module mainController(
 	input [7:0] sw
     );
 	 
-	 
-	reg [2:0] p0_cmd_instr;
-	reg [5:0] p0_cmd_bl;
-	reg [29:0] p0_cmd_byte_addr;
-	reg [7:0] p0_wr_mask;
-	reg [63:0] p0_wr_data;
+	
+	
+	// Inputs
+	wire [2:0] p0_cmd_instr;
+	wire [5:0] p0_cmd_bl;
+	wire [29:0] p0_cmd_byte_addr;
+	reg [3:0] p0_wr_mask;
+	wire [31:0] p0_wr_data;
 	reg p0_rd_en;
-	reg p0_wr_en;
+	wire p0_wr_en;
 	reg [2:0] p1_cmd_instr;
 	reg [5:0] p1_cmd_bl;
 	reg [29:0] p1_cmd_byte_addr;
-	reg [7:0] p1_wr_mask;
-	reg [63:0] p1_wr_data;
+	reg [3:0] p1_wr_mask;
+	reg [31:0] p1_wr_data;
 	reg p1_rd_en;
 	reg p1_wr_en;
-	reg p0_cmd_en;
-	reg reset = 1;
+	wire p0_cmd_en;
+	wire mem_reset;
 
 	// Outputs
 	wire [6:0] p0_wr_count;
-	wire [63:0] p0_rd_data;
+	wire [31:0] p0_rd_data;
 	wire [6:0] p0_rd_count;
 	wire p0_rd_empty;
 	wire p0_wr_full;
 	wire p0_wr_empty;
 	wire [6:0] p1_wr_count;
-	wire [63:0] p1_rd_data;
+	wire [31:0] p1_rd_data;
 	wire [6:0] p1_rd_count;
 	wire p1_rd_empty;
 	wire mem_calib_done;
@@ -113,6 +115,7 @@ module mainController(
 		.p0_rd_en(p0_rd_en), 
 		.p0_rd_empty(p0_rd_empty),
 		.p0_wr_full(p0_wr_full),
+		.p0_wr_empty(p0_wr_empty),
 		.p0_wr_en(p0_wr_en), 
 		.p1_cmd_instr(p1_cmd_instr), 
 		.p1_cmd_bl(p1_cmd_bl), 
@@ -127,128 +130,47 @@ module mainController(
 		.p1_wr_en(p1_wr_en), 
 		.p0_cmd_en(p0_cmd_en), 
 		.calib_done(mem_calib_done), 
-		.reset(nreset),
+		.reset(mem_reset),
 		.clk0(clk0)
 	);
 	
-	// Inputs
-	reg send_data;
-	
 	// Outputs
-	wire ready;
+	wire mandelbrot_data_ready;
 	wire frame_ready;
 	wire [31:0] point_data;
 	
+	// Inputs
+	wire mandelbrot_send_data;
+	wire start_render = 1;
+	
 	mandelbrotRederingEngine mandelbrot (
     .CLK(clk0), 
-    .send_data(send_data), 
+    .send_data(mandelbrot_send_data), 
     .start_render(start_render), 
-    .data(data), 
-    .ready(ready), 
+    .data(point_data), 
+    .ready(mandelbrot_data_ready), 
     .frame_ready(frame_ready)
     );
+	 
+	ddrPort0Controller port0Controller (
+		 .clk(clk0), 
+		 .data(point_data), 
+		 .ready(mandelbrot_data_ready), 
+		 .frame_ready(frame_ready), 
+		 .send_data(mandelbrot_send_data), 
+		 .mem_calib_done(mem_calib_done), 
+		 .p0_wr_full(p0_wr_full), 
+		 .p0_wr_empty(p0_wr_empty), 
+		 .reset(mem_reset), 
+		 .p0_wr_en(p0_wr_en), 
+		 .p0_cmd_instr(p0_cmd_instr), 
+		 .p0_cmd_en(p0_cmd_en), 
+		 .p0_cmd_bl(p0_cmd_bl), 
+		 .p0_cmd_byte_addr(p0_cmd_byte_addr), 
+		 .p0_wr_data(p0_wr_data)
+		 );
 	
-	// Memory Variables
-	wire [29:0] write_base_pointer = (memory_frame) ? 0 : 70560;
-	reg [29:0] write_pointer;
-	reg [1:0] calib_done;
-	reg [5:0] write_count;
-	reg memory_frame;
 	
-	initial begin
-		memory_frame <= 'd0;
-	end
-	
-	always @(posedge clk0)
-		calib_done <= {calib_done[0], mem_calib_done};
-
-	reg [4:0] write_state = 0;
-	reg [11:0] count;
-	
-	always @(posedge clk0)
-		case(write_state)
-		0: begin
-			reset <= 0;
-			if (calib_done[1]) write_state <= 1;
-		end
-		1: begin
-			if (frame_ready) begin
-				memory_frame <= ~memory_frame;
-			end if (!p0_wr_full && ready) begin
-				p0_wr_data <= data;
-				write_count <= write_count + 'd1;
-				p0_wr_en <= 1;
-				write_state <= 2;
-				send_data <= 1;
-			end else begin
-				write_state <= 3;
-			end
-		end
-		2: begin
-			if (p0_wr_full || !ready) begin
-				p0_wr_en <= 0;
-				send_data <= 0;
-				write_state <= 1;
-			end else begin
-				p0_wr_data <= data;
-				write_count <= write_count + 'd1;
-			end
-		end
-		3: begin
-			p0_cmd_instr <= 0;
-			p0_cmd_en <= 1;
-			p0_cmd_bl <= write_count;
-			p0_cmd_byte_addr <= write_pointer;
-			write_pointer <= write_pointer + (write_count << 2);
-			write_count <= 0;
-			write_state <= 4;
-		end
-		4: begin
-			p0_cmd_en <= 0;
-			write_state <= 5;
-		end
-		5: begin
-			if (p0_wr_empty) write_state <= 1;
-		end
-		/*1: begin
-			p0_wr_en <= 1;
-			p0_wr_data <= 64'd1;
-			state <= 2;
-			count <= 12'd0;
-			end
-		7: begin
-			p0_wr_en <= 0;
-			p0_cmd_instr <= 3'b000; // Write
-			p0_cmd_bl <= 6'd6; // 6 bytes
-			p0_cmd_byte_addr <= 30'd16; // To address 16
-			p0_cmd_en <= 1;
-			state <= 8;
-			end*/
-		/*8: begin
-			p0_cmd_en <= 0;
-			state <= 9;
-			end
-		9: begin
-			count <= count + 1'b1;
-			if (count[11])
-				state <= 10;
-			end
-		10: begin
-			count <= 12'd0;
-			p0_cmd_bl <= 6'd16; // 16 bytes
-			p0_cmd_byte_addr <= 30'd16; // From Address 16
-			p0_cmd_instr <= 3'b001; // Read
-			p0_cmd_en <= 1;
-			state <= 11;
-			end
-		11: begin
-			p0_cmd_en <= 0;
-			count <= count + 1'b1;
-			if (count[11])
-				state <= 0;
-			end*/
-			
-		endcase
 
 
 endmodule

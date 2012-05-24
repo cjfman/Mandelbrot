@@ -22,21 +22,21 @@ module mandelbrotRederingEngine(
     input CLK,
 	 input send_data,
 	 input start_render,
-    output wire [31:0] data,
+    output reg [31:0] data,
     output wire ready,
 	 output wire frame_ready
     );
 
-	parameter HBP = 64;
-	parameter HBS = 64;
+	parameter HBP = 32;
+	parameter HBS = 32;
 	parameter HBI = 32;
-	parameter set_size = 256;
+	parameter set_size = 10;
 	
 	// Things that need to be labled better
 	wire start = (render_state == 1);
 	
 	// Output data controller
-	assign data = iterations_reg[base_output];			// The data to be written to memory
+	//assign data = iterations_reg[base_output];			// The data to be written to memory
 	reg [23:0] base_output;												// The pixel number that is being output
 	assign ready = (output_state == 'd1 && data_available);	// The data is ready to be written to memory
 	assign frame_ready = (base_output >= total_pixels);		// Every pixel has been calculated
@@ -48,7 +48,7 @@ module mandelbrotRederingEngine(
 	// Point Sets
 	reg [11:0] x [set_size - 1 : 0];								// X coordinate
 	reg [11:0] y [set_size - 1 : 0];								// Y coordinate
-	wire [HBI - 1 : 0] iterations [set_size - 1 : 0];		// Output from calculator point_gen units
+	wire [HBI - 1 : 0] iterations     [set_size - 1 : 0];	// Output from calculator point_gen units
 	reg  [HBI - 1 : 0] iterations_reg [set_size - 1 : 0];
 	wire [set_size - 1 : 0] set_ready;							// Signal taht point_gen units are done calculating
 	
@@ -98,8 +98,8 @@ module mandelbrotRederingEngine(
 
 	initial begin
 		max_iterations <= 'd255;
-		x_size <= 'd1680;
-		y_size <= 'd1050;
+		x_size <= 'd640;
+		y_size <= 'd480;
 		re_start <= -'d3;
 		re_end 	<=  'd1;
 		im_start <= -'d2;
@@ -117,14 +117,19 @@ module mandelbrotRederingEngine(
 	always @(posedge CLK) begin
 		case(render_state)
 		0: begin
-		//Wait untill the start_render signal is aserted
-			if (start_render) render_state <= 'd1;
+		//Wait until the start_render signal is asserted
+			if (start_render) begin
+				render_state <= 'd1;
+				//total_pixels <= x_size * y_size;
+			end
 		end
 		1: begin
-		// Set up the point_gen units and wait untill they are done
+		// Set up the point_gen units and wait until they are done
 			for (j = 0; j < set_size; j = j + 1) begin
-				x[j] <= (base_pixel + j) % x_size;
-				y[j] <= (base_pixel + j) / x_size;
+				//x[j] <= (base_pixel + j) % x_size;
+				//y[j] <= (base_pixel + j) / x_size;
+				x[j] <= (x[j] + set_size < x_size) ? x[j] + set_size : x[j] + set_size - x_size;
+				y[j] <= (x[j] + set_size < x_size) ? y[j] : y[j] + 1;
 			end
 			render_state <= 'd2;
 		end
@@ -147,13 +152,16 @@ module mandelbrotRederingEngine(
 	always @(posedge CLK) begin
 		case(output_state)
 		0: begin
-		done <= 0;
+		done <= 1;
 		if (data_available) begin
+			done <= 0;
 			output_state <= 'd1;
+			data <= iterations_reg[base_output];
 			end
 		end
 		1: begin
 			if (send_data) begin
+				data <= iterations_reg[base_output];
 				base_output <= base_output + 'd1;
 			end else if (!data_available) begin
 				output_state <= 'd0;
