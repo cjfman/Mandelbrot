@@ -4,4 +4,19 @@
 <!--advised that users do not directly edit the contents of this file.                               -->
 <!--                                                                                                 -->
 <filters xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation='filter.xsd'>
+<filter task="xst" file="HDLCompiler" num="1127" type="warning"><arg index="1">IODRPCTRLR_USE_BKST</arg></filter>
+<filter task="xst" file="HDLCompiler" num="872" type="warning"><arg index="1">allzero</arg></filter>
+<filter task="xst" file="HDLCompiler" num="413" type="warning"><arg index="1">4</arg><arg index="2">3</arg></filter>
+<filter task="xst" file="HDLCompiler" num="1127" type="warning"><arg index="1">Half_MV_DU</arg></filter>
+<filter task="xst" file="HDLCompiler" num="1591" type="warning"></filter>
+<filter task="xst" file="HDLCompiler" num="1127" type="warning"><arg index="1">MCB_UODATAVALID_U</arg></filter>
+<filter task="xst" file="HDLCompiler" num="1127" type="warning"><arg index="1">c3_p2_cmd_full</arg></filter>
+<filter task="xst" file="HDLCompiler" num="1127" type="warning"><arg index="1">Max_Value</arg></filter>
+<filter task="xst" file="HDLCompiler" num="413" type="warning"><arg index="1">7</arg><arg index="2">6</arg></filter>
+<filter task="xst" file="HDLCompiler" num="634" type="warning"><arg index="1">s0_axi_aclk</arg></filter>
+<filter task="xst" file="HDLCompiler" num="1127" type="warning"><arg index="1">rst0</arg></filter>
+<filter task="xst" file="HDLCompiler" num="1127" type="warning"><arg index="1">MCB_READ_DATA</arg></filter>
+<filter task="xst" file="HDLCompiler" num="413" type="warning"><arg index="1">8</arg><arg index="2">7</arg></filter>
+<filter task="xst" file="HDLCompiler" num="413" type="warning"><arg index="1">9</arg><arg index="2">8</arg></filter>
+<filter task="xst" file="HDLCompiler" num="634" type="warning"><arg index="1">c3_p2_cmd_clk</arg></filter>
 </filters>

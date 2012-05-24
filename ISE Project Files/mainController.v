@@ -139,7 +139,7 @@ module mainController(
 	wire frame_ready;
 	wire [31:0] point_data;
 	
-	mandelbrotRederingEngine instance_name (
+	mandelbrotRederingEngine mandelbrot (
     .CLK(clk0), 
     .send_data(send_data), 
     .start_render(start_render), 
