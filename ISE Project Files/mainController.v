@@ -20,6 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 module mainController(
 
+	// DDR2 Ram
 	output DDR2CLK_P,
 	output DDR2CLK_N,
 	output DDR2CKE,
@@ -41,10 +42,19 @@ module mainController(
 	output DDR2UDM,
 	output DDR2ODT,
 
+	// CLK
 	input clk, // 100 MHz oscillator = 10ns period (top level pin)
 	//input nreset,
+	
+	// Buttons and switches
 	input [5:0] btn,
-	input [7:0] sw
+	input [7:0] sw,
+	
+	// HDMI Out
+	output HDMIOUTCLKP,
+	output HDMIOUTCLKN,
+	output [2:0] HDMIOUTDP,
+	output [2:0] HDMIOUTDN
     );
 	 
 	
@@ -169,6 +179,13 @@ module mainController(
 		 .p0_cmd_byte_addr(p0_cmd_byte_addr), 
 		 .p0_wr_data(p0_wr_data)
 		 );
+		 
+	HDMI_Controller HDMI (
+    .clk(clk), 
+	 .clk(reset),
+    .TMDSP({HDMICLKOUTP, HDMIOUTDP}), 
+    .TMDSN({HDMICLKOUTN, HDMIOUTDN})
+    );
 	
 	
 

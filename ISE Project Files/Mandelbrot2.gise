@@ -22,6 +22,10 @@
   <sourceproject xmlns="http://www.xilinx.com/XMLSchema" xil_pn:fileType="FILE_XISE" xil_pn:name="Mandelbrot2.xise"/>
 
   <files xmlns="http://www.xilinx.com/XMLSchema">
+    <file xil_pn:fileType="FILE_XST_PROJECT" xil_pn:name="HDMI_Controller.prj"/>
+    <file xil_pn:fileType="FILE_XST_STX" xil_pn:name="HDMI_Controller.stx"/>
+    <file xil_pn:fileType="FILE_VERILOG_INSTTEMPLATE" xil_pn:name="HDMI_Controller.tfi"/>
+    <file xil_pn:fileType="FILE_XST" xil_pn:name="HDMI_Controller.xst"/>
     <file xil_pn:fileType="FILE_DIRECTORY" xil_pn:name="_ngo"/>
     <file xil_pn:fileType="FILE_XMSGS" xil_pn:name="_xmsgs/bitgen.xmsgs"/>
     <file xil_pn:fileType="FILE_XMSGS" xil_pn:name="_xmsgs/map.xmsgs"/>
@@ -94,6 +98,8 @@
     <transform xil_pn:end_ts="1337847408" xil_pn:in_ck="8099606182545854573" xil_pn:name="TRAN_regenerateCores" xil_pn:prop_ck="-5976314533840106449" xil_pn:start_ts="1337847408">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="InputAdded"/>
       <outfile xil_pn:name="ipcore_dir/ramModule/user_design/rtl/infrastructure.v"/>
       <outfile xil_pn:name="ipcore_dir/ramModule/user_design/rtl/mcb_controller/iodrp_controller.v"/>
       <outfile xil_pn:name="ipcore_dir/ramModule/user_design/rtl/mcb_controller/iodrp_mcb_controller.v"/>
@@ -115,16 +121,22 @@
     <transform xil_pn:end_ts="1337847408" xil_pn:in_ck="9032586992079485052" xil_pn:name="TRAN_SubProjectPreToStructuralProxy" xil_pn:prop_ck="8977612015756273942" xil_pn:start_ts="1337847408">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
     </transform>
     <transform xil_pn:end_ts="1337847408" xil_pn:name="TRAN_platgen" xil_pn:prop_ck="-8491754446729049927" xil_pn:start_ts="1337847408">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
     </transform>
     <transform xil_pn:end_ts="1337879957" xil_pn:in_ck="3252877524045157545" xil_pn:name="TRANEXT_xstsynthesize_spartan6" xil_pn:prop_ck="-3673915996030928354" xil_pn:start_ts="1337879858">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputAdded"/>
+      <status xil_pn:value="InputChanged"/>
       <status xil_pn:value="OutputChanged"/>
       <outfile xil_pn:name="_xmsgs/xst.xmsgs"/>
       <outfile xil_pn:name="mainController.lso"/>
@@ -141,10 +153,17 @@
     <transform xil_pn:end_ts="1337847470" xil_pn:in_ck="-86093746499115002" xil_pn:name="TRAN_compileBCD2" xil_pn:prop_ck="6149397669047994827" xil_pn:start_ts="1337847470">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="InputAdded"/>
+      <status xil_pn:value="InputChanged"/>
     </transform>
     <transform xil_pn:end_ts="1337879971" xil_pn:in_ck="-2021826189131348986" xil_pn:name="TRANEXT_ngdbuild_FPGA" xil_pn:prop_ck="8196116318964066640" xil_pn:start_ts="1337879957">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="InputChanged"/>
       <outfile xil_pn:name="_ngo"/>
       <outfile xil_pn:name="_xmsgs/ngdbuild.xmsgs"/>
       <outfile xil_pn:name="mainController.bld"/>
@@ -155,6 +174,11 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="OutOfDateForOutputs"/>
+      <status xil_pn:value="InputChanged"/>
+      <status xil_pn:value="OutputChanged"/>
       <outfile xil_pn:name="_xmsgs/map.xmsgs"/>
       <outfile xil_pn:name="mainController.pcf"/>
       <outfile xil_pn:name="mainController_map.map"/>
@@ -169,6 +193,9 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="WarningsGenerated"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="InputChanged"/>
       <outfile xil_pn:name="_xmsgs/par.xmsgs"/>
       <outfile xil_pn:name="mainController.ncd"/>
       <outfile xil_pn:name="mainController.pad"/>
@@ -183,6 +210,7 @@
     <transform xil_pn:end_ts="1337880495" xil_pn:in_ck="6927450440629317068" xil_pn:name="TRANEXT_bitFile_spartan6" xil_pn:prop_ck="396117104113915555" xil_pn:start_ts="1337880457">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
       <outfile xil_pn:name="_xmsgs/bitgen.xmsgs"/>
       <outfile xil_pn:name="mainController.ut"/>
       <outfile xil_pn:name="maincontroller.bgn"/>
@@ -195,6 +223,9 @@
     <transform xil_pn:end_ts="1337880457" xil_pn:in_ck="-2021826189131349117" xil_pn:name="TRAN_postRouteTrce" xil_pn:prop_ck="445577401284416185" xil_pn:start_ts="1337880419">
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
+      <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
+      <status xil_pn:value="InputChanged"/>
       <outfile xil_pn:name="_xmsgs/trce.xmsgs"/>
       <outfile xil_pn:name="mainController.twr"/>
       <outfile xil_pn:name="mainController.twx"/>
@@ -203,6 +234,7 @@
       <status xil_pn:value="SuccessfullyRun"/>
       <status xil_pn:value="ReadyToRun"/>
       <status xil_pn:value="OutOfDateForInputs"/>
+      <status xil_pn:value="OutOfDateForPredecessor"/>
       <status xil_pn:value="InputChanged"/>
       <outfile xil_pn:name="netgen"/>
       <outfile xil_pn:name="netgen/synthesis/mainController_synthesis.nlf"/>
