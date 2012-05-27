@@ -21,7 +21,7 @@
 module mainController(
 
 	// DDR2 Ram
-	output DDR2CLK_P,
+	/*output DDR2CLK_P,
 	output DDR2CLK_N,
 	output DDR2CKE,
 	output DDR2RASN,
@@ -40,7 +40,7 @@ module mainController(
 	output DDR2LDQS_N,
 	output DDR2LDM,
 	output DDR2UDM,
-	output DDR2ODT,
+	output DDR2ODT,*/
 
 	// CLK
 	input clk, // 100 MHz oscillator = 10ns period (top level pin)
@@ -58,7 +58,7 @@ module mainController(
     );
 	 
 	
-	
+	/*
 	// Inputs
 	wire [2:0] p0_cmd_instr;
 	wire [5:0] p0_cmd_bl;
@@ -178,14 +178,23 @@ module mainController(
 		 .p0_cmd_bl(p0_cmd_bl), 
 		 .p0_cmd_byte_addr(p0_cmd_byte_addr), 
 		 .p0_wr_data(p0_wr_data)
-		 );
+		 );*/
 		 
+		 
+	wire [3:0] tmdsint;
+	
 	HDMI_Controller HDMI (
     .clk(clk), 
-	 .clk(reset),
-    .TMDSP({HDMICLKOUTP, HDMIOUTDP}), 
-    .TMDSN({HDMICLKOUTN, HDMIOUTDN})
+	 .reset(reset),
+    .TMDSP({HDMIOUTCLKP, HDMIOUTDP}), 
+    .TMDSN({HDMIOUTCLKN, HDMIOUTDN})
+	 //.tmdsint(tmdsint)
     );
+	 
+	//OBUFDS TMDS0 (.I(tmdsint[0]), .O(HDMIOUTDP[0]), .OB(HDMIOUTDN[0])) ;
+	//OBUFDS TMDS1 (.I(tmdsint[1]), .O(HDMIOUTDP[1]), .OB(HDMIOUTDN[1])) ;
+	//OBUFDS TMDS2 (.I(tmdsint[2]), .O(HDMIOUTDP[2]), .OB(HDMIOUTDN[2])) ;
+	//OBUFDS TMDS3 (.I(tmdsint[3]), .O(HDMICLKOUTP), .OB(HDMICLKOUTN)) ;
 	
 	
 

@@ -109,9 +109,7 @@ module pixelClock480p_exdes
   //-----------------------------------------
   assign clk[1] = clk_int[1];
   assign clk[2] = clk_int[2];
-  BUFG clkout3_buf
-   (.O (clk[3]),
-    .I (clk_int[3]));
+  assign clk[3] = clk_int[3];
 
 
   // Reset synchronizer

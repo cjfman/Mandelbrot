@@ -54,6 +54,7 @@ module HDMI_Controller(
     .de(pixel_enable), 
     .TMDS(TMDSP), 
     .TMDSB(TMDSN)
+	 //.tmdsint(tmdsint)
     );	
 	
 	// Input
@@ -90,7 +91,7 @@ module HDMI_Controller(
 	 assign vsync = (v_pixel < vsync_start || v_pixel > vsync_end);
 	 assign pixel_enable = (h_pixel < hdata_start || v_pixel < vdata_start || v_pixel > vdata_end);
 	 
-	 always @ (posedge clk, posedge reset) begin
+	 always @ (posedge pixel_clk, posedge reset) begin
 		if (reset) begin
 			h_pixel <= 'd0;
 			v_pixel <= 'd0;
@@ -99,6 +100,12 @@ module HDMI_Controller(
 			v_pixel <= (next_v_pixel == v_size) ? 0 :
 						  (next_h_pixel == h_size) ? next_v_pixel : v_pixel;
 		end
+	 end
+	 
+	 always @ (posedge pixel_clk) begin
+		blue_in  <= (h_pixel[5]) ? 8'b11111111 : 8'b0;
+		green_in <= (h_pixel[6]) ? 8'b11111111 : 8'b0;
+		red_in	<= (v_pixel[5]) ? 8'b11111111 : 8'b0;
 	 end
 
 endmodule

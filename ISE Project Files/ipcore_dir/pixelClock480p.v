@@ -149,7 +149,9 @@ module pixelClock480p
    (.O   (pixel_clk_x2),
     .I   (clkout1));
 
-  assign pixel_clk_x10 = clkout2;
+  BUFG clkout3_buf
+   (.O   (pixel_clk_x10),
+    .I   (clkout2));
 
 
 
