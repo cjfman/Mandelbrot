@@ -53,7 +53,6 @@ add wave -noupdate -format Logic /pixelClock480p_tb/CLK_IN1
 add wave -noupdate -divider {Output clocks}
 add wave -noupdate -format Literal -expand /pixelClock480p_tb/dut/clk
 add wave -noupdate -divider Status/control
-add wave -noupdate -format Logic /pixelClock480p_tb/RESET
 add wave -noupdate -format Logic /pixelClock480p_tb/LOCKED
 add wave -noupdate -divider Counters
 add wave -noupdate -format Literal -radix hexadecimal /pixelClock480p_tb/COUNT

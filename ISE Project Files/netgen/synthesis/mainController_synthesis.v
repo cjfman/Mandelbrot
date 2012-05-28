@@ -7,7 +7,7 @@
 // \   \   \/     Version: O.76xd
 //  \   \         Application: netgen
 //  /   /         Filename: mainController_synthesis.v
-// /___/   /\     Timestamp: Sat May 26 23:58:53 2012
+// /___/   /\     Timestamp: Sun May 27 15:34:54 2012
 // \   \  /  \ 
 //  \___\/\___\
 //             
@@ -55,20 +55,17 @@ module mainController (
   wire \HDMI/Result<1>1 ;
   wire \HDMI/Result<0>1 ;
   wire \HDMI/pixel_clk_480p/clkin1 ;
-  wire \HDMI/pixel_clk_480p/clkfbout ;
-  wire \HDMI/pixel_clk_480p/clkout0 ;
   wire \HDMI/pixel_clk_480p/clkout1 ;
   wire \HDMI/pixel_clk_480p/clkout2 ;
-  wire \HDMI/pixel_clk_480p/clkfbout_buf ;
   wire \HDMI/GND_2_o_GND_2_o_equal_11_o ;
   wire \HDMI/GND_2_o_GND_2_o_equal_12_o ;
   wire \HDMI/pixel_enable ;
   wire \HDMI/hsync ;
   wire \HDMI/vsync ;
   wire \HDMI/pixel_clk_LOCKED ;
-  wire \HDMI/pixel_clk_x10 ;
-  wire \HDMI/pixel_clk_x2 ;
   wire \HDMI/pixel_clk ;
+  wire \HDMI/pixel_clk_x2 ;
+  wire \HDMI/pixel_clk_x10 ;
   wire \HDMI/hdmi_out/oserdes0/cascade_di ;
   wire \HDMI/hdmi_out/oserdes0/cascade_ti ;
   wire \HDMI/hdmi_out/oserdes0/cascade_do ;
@@ -87,15 +84,15 @@ module mainController (
   wire \HDMI/hdmi_out/clkout/cascade_to ;
   wire \HDMI/hdmi_out/toggle_inv ;
   wire \HDMI/hdmi_out/bufpll_lock_inv ;
-  wire \HDMI/hdmi_out/toggle_116 ;
+  wire \HDMI/hdmi_out/toggle_115 ;
   wire \HDMI/hdmi_out/tmdsclk ;
   wire \HDMI/hdmi_out/serdesstrobe ;
   wire \HDMI/hdmi_out/bufpll_lock ;
   wire \HDMI/hdmi_out/pclkx10 ;
   wire \HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ;
-  wire \HDMI/hdmi_out/enc0/encb/c0_reg_128 ;
+  wire \HDMI/hdmi_out/enc0/encb/c0_reg_127 ;
   wire \HDMI/hdmi_out/enc0/encb/decision3 ;
-  wire \HDMI/hdmi_out/enc0/encb/decision2_132 ;
+  wire \HDMI/hdmi_out/enc0/encb/decision2_131 ;
   wire \HDMI/hdmi_out/enc0/encb/GND_6_o_cnt[4]_mux_55_OUT<1> ;
   wire \HDMI/hdmi_out/enc0/encb/GND_6_o_cnt[4]_mux_55_OUT<2> ;
   wire \HDMI/hdmi_out/enc0/encb/GND_6_o_cnt[4]_mux_55_OUT<3> ;
@@ -104,11 +101,11 @@ module mainController (
   wire \HDMI/hdmi_out/enc0/encb/c1_reg_decision3_mux_54_OUT[4] ;
   wire \HDMI/hdmi_out/enc0/encb/c1_reg_decision3_mux_54_OUT[8] ;
   wire \HDMI/hdmi_out/enc0/encb/c1_reg_decision3_mux_54_OUT[9] ;
-  wire \HDMI/hdmi_out/enc0/encb/c1_reg_141 ;
-  wire \HDMI/hdmi_out/enc0/encb/c1_q_142 ;
-  wire \HDMI/hdmi_out/enc0/encb/c0_q_143 ;
-  wire \HDMI/hdmi_out/enc0/encb/de_reg_144 ;
-  wire \HDMI/hdmi_out/enc0/encb/de_q_145 ;
+  wire \HDMI/hdmi_out/enc0/encb/c1_reg_140 ;
+  wire \HDMI/hdmi_out/enc0/encb/c1_q_141 ;
+  wire \HDMI/hdmi_out/enc0/encb/c0_q_142 ;
+  wire \HDMI/hdmi_out/enc0/encb/de_reg_143 ;
+  wire \HDMI/hdmi_out/enc0/encb/de_q_144 ;
   wire \HDMI/hdmi_out/enc0/encg/GND_6_o_cnt[4]_mux_55_OUT<1> ;
   wire \HDMI/hdmi_out/enc0/encg/GND_6_o_cnt[4]_mux_55_OUT<2> ;
   wire \HDMI/hdmi_out/enc0/encg/GND_6_o_cnt[4]_mux_55_OUT<3> ;
@@ -139,35 +136,35 @@ module mainController (
   wire \HDMI/hdmi_out/enc0/pixel2x/rstsync_q ;
   wire \HDMI/hdmi_out/enc0/pixel2x/rstsync ;
   wire N2;
-  wire \HDMI/pixel_enable1_279 ;
-  wire \HDMI/pixel_enable3_280 ;
-  wire \HDMI/pixel_enable4_281 ;
+  wire \HDMI/pixel_enable1_278 ;
+  wire \HDMI/pixel_enable3_279 ;
+  wire \HDMI/pixel_enable4_280 ;
   wire N4;
-  wire \HDMI/hsync1_283 ;
-  wire \HDMI/hsync2_284 ;
+  wire \HDMI/hsync1_282 ;
+  wire \HDMI/hsync2_283 ;
   wire N6;
-  wire \HDMI/Mcount_v_pixel_cy<9>_rt_286 ;
-  wire \HDMI/Mcount_v_pixel_cy<8>_rt_287 ;
-  wire \HDMI/Mcount_v_pixel_cy<7>_rt_288 ;
-  wire \HDMI/Mcount_v_pixel_cy<6>_rt_289 ;
-  wire \HDMI/Mcount_v_pixel_cy<5>_rt_290 ;
-  wire \HDMI/Mcount_v_pixel_cy<4>_rt_291 ;
-  wire \HDMI/Mcount_v_pixel_cy<3>_rt_292 ;
-  wire \HDMI/Mcount_v_pixel_cy<2>_rt_293 ;
-  wire \HDMI/Mcount_v_pixel_cy<1>_rt_294 ;
-  wire \HDMI/Mcount_h_pixel_cy<8>_rt_295 ;
-  wire \HDMI/Mcount_h_pixel_cy<7>_rt_296 ;
-  wire \HDMI/Mcount_h_pixel_cy<6>_rt_297 ;
-  wire \HDMI/Mcount_h_pixel_cy<5>_rt_298 ;
-  wire \HDMI/Mcount_h_pixel_cy<4>_rt_299 ;
-  wire \HDMI/Mcount_h_pixel_cy<3>_rt_300 ;
-  wire \HDMI/Mcount_h_pixel_cy<2>_rt_301 ;
-  wire \HDMI/Mcount_h_pixel_cy<1>_rt_302 ;
+  wire \HDMI/Mcount_h_pixel_cy<8>_rt_285 ;
+  wire \HDMI/Mcount_h_pixel_cy<7>_rt_286 ;
+  wire \HDMI/Mcount_h_pixel_cy<6>_rt_287 ;
+  wire \HDMI/Mcount_h_pixel_cy<5>_rt_288 ;
+  wire \HDMI/Mcount_h_pixel_cy<4>_rt_289 ;
+  wire \HDMI/Mcount_h_pixel_cy<3>_rt_290 ;
+  wire \HDMI/Mcount_h_pixel_cy<2>_rt_291 ;
+  wire \HDMI/Mcount_h_pixel_cy<1>_rt_292 ;
+  wire \HDMI/Mcount_v_pixel_cy<9>_rt_293 ;
+  wire \HDMI/Mcount_v_pixel_cy<8>_rt_294 ;
+  wire \HDMI/Mcount_v_pixel_cy<7>_rt_295 ;
+  wire \HDMI/Mcount_v_pixel_cy<6>_rt_296 ;
+  wire \HDMI/Mcount_v_pixel_cy<5>_rt_297 ;
+  wire \HDMI/Mcount_v_pixel_cy<4>_rt_298 ;
+  wire \HDMI/Mcount_v_pixel_cy<3>_rt_299 ;
+  wire \HDMI/Mcount_v_pixel_cy<2>_rt_300 ;
+  wire \HDMI/Mcount_v_pixel_cy<1>_rt_301 ;
+  wire \HDMI/Mcount_h_pixel_xor<9>_rt_302 ;
   wire \HDMI/Mcount_v_pixel_xor<10>_rt_303 ;
-  wire \HDMI/Mcount_h_pixel_xor<9>_rt_304 ;
   wire N95;
   wire N97;
-  wire \HDMI/v_pixel_0_dpot_307 ;
+  wire \HDMI/v_pixel_0_dpot_306 ;
   wire N99;
   wire N101;
   wire N102;
@@ -181,32 +178,32 @@ module mainController (
   wire N114;
   wire N116;
   wire N117;
-  wire \HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_321 ;
+  wire \HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_320 ;
   wire \HDMI/GND_2_o_GND_2_o_equal_12_o<10>_cepot1 ;
-  wire \HDMI/h_pixel_9_rstpot_323 ;
-  wire \HDMI/h_pixel_8_rstpot_324 ;
-  wire \HDMI/h_pixel_7_rstpot_325 ;
-  wire \HDMI/h_pixel_6_rstpot_326 ;
-  wire \HDMI/h_pixel_5_rstpot_327 ;
-  wire \HDMI/h_pixel_4_rstpot_328 ;
-  wire \HDMI/h_pixel_3_rstpot_329 ;
-  wire \HDMI/h_pixel_2_rstpot_330 ;
-  wire \HDMI/h_pixel_1_rstpot_331 ;
-  wire \HDMI/h_pixel_0_rstpot_332 ;
-  wire \HDMI/v_pixel_0_rstpot_333 ;
-  wire \HDMI/v_pixel_8_rstpot_334 ;
-  wire \HDMI/v_pixel_7_rstpot_335 ;
-  wire \HDMI/v_pixel_6_rstpot_336 ;
-  wire \HDMI/v_pixel_5_rstpot_337 ;
-  wire \HDMI/v_pixel_4_rstpot_338 ;
-  wire \HDMI/v_pixel_3_rstpot_339 ;
-  wire \HDMI/v_pixel_2_rstpot_340 ;
-  wire \HDMI/v_pixel_1_rstpot_341 ;
-  wire \HDMI/v_pixel_9_rstpot_342 ;
-  wire \HDMI/v_pixel_10_rstpot_343 ;
-  wire \HDMI/hdmi_out/enc0/encr/Mshreg_n1d_3_344 ;
-  wire \HDMI/hdmi_out/enc0/encb/Mshreg_n1d_3_345 ;
-  wire \HDMI/hdmi_out/enc0/encg/Mshreg_n1d_3_346 ;
+  wire \HDMI/h_pixel_9_rstpot_322 ;
+  wire \HDMI/h_pixel_8_rstpot_323 ;
+  wire \HDMI/h_pixel_7_rstpot_324 ;
+  wire \HDMI/h_pixel_6_rstpot_325 ;
+  wire \HDMI/h_pixel_5_rstpot_326 ;
+  wire \HDMI/h_pixel_4_rstpot_327 ;
+  wire \HDMI/h_pixel_3_rstpot_328 ;
+  wire \HDMI/h_pixel_2_rstpot_329 ;
+  wire \HDMI/h_pixel_1_rstpot_330 ;
+  wire \HDMI/h_pixel_0_rstpot_331 ;
+  wire \HDMI/v_pixel_0_rstpot_332 ;
+  wire \HDMI/v_pixel_8_rstpot_333 ;
+  wire \HDMI/v_pixel_7_rstpot_334 ;
+  wire \HDMI/v_pixel_6_rstpot_335 ;
+  wire \HDMI/v_pixel_5_rstpot_336 ;
+  wire \HDMI/v_pixel_4_rstpot_337 ;
+  wire \HDMI/v_pixel_3_rstpot_338 ;
+  wire \HDMI/v_pixel_2_rstpot_339 ;
+  wire \HDMI/v_pixel_1_rstpot_340 ;
+  wire \HDMI/v_pixel_9_rstpot_341 ;
+  wire \HDMI/v_pixel_10_rstpot_342 ;
+  wire \HDMI/hdmi_out/enc0/encr/Mshreg_n1d_3_343 ;
+  wire \HDMI/hdmi_out/enc0/encb/Mshreg_n1d_3_344 ;
+  wire \HDMI/hdmi_out/enc0/encg/Mshreg_n1d_3_345 ;
   wire \NLW_HDMI/hdmi_out/oserdes0/oserdes_m_TQ_UNCONNECTED ;
   wire \NLW_HDMI/hdmi_out/oserdes0/oserdes_m_SHIFTOUT3_UNCONNECTED ;
   wire \NLW_HDMI/hdmi_out/oserdes0/oserdes_m_SHIFTOUT4_UNCONNECTED ;
@@ -235,8 +232,6 @@ module mainController (
   wire \NLW_HDMI/hdmi_out/clkout/oserdes_s_TQ_UNCONNECTED ;
   wire \NLW_HDMI/hdmi_out/clkout/oserdes_s_OQ_UNCONNECTED ;
   wire \NLW_HDMI/hdmi_out/clkout/oserdes_s_SHIFTOUT2_UNCONNECTED ;
-  wire \NLW_HDMI/hdmi_out/TMDS3_O_UNCONNECTED ;
-  wire \NLW_HDMI/hdmi_out/TMDS3_OB_UNCONNECTED ;
   wire \NLW_HDMI/hdmi_out/enc0/pixel2x/fd_out14_Q_UNCONNECTED ;
   wire \NLW_HDMI/hdmi_out/enc0/pixel2x/fd_out13_Q_UNCONNECTED ;
   wire \NLW_HDMI/hdmi_out/enc0/pixel2x/fd_out12_Q_UNCONNECTED ;
@@ -286,12 +281,14 @@ module mainController (
   wire \NLW_HDMI/hdmi_out/enc0/encb/Mshreg_n1d_3_Q15_UNCONNECTED ;
   wire \NLW_HDMI/hdmi_out/enc0/encg/Mshreg_n1d_3_Q15_UNCONNECTED ;
   wire \NLW_HDMI/pixel_clk_480p/pll_base_inst_CLKOUT3_UNCONNECTED ;
+  wire \NLW_HDMI/pixel_clk_480p/pll_base_inst_CLKFBIN_UNCONNECTED ;
   wire \NLW_HDMI/pixel_clk_480p/pll_base_inst_CLKOUT4_UNCONNECTED ;
   wire \NLW_HDMI/pixel_clk_480p/pll_base_inst_CLKOUT5_UNCONNECTED ;
-  wire [9 : 0] \HDMI/Mcount_v_pixel_cy ;
-  wire [0 : 0] \HDMI/Mcount_v_pixel_lut ;
+  wire \NLW_HDMI/pixel_clk_480p/pll_base_inst_CLKFBOUT_UNCONNECTED ;
   wire [8 : 0] \HDMI/Mcount_h_pixel_cy ;
   wire [0 : 0] \HDMI/Mcount_h_pixel_lut ;
+  wire [9 : 0] \HDMI/Mcount_v_pixel_cy ;
+  wire [0 : 0] \HDMI/Mcount_v_pixel_lut ;
   wire [10 : 0] \HDMI/v_pixel ;
   wire [9 : 0] \HDMI/h_pixel ;
   wire [9 : 0] \HDMI/Result ;
@@ -336,228 +333,105 @@ module mainController (
     .I(clk),
     .O(\HDMI/pixel_clk_480p/clkin1 )
   );
-  BUFG   \HDMI/pixel_clk_480p/clkf_buf  (
-    .O(\HDMI/pixel_clk_480p/clkfbout_buf ),
-    .I(\HDMI/pixel_clk_480p/clkfbout )
-  );
-  BUFG   \HDMI/pixel_clk_480p/clkout1_buf  (
-    .O(\HDMI/pixel_clk ),
-    .I(\HDMI/pixel_clk_480p/clkout0 )
-  );
   BUFG   \HDMI/pixel_clk_480p/clkout2_buf  (
     .O(\HDMI/pixel_clk_x2 ),
     .I(\HDMI/pixel_clk_480p/clkout1 )
   );
   BUFG   \HDMI/pixel_clk_480p/clkout3_buf  (
-    .O(\HDMI/pixel_clk_x10 ),
+    .O(\HDMI/pixel_clk ),
     .I(\HDMI/pixel_clk_480p/clkout2 )
-  );
-  XORCY   \HDMI/Mcount_v_pixel_xor<10>  (
-    .CI(\HDMI/Mcount_v_pixel_cy [9]),
-    .LI(\HDMI/Mcount_v_pixel_xor<10>_rt_303 ),
-    .O(\HDMI/Result<10>1 )
-  );
-  XORCY   \HDMI/Mcount_v_pixel_xor<9>  (
-    .CI(\HDMI/Mcount_v_pixel_cy [8]),
-    .LI(\HDMI/Mcount_v_pixel_cy<9>_rt_286 ),
-    .O(\HDMI/Result<9>1 )
-  );
-  MUXCY   \HDMI/Mcount_v_pixel_cy<9>  (
-    .CI(\HDMI/Mcount_v_pixel_cy [8]),
-    .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
-    .S(\HDMI/Mcount_v_pixel_cy<9>_rt_286 ),
-    .O(\HDMI/Mcount_v_pixel_cy [9])
-  );
-  XORCY   \HDMI/Mcount_v_pixel_xor<8>  (
-    .CI(\HDMI/Mcount_v_pixel_cy [7]),
-    .LI(\HDMI/Mcount_v_pixel_cy<8>_rt_287 ),
-    .O(\HDMI/Result<8>1 )
-  );
-  MUXCY   \HDMI/Mcount_v_pixel_cy<8>  (
-    .CI(\HDMI/Mcount_v_pixel_cy [7]),
-    .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
-    .S(\HDMI/Mcount_v_pixel_cy<8>_rt_287 ),
-    .O(\HDMI/Mcount_v_pixel_cy [8])
-  );
-  XORCY   \HDMI/Mcount_v_pixel_xor<7>  (
-    .CI(\HDMI/Mcount_v_pixel_cy [6]),
-    .LI(\HDMI/Mcount_v_pixel_cy<7>_rt_288 ),
-    .O(\HDMI/Result<7>1 )
-  );
-  MUXCY   \HDMI/Mcount_v_pixel_cy<7>  (
-    .CI(\HDMI/Mcount_v_pixel_cy [6]),
-    .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
-    .S(\HDMI/Mcount_v_pixel_cy<7>_rt_288 ),
-    .O(\HDMI/Mcount_v_pixel_cy [7])
-  );
-  XORCY   \HDMI/Mcount_v_pixel_xor<6>  (
-    .CI(\HDMI/Mcount_v_pixel_cy [5]),
-    .LI(\HDMI/Mcount_v_pixel_cy<6>_rt_289 ),
-    .O(\HDMI/Result<6>1 )
-  );
-  MUXCY   \HDMI/Mcount_v_pixel_cy<6>  (
-    .CI(\HDMI/Mcount_v_pixel_cy [5]),
-    .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
-    .S(\HDMI/Mcount_v_pixel_cy<6>_rt_289 ),
-    .O(\HDMI/Mcount_v_pixel_cy [6])
-  );
-  XORCY   \HDMI/Mcount_v_pixel_xor<5>  (
-    .CI(\HDMI/Mcount_v_pixel_cy [4]),
-    .LI(\HDMI/Mcount_v_pixel_cy<5>_rt_290 ),
-    .O(\HDMI/Result<5>1 )
-  );
-  MUXCY   \HDMI/Mcount_v_pixel_cy<5>  (
-    .CI(\HDMI/Mcount_v_pixel_cy [4]),
-    .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
-    .S(\HDMI/Mcount_v_pixel_cy<5>_rt_290 ),
-    .O(\HDMI/Mcount_v_pixel_cy [5])
-  );
-  XORCY   \HDMI/Mcount_v_pixel_xor<4>  (
-    .CI(\HDMI/Mcount_v_pixel_cy [3]),
-    .LI(\HDMI/Mcount_v_pixel_cy<4>_rt_291 ),
-    .O(\HDMI/Result<4>1 )
-  );
-  MUXCY   \HDMI/Mcount_v_pixel_cy<4>  (
-    .CI(\HDMI/Mcount_v_pixel_cy [3]),
-    .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
-    .S(\HDMI/Mcount_v_pixel_cy<4>_rt_291 ),
-    .O(\HDMI/Mcount_v_pixel_cy [4])
-  );
-  XORCY   \HDMI/Mcount_v_pixel_xor<3>  (
-    .CI(\HDMI/Mcount_v_pixel_cy [2]),
-    .LI(\HDMI/Mcount_v_pixel_cy<3>_rt_292 ),
-    .O(\HDMI/Result<3>1 )
-  );
-  MUXCY   \HDMI/Mcount_v_pixel_cy<3>  (
-    .CI(\HDMI/Mcount_v_pixel_cy [2]),
-    .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
-    .S(\HDMI/Mcount_v_pixel_cy<3>_rt_292 ),
-    .O(\HDMI/Mcount_v_pixel_cy [3])
-  );
-  XORCY   \HDMI/Mcount_v_pixel_xor<2>  (
-    .CI(\HDMI/Mcount_v_pixel_cy [1]),
-    .LI(\HDMI/Mcount_v_pixel_cy<2>_rt_293 ),
-    .O(\HDMI/Result<2>1 )
-  );
-  MUXCY   \HDMI/Mcount_v_pixel_cy<2>  (
-    .CI(\HDMI/Mcount_v_pixel_cy [1]),
-    .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
-    .S(\HDMI/Mcount_v_pixel_cy<2>_rt_293 ),
-    .O(\HDMI/Mcount_v_pixel_cy [2])
-  );
-  XORCY   \HDMI/Mcount_v_pixel_xor<1>  (
-    .CI(\HDMI/Mcount_v_pixel_cy [0]),
-    .LI(\HDMI/Mcount_v_pixel_cy<1>_rt_294 ),
-    .O(\HDMI/Result<1>1 )
-  );
-  MUXCY   \HDMI/Mcount_v_pixel_cy<1>  (
-    .CI(\HDMI/Mcount_v_pixel_cy [0]),
-    .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
-    .S(\HDMI/Mcount_v_pixel_cy<1>_rt_294 ),
-    .O(\HDMI/Mcount_v_pixel_cy [1])
-  );
-  XORCY   \HDMI/Mcount_v_pixel_xor<0>  (
-    .CI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
-    .LI(\HDMI/Mcount_v_pixel_lut [0]),
-    .O(\HDMI/Result<0>1 )
-  );
-  MUXCY   \HDMI/Mcount_v_pixel_cy<0>  (
-    .CI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
-    .DI(\HDMI/hdmi_out/enc0/encb/Msub_PWR_6_o_BUS_0017_sub_29_OUT_cy [1]),
-    .S(\HDMI/Mcount_v_pixel_lut [0]),
-    .O(\HDMI/Mcount_v_pixel_cy [0])
   );
   XORCY   \HDMI/Mcount_h_pixel_xor<9>  (
     .CI(\HDMI/Mcount_h_pixel_cy [8]),
-    .LI(\HDMI/Mcount_h_pixel_xor<9>_rt_304 ),
+    .LI(\HDMI/Mcount_h_pixel_xor<9>_rt_302 ),
     .O(\HDMI/Result [9])
   );
   XORCY   \HDMI/Mcount_h_pixel_xor<8>  (
     .CI(\HDMI/Mcount_h_pixel_cy [7]),
-    .LI(\HDMI/Mcount_h_pixel_cy<8>_rt_295 ),
+    .LI(\HDMI/Mcount_h_pixel_cy<8>_rt_285 ),
     .O(\HDMI/Result [8])
   );
   MUXCY   \HDMI/Mcount_h_pixel_cy<8>  (
     .CI(\HDMI/Mcount_h_pixel_cy [7]),
     .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
-    .S(\HDMI/Mcount_h_pixel_cy<8>_rt_295 ),
+    .S(\HDMI/Mcount_h_pixel_cy<8>_rt_285 ),
     .O(\HDMI/Mcount_h_pixel_cy [8])
   );
   XORCY   \HDMI/Mcount_h_pixel_xor<7>  (
     .CI(\HDMI/Mcount_h_pixel_cy [6]),
-    .LI(\HDMI/Mcount_h_pixel_cy<7>_rt_296 ),
+    .LI(\HDMI/Mcount_h_pixel_cy<7>_rt_286 ),
     .O(\HDMI/Result [7])
   );
   MUXCY   \HDMI/Mcount_h_pixel_cy<7>  (
     .CI(\HDMI/Mcount_h_pixel_cy [6]),
     .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
-    .S(\HDMI/Mcount_h_pixel_cy<7>_rt_296 ),
+    .S(\HDMI/Mcount_h_pixel_cy<7>_rt_286 ),
     .O(\HDMI/Mcount_h_pixel_cy [7])
   );
   XORCY   \HDMI/Mcount_h_pixel_xor<6>  (
     .CI(\HDMI/Mcount_h_pixel_cy [5]),
-    .LI(\HDMI/Mcount_h_pixel_cy<6>_rt_297 ),
+    .LI(\HDMI/Mcount_h_pixel_cy<6>_rt_287 ),
     .O(\HDMI/Result [6])
   );
   MUXCY   \HDMI/Mcount_h_pixel_cy<6>  (
     .CI(\HDMI/Mcount_h_pixel_cy [5]),
     .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
-    .S(\HDMI/Mcount_h_pixel_cy<6>_rt_297 ),
+    .S(\HDMI/Mcount_h_pixel_cy<6>_rt_287 ),
     .O(\HDMI/Mcount_h_pixel_cy [6])
   );
   XORCY   \HDMI/Mcount_h_pixel_xor<5>  (
     .CI(\HDMI/Mcount_h_pixel_cy [4]),
-    .LI(\HDMI/Mcount_h_pixel_cy<5>_rt_298 ),
+    .LI(\HDMI/Mcount_h_pixel_cy<5>_rt_288 ),
     .O(\HDMI/Result [5])
   );
   MUXCY   \HDMI/Mcount_h_pixel_cy<5>  (
     .CI(\HDMI/Mcount_h_pixel_cy [4]),
     .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
-    .S(\HDMI/Mcount_h_pixel_cy<5>_rt_298 ),
+    .S(\HDMI/Mcount_h_pixel_cy<5>_rt_288 ),
     .O(\HDMI/Mcount_h_pixel_cy [5])
   );
   XORCY   \HDMI/Mcount_h_pixel_xor<4>  (
     .CI(\HDMI/Mcount_h_pixel_cy [3]),
-    .LI(\HDMI/Mcount_h_pixel_cy<4>_rt_299 ),
+    .LI(\HDMI/Mcount_h_pixel_cy<4>_rt_289 ),
     .O(\HDMI/Result [4])
   );
   MUXCY   \HDMI/Mcount_h_pixel_cy<4>  (
     .CI(\HDMI/Mcount_h_pixel_cy [3]),
     .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
-    .S(\HDMI/Mcount_h_pixel_cy<4>_rt_299 ),
+    .S(\HDMI/Mcount_h_pixel_cy<4>_rt_289 ),
     .O(\HDMI/Mcount_h_pixel_cy [4])
   );
   XORCY   \HDMI/Mcount_h_pixel_xor<3>  (
     .CI(\HDMI/Mcount_h_pixel_cy [2]),
-    .LI(\HDMI/Mcount_h_pixel_cy<3>_rt_300 ),
+    .LI(\HDMI/Mcount_h_pixel_cy<3>_rt_290 ),
     .O(\HDMI/Result [3])
   );
   MUXCY   \HDMI/Mcount_h_pixel_cy<3>  (
     .CI(\HDMI/Mcount_h_pixel_cy [2]),
     .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
-    .S(\HDMI/Mcount_h_pixel_cy<3>_rt_300 ),
+    .S(\HDMI/Mcount_h_pixel_cy<3>_rt_290 ),
     .O(\HDMI/Mcount_h_pixel_cy [3])
   );
   XORCY   \HDMI/Mcount_h_pixel_xor<2>  (
     .CI(\HDMI/Mcount_h_pixel_cy [1]),
-    .LI(\HDMI/Mcount_h_pixel_cy<2>_rt_301 ),
+    .LI(\HDMI/Mcount_h_pixel_cy<2>_rt_291 ),
     .O(\HDMI/Result [2])
   );
   MUXCY   \HDMI/Mcount_h_pixel_cy<2>  (
     .CI(\HDMI/Mcount_h_pixel_cy [1]),
     .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
-    .S(\HDMI/Mcount_h_pixel_cy<2>_rt_301 ),
+    .S(\HDMI/Mcount_h_pixel_cy<2>_rt_291 ),
     .O(\HDMI/Mcount_h_pixel_cy [2])
   );
   XORCY   \HDMI/Mcount_h_pixel_xor<1>  (
     .CI(\HDMI/Mcount_h_pixel_cy [0]),
-    .LI(\HDMI/Mcount_h_pixel_cy<1>_rt_302 ),
+    .LI(\HDMI/Mcount_h_pixel_cy<1>_rt_292 ),
     .O(\HDMI/Result [1])
   );
   MUXCY   \HDMI/Mcount_h_pixel_cy<1>  (
     .CI(\HDMI/Mcount_h_pixel_cy [0]),
     .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
-    .S(\HDMI/Mcount_h_pixel_cy<1>_rt_302 ),
+    .S(\HDMI/Mcount_h_pixel_cy<1>_rt_292 ),
     .O(\HDMI/Mcount_h_pixel_cy [1])
   );
   XORCY   \HDMI/Mcount_h_pixel_xor<0>  (
@@ -570,6 +444,121 @@ module mainController (
     .DI(\HDMI/hdmi_out/enc0/encb/Msub_PWR_6_o_BUS_0017_sub_29_OUT_cy [1]),
     .S(\HDMI/Mcount_h_pixel_lut [0]),
     .O(\HDMI/Mcount_h_pixel_cy [0])
+  );
+  XORCY   \HDMI/Mcount_v_pixel_xor<10>  (
+    .CI(\HDMI/Mcount_v_pixel_cy [9]),
+    .LI(\HDMI/Mcount_v_pixel_xor<10>_rt_303 ),
+    .O(\HDMI/Result<10>1 )
+  );
+  XORCY   \HDMI/Mcount_v_pixel_xor<9>  (
+    .CI(\HDMI/Mcount_v_pixel_cy [8]),
+    .LI(\HDMI/Mcount_v_pixel_cy<9>_rt_293 ),
+    .O(\HDMI/Result<9>1 )
+  );
+  MUXCY   \HDMI/Mcount_v_pixel_cy<9>  (
+    .CI(\HDMI/Mcount_v_pixel_cy [8]),
+    .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
+    .S(\HDMI/Mcount_v_pixel_cy<9>_rt_293 ),
+    .O(\HDMI/Mcount_v_pixel_cy [9])
+  );
+  XORCY   \HDMI/Mcount_v_pixel_xor<8>  (
+    .CI(\HDMI/Mcount_v_pixel_cy [7]),
+    .LI(\HDMI/Mcount_v_pixel_cy<8>_rt_294 ),
+    .O(\HDMI/Result<8>1 )
+  );
+  MUXCY   \HDMI/Mcount_v_pixel_cy<8>  (
+    .CI(\HDMI/Mcount_v_pixel_cy [7]),
+    .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
+    .S(\HDMI/Mcount_v_pixel_cy<8>_rt_294 ),
+    .O(\HDMI/Mcount_v_pixel_cy [8])
+  );
+  XORCY   \HDMI/Mcount_v_pixel_xor<7>  (
+    .CI(\HDMI/Mcount_v_pixel_cy [6]),
+    .LI(\HDMI/Mcount_v_pixel_cy<7>_rt_295 ),
+    .O(\HDMI/Result<7>1 )
+  );
+  MUXCY   \HDMI/Mcount_v_pixel_cy<7>  (
+    .CI(\HDMI/Mcount_v_pixel_cy [6]),
+    .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
+    .S(\HDMI/Mcount_v_pixel_cy<7>_rt_295 ),
+    .O(\HDMI/Mcount_v_pixel_cy [7])
+  );
+  XORCY   \HDMI/Mcount_v_pixel_xor<6>  (
+    .CI(\HDMI/Mcount_v_pixel_cy [5]),
+    .LI(\HDMI/Mcount_v_pixel_cy<6>_rt_296 ),
+    .O(\HDMI/Result<6>1 )
+  );
+  MUXCY   \HDMI/Mcount_v_pixel_cy<6>  (
+    .CI(\HDMI/Mcount_v_pixel_cy [5]),
+    .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
+    .S(\HDMI/Mcount_v_pixel_cy<6>_rt_296 ),
+    .O(\HDMI/Mcount_v_pixel_cy [6])
+  );
+  XORCY   \HDMI/Mcount_v_pixel_xor<5>  (
+    .CI(\HDMI/Mcount_v_pixel_cy [4]),
+    .LI(\HDMI/Mcount_v_pixel_cy<5>_rt_297 ),
+    .O(\HDMI/Result<5>1 )
+  );
+  MUXCY   \HDMI/Mcount_v_pixel_cy<5>  (
+    .CI(\HDMI/Mcount_v_pixel_cy [4]),
+    .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
+    .S(\HDMI/Mcount_v_pixel_cy<5>_rt_297 ),
+    .O(\HDMI/Mcount_v_pixel_cy [5])
+  );
+  XORCY   \HDMI/Mcount_v_pixel_xor<4>  (
+    .CI(\HDMI/Mcount_v_pixel_cy [3]),
+    .LI(\HDMI/Mcount_v_pixel_cy<4>_rt_298 ),
+    .O(\HDMI/Result<4>1 )
+  );
+  MUXCY   \HDMI/Mcount_v_pixel_cy<4>  (
+    .CI(\HDMI/Mcount_v_pixel_cy [3]),
+    .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
+    .S(\HDMI/Mcount_v_pixel_cy<4>_rt_298 ),
+    .O(\HDMI/Mcount_v_pixel_cy [4])
+  );
+  XORCY   \HDMI/Mcount_v_pixel_xor<3>  (
+    .CI(\HDMI/Mcount_v_pixel_cy [2]),
+    .LI(\HDMI/Mcount_v_pixel_cy<3>_rt_299 ),
+    .O(\HDMI/Result<3>1 )
+  );
+  MUXCY   \HDMI/Mcount_v_pixel_cy<3>  (
+    .CI(\HDMI/Mcount_v_pixel_cy [2]),
+    .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
+    .S(\HDMI/Mcount_v_pixel_cy<3>_rt_299 ),
+    .O(\HDMI/Mcount_v_pixel_cy [3])
+  );
+  XORCY   \HDMI/Mcount_v_pixel_xor<2>  (
+    .CI(\HDMI/Mcount_v_pixel_cy [1]),
+    .LI(\HDMI/Mcount_v_pixel_cy<2>_rt_300 ),
+    .O(\HDMI/Result<2>1 )
+  );
+  MUXCY   \HDMI/Mcount_v_pixel_cy<2>  (
+    .CI(\HDMI/Mcount_v_pixel_cy [1]),
+    .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
+    .S(\HDMI/Mcount_v_pixel_cy<2>_rt_300 ),
+    .O(\HDMI/Mcount_v_pixel_cy [2])
+  );
+  XORCY   \HDMI/Mcount_v_pixel_xor<1>  (
+    .CI(\HDMI/Mcount_v_pixel_cy [0]),
+    .LI(\HDMI/Mcount_v_pixel_cy<1>_rt_301 ),
+    .O(\HDMI/Result<1>1 )
+  );
+  MUXCY   \HDMI/Mcount_v_pixel_cy<1>  (
+    .CI(\HDMI/Mcount_v_pixel_cy [0]),
+    .DI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
+    .S(\HDMI/Mcount_v_pixel_cy<1>_rt_301 ),
+    .O(\HDMI/Mcount_v_pixel_cy [1])
+  );
+  XORCY   \HDMI/Mcount_v_pixel_xor<0>  (
+    .CI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
+    .LI(\HDMI/Mcount_v_pixel_lut [0]),
+    .O(\HDMI/Result<0>1 )
+  );
+  MUXCY   \HDMI/Mcount_v_pixel_cy<0>  (
+    .CI(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
+    .DI(\HDMI/hdmi_out/enc0/encb/Msub_PWR_6_o_BUS_0017_sub_29_OUT_cy [1]),
+    .S(\HDMI/Mcount_v_pixel_lut [0]),
+    .O(\HDMI/Mcount_v_pixel_cy [0])
   );
   OSERDES2 #(
     .BYPASS_GCLK_FF ( "FALSE" ),
@@ -865,8 +854,8 @@ module mainController (
     .SLEW ( "20" ))
   \HDMI/hdmi_out/TMDS3  (
     .I(\HDMI/hdmi_out/tmdsclk ),
-    .O(\NLW_HDMI/hdmi_out/TMDS3_O_UNCONNECTED ),
-    .OB(\NLW_HDMI/hdmi_out/TMDS3_OB_UNCONNECTED )
+    .O(HDMIOUTCLKP),
+    .OB(HDMIOUTCLKN)
   );
   OBUFDS #(
     .CAPACITANCE ( "DONT_CARE" ),
@@ -912,7 +901,7 @@ module mainController (
     .C(\HDMI/pixel_clk_x2 ),
     .CLR(\HDMI/hdmi_out/bufpll_lock_inv ),
     .D(\HDMI/hdmi_out/toggle_inv ),
-    .Q(\HDMI/hdmi_out/toggle_116 )
+    .Q(\HDMI/hdmi_out/toggle_115 )
   );
   FD   \HDMI/hdmi_out/enc0/encb/n0q_m_3  (
     .C(\HDMI/pixel_clk ),
@@ -926,33 +915,33 @@ module mainController (
   );
   FD   \HDMI/hdmi_out/enc0/encb/c1_reg  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/hdmi_out/enc0/encb/c1_q_142 ),
-    .Q(\HDMI/hdmi_out/enc0/encb/c1_reg_141 )
+    .D(\HDMI/hdmi_out/enc0/encb/c1_q_141 ),
+    .Q(\HDMI/hdmi_out/enc0/encb/c1_reg_140 )
   );
   FD   \HDMI/hdmi_out/enc0/encb/c0_reg  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/hdmi_out/enc0/encb/c0_q_143 ),
-    .Q(\HDMI/hdmi_out/enc0/encb/c0_reg_128 )
+    .D(\HDMI/hdmi_out/enc0/encb/c0_q_142 ),
+    .Q(\HDMI/hdmi_out/enc0/encb/c0_reg_127 )
   );
   FD   \HDMI/hdmi_out/enc0/encb/de_reg  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/hdmi_out/enc0/encb/de_q_145 ),
-    .Q(\HDMI/hdmi_out/enc0/encb/de_reg_144 )
+    .D(\HDMI/hdmi_out/enc0/encb/de_q_144 ),
+    .Q(\HDMI/hdmi_out/enc0/encb/de_reg_143 )
   );
   FD   \HDMI/hdmi_out/enc0/encb/c1_q  (
     .C(\HDMI/pixel_clk ),
     .D(\HDMI/vsync ),
-    .Q(\HDMI/hdmi_out/enc0/encb/c1_q_142 )
+    .Q(\HDMI/hdmi_out/enc0/encb/c1_q_141 )
   );
   FD   \HDMI/hdmi_out/enc0/encb/de_q  (
     .C(\HDMI/pixel_clk ),
     .D(\HDMI/pixel_enable ),
-    .Q(\HDMI/hdmi_out/enc0/encb/de_q_145 )
+    .Q(\HDMI/hdmi_out/enc0/encb/de_q_144 )
   );
   FD   \HDMI/hdmi_out/enc0/encb/c0_q  (
     .C(\HDMI/pixel_clk ),
     .D(\HDMI/hsync ),
-    .Q(\HDMI/hdmi_out/enc0/encb/c0_q_143 )
+    .Q(\HDMI/hdmi_out/enc0/encb/c0_q_142 )
   );
   FD   \HDMI/hdmi_out/enc0/encg/n0q_m_3  (
     .C(\HDMI/pixel_clk ),
@@ -1890,22 +1879,22 @@ module mainController (
   LUT3 #(
     .INIT ( 8'hB1 ))
   \HDMI/hdmi_out/enc0/encb/Mmux_c1_reg_decision3_mux_54_OUT91  (
-    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
-    .I1(\HDMI/hdmi_out/enc0/encb/c0_reg_128 ),
+    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
+    .I1(\HDMI/hdmi_out/enc0/encb/c0_reg_127 ),
     .I2(\HDMI/hdmi_out/enc0/encb/n0q_m [3]),
     .O(\HDMI/hdmi_out/enc0/encb/c1_reg_decision3_mux_54_OUT[8] )
   );
   LUT2 #(
     .INIT ( 4'hD ))
   \HDMI/hdmi_out/enc0/encg/Mmux_c1_reg_decision3_mux_54_OUT91  (
-    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
+    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
     .I1(\HDMI/hdmi_out/enc0/encg/n0q_m [3]),
     .O(\HDMI/hdmi_out/enc0/encg/c1_reg_decision3_mux_54_OUT[8] )
   );
   LUT2 #(
     .INIT ( 4'hD ))
   \HDMI/hdmi_out/enc0/encr/Mmux_c1_reg_decision3_mux_54_OUT91  (
-    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
+    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
     .I1(\HDMI/hdmi_out/enc0/encr/n0q_m [3]),
     .O(\HDMI/hdmi_out/enc0/encr/c1_reg_decision3_mux_54_OUT[8] )
   );
@@ -2108,7 +2097,7 @@ module mainController (
     .I3(\HDMI/h_pixel [6]),
     .I4(\HDMI/h_pixel [7]),
     .I5(\HDMI/v_pixel [10]),
-    .O(\HDMI/pixel_enable1_279 )
+    .O(\HDMI/pixel_enable1_278 )
   );
   LUT6 #(
     .INIT ( 64'h00010101FFFFFFFF ))
@@ -2119,7 +2108,7 @@ module mainController (
     .I3(\HDMI/v_pixel [1]),
     .I4(\HDMI/v_pixel [0]),
     .I5(\HDMI/v_pixel [5]),
-    .O(\HDMI/pixel_enable3_280 )
+    .O(\HDMI/pixel_enable3_279 )
   );
   LUT4 #(
     .INIT ( 16'h0001 ))
@@ -2128,7 +2117,7 @@ module mainController (
     .I1(\HDMI/v_pixel [9]),
     .I2(\HDMI/v_pixel [7]),
     .I3(\HDMI/v_pixel [6]),
-    .O(\HDMI/pixel_enable4_281 )
+    .O(\HDMI/pixel_enable4_280 )
   );
   LUT2 #(
     .INIT ( 4'hE ))
@@ -2144,7 +2133,7 @@ module mainController (
     .I1(\HDMI/h_pixel [3]),
     .I2(\HDMI/h_pixel [0]),
     .I3(\HDMI/h_pixel [1]),
-    .O(\HDMI/hsync1_283 )
+    .O(\HDMI/hsync1_282 )
   );
   LUT3 #(
     .INIT ( 8'hFE ))
@@ -2152,16 +2141,16 @@ module mainController (
     .I0(\HDMI/h_pixel [7]),
     .I1(\HDMI/h_pixel [8]),
     .I2(\HDMI/h_pixel [9]),
-    .O(\HDMI/hsync2_284 )
+    .O(\HDMI/hsync2_283 )
   );
   LUT5 #(
     .INIT ( 32'hEAABAAAB ))
   \HDMI/hsync3  (
-    .I0(\HDMI/hsync2_284 ),
+    .I0(\HDMI/hsync2_283 ),
     .I1(\HDMI/h_pixel [5]),
     .I2(\HDMI/h_pixel [6]),
     .I3(\HDMI/h_pixel [4]),
-    .I4(\HDMI/hsync1_283 ),
+    .I4(\HDMI/hsync1_282 ),
     .O(\HDMI/hsync )
   );
   LUT5 #(
@@ -2187,105 +2176,111 @@ module mainController (
   );
   LUT1 #(
     .INIT ( 2'h2 ))
-  \HDMI/Mcount_v_pixel_cy<9>_rt  (
-    .I0(\HDMI/v_pixel [9]),
-    .O(\HDMI/Mcount_v_pixel_cy<9>_rt_286 )
-  );
-  LUT1 #(
-    .INIT ( 2'h2 ))
-  \HDMI/Mcount_v_pixel_cy<8>_rt  (
-    .I0(\HDMI/v_pixel [8]),
-    .O(\HDMI/Mcount_v_pixel_cy<8>_rt_287 )
-  );
-  LUT1 #(
-    .INIT ( 2'h2 ))
-  \HDMI/Mcount_v_pixel_cy<7>_rt  (
-    .I0(\HDMI/v_pixel [7]),
-    .O(\HDMI/Mcount_v_pixel_cy<7>_rt_288 )
-  );
-  LUT1 #(
-    .INIT ( 2'h2 ))
-  \HDMI/Mcount_v_pixel_cy<6>_rt  (
-    .I0(\HDMI/v_pixel [6]),
-    .O(\HDMI/Mcount_v_pixel_cy<6>_rt_289 )
-  );
-  LUT1 #(
-    .INIT ( 2'h2 ))
-  \HDMI/Mcount_v_pixel_cy<5>_rt  (
-    .I0(\HDMI/v_pixel [5]),
-    .O(\HDMI/Mcount_v_pixel_cy<5>_rt_290 )
-  );
-  LUT1 #(
-    .INIT ( 2'h2 ))
-  \HDMI/Mcount_v_pixel_cy<4>_rt  (
-    .I0(\HDMI/v_pixel [4]),
-    .O(\HDMI/Mcount_v_pixel_cy<4>_rt_291 )
-  );
-  LUT1 #(
-    .INIT ( 2'h2 ))
-  \HDMI/Mcount_v_pixel_cy<3>_rt  (
-    .I0(\HDMI/v_pixel [3]),
-    .O(\HDMI/Mcount_v_pixel_cy<3>_rt_292 )
-  );
-  LUT1 #(
-    .INIT ( 2'h2 ))
-  \HDMI/Mcount_v_pixel_cy<2>_rt  (
-    .I0(\HDMI/v_pixel [2]),
-    .O(\HDMI/Mcount_v_pixel_cy<2>_rt_293 )
-  );
-  LUT1 #(
-    .INIT ( 2'h2 ))
-  \HDMI/Mcount_v_pixel_cy<1>_rt  (
-    .I0(\HDMI/v_pixel [1]),
-    .O(\HDMI/Mcount_v_pixel_cy<1>_rt_294 )
-  );
-  LUT1 #(
-    .INIT ( 2'h2 ))
   \HDMI/Mcount_h_pixel_cy<8>_rt  (
     .I0(\HDMI/h_pixel [8]),
-    .O(\HDMI/Mcount_h_pixel_cy<8>_rt_295 )
+    .O(\HDMI/Mcount_h_pixel_cy<8>_rt_285 )
   );
   LUT1 #(
     .INIT ( 2'h2 ))
   \HDMI/Mcount_h_pixel_cy<7>_rt  (
     .I0(\HDMI/h_pixel [7]),
-    .O(\HDMI/Mcount_h_pixel_cy<7>_rt_296 )
+    .O(\HDMI/Mcount_h_pixel_cy<7>_rt_286 )
   );
   LUT1 #(
     .INIT ( 2'h2 ))
   \HDMI/Mcount_h_pixel_cy<6>_rt  (
     .I0(\HDMI/h_pixel [6]),
-    .O(\HDMI/Mcount_h_pixel_cy<6>_rt_297 )
+    .O(\HDMI/Mcount_h_pixel_cy<6>_rt_287 )
   );
   LUT1 #(
     .INIT ( 2'h2 ))
   \HDMI/Mcount_h_pixel_cy<5>_rt  (
     .I0(\HDMI/h_pixel [5]),
-    .O(\HDMI/Mcount_h_pixel_cy<5>_rt_298 )
+    .O(\HDMI/Mcount_h_pixel_cy<5>_rt_288 )
   );
   LUT1 #(
     .INIT ( 2'h2 ))
   \HDMI/Mcount_h_pixel_cy<4>_rt  (
     .I0(\HDMI/h_pixel [4]),
-    .O(\HDMI/Mcount_h_pixel_cy<4>_rt_299 )
+    .O(\HDMI/Mcount_h_pixel_cy<4>_rt_289 )
   );
   LUT1 #(
     .INIT ( 2'h2 ))
   \HDMI/Mcount_h_pixel_cy<3>_rt  (
     .I0(\HDMI/h_pixel [3]),
-    .O(\HDMI/Mcount_h_pixel_cy<3>_rt_300 )
+    .O(\HDMI/Mcount_h_pixel_cy<3>_rt_290 )
   );
   LUT1 #(
     .INIT ( 2'h2 ))
   \HDMI/Mcount_h_pixel_cy<2>_rt  (
     .I0(\HDMI/h_pixel [2]),
-    .O(\HDMI/Mcount_h_pixel_cy<2>_rt_301 )
+    .O(\HDMI/Mcount_h_pixel_cy<2>_rt_291 )
   );
   LUT1 #(
     .INIT ( 2'h2 ))
   \HDMI/Mcount_h_pixel_cy<1>_rt  (
     .I0(\HDMI/h_pixel [1]),
-    .O(\HDMI/Mcount_h_pixel_cy<1>_rt_302 )
+    .O(\HDMI/Mcount_h_pixel_cy<1>_rt_292 )
+  );
+  LUT1 #(
+    .INIT ( 2'h2 ))
+  \HDMI/Mcount_v_pixel_cy<9>_rt  (
+    .I0(\HDMI/v_pixel [9]),
+    .O(\HDMI/Mcount_v_pixel_cy<9>_rt_293 )
+  );
+  LUT1 #(
+    .INIT ( 2'h2 ))
+  \HDMI/Mcount_v_pixel_cy<8>_rt  (
+    .I0(\HDMI/v_pixel [8]),
+    .O(\HDMI/Mcount_v_pixel_cy<8>_rt_294 )
+  );
+  LUT1 #(
+    .INIT ( 2'h2 ))
+  \HDMI/Mcount_v_pixel_cy<7>_rt  (
+    .I0(\HDMI/v_pixel [7]),
+    .O(\HDMI/Mcount_v_pixel_cy<7>_rt_295 )
+  );
+  LUT1 #(
+    .INIT ( 2'h2 ))
+  \HDMI/Mcount_v_pixel_cy<6>_rt  (
+    .I0(\HDMI/v_pixel [6]),
+    .O(\HDMI/Mcount_v_pixel_cy<6>_rt_296 )
+  );
+  LUT1 #(
+    .INIT ( 2'h2 ))
+  \HDMI/Mcount_v_pixel_cy<5>_rt  (
+    .I0(\HDMI/v_pixel [5]),
+    .O(\HDMI/Mcount_v_pixel_cy<5>_rt_297 )
+  );
+  LUT1 #(
+    .INIT ( 2'h2 ))
+  \HDMI/Mcount_v_pixel_cy<4>_rt  (
+    .I0(\HDMI/v_pixel [4]),
+    .O(\HDMI/Mcount_v_pixel_cy<4>_rt_298 )
+  );
+  LUT1 #(
+    .INIT ( 2'h2 ))
+  \HDMI/Mcount_v_pixel_cy<3>_rt  (
+    .I0(\HDMI/v_pixel [3]),
+    .O(\HDMI/Mcount_v_pixel_cy<3>_rt_299 )
+  );
+  LUT1 #(
+    .INIT ( 2'h2 ))
+  \HDMI/Mcount_v_pixel_cy<2>_rt  (
+    .I0(\HDMI/v_pixel [2]),
+    .O(\HDMI/Mcount_v_pixel_cy<2>_rt_300 )
+  );
+  LUT1 #(
+    .INIT ( 2'h2 ))
+  \HDMI/Mcount_v_pixel_cy<1>_rt  (
+    .I0(\HDMI/v_pixel [1]),
+    .O(\HDMI/Mcount_v_pixel_cy<1>_rt_301 )
+  );
+  LUT1 #(
+    .INIT ( 2'h2 ))
+  \HDMI/Mcount_h_pixel_xor<9>_rt  (
+    .I0(\HDMI/h_pixel [9]),
+    .O(\HDMI/Mcount_h_pixel_xor<9>_rt_302 )
   );
   LUT1 #(
     .INIT ( 2'h2 ))
@@ -2293,17 +2288,11 @@ module mainController (
     .I0(\HDMI/v_pixel [10]),
     .O(\HDMI/Mcount_v_pixel_xor<10>_rt_303 )
   );
-  LUT1 #(
-    .INIT ( 2'h2 ))
-  \HDMI/Mcount_h_pixel_xor<9>_rt  (
-    .I0(\HDMI/h_pixel [9]),
-    .O(\HDMI/Mcount_h_pixel_xor<9>_rt_304 )
-  );
   FD #(
     .INIT ( 1'b0 ))
   \HDMI/hdmi_out/tmdsclkint_0  (
     .C(\HDMI/pixel_clk_x2 ),
-    .D(\HDMI/hdmi_out/toggle_116 ),
+    .D(\HDMI/hdmi_out/toggle_115 ),
     .Q(\HDMI/hdmi_out/tmdsclkint [0])
   );
   LUT6 #(
@@ -2315,17 +2304,17 @@ module mainController (
     .I3(\HDMI/hdmi_out/enc0/encb/n1q_m [3]),
     .I4(\HDMI/hdmi_out/enc0/encb/cnt [4]),
     .I5(\HDMI/hdmi_out/enc0/encb/n0q_m [3]),
-    .O(\HDMI/hdmi_out/enc0/encb/decision2_132 )
+    .O(\HDMI/hdmi_out/enc0/encb/decision2_131 )
   );
   LUT6 #(
     .INIT ( 64'h0F990F99FF990099 ))
   \HDMI/hdmi_out/enc0/encb/Mmux_c1_reg_decision3_mux_54_OUT101  (
-    .I0(\HDMI/hdmi_out/enc0/encb/c1_reg_141 ),
-    .I1(\HDMI/hdmi_out/enc0/encb/c0_reg_128 ),
+    .I0(\HDMI/hdmi_out/enc0/encb/c1_reg_140 ),
+    .I1(\HDMI/hdmi_out/enc0/encb/c0_reg_127 ),
     .I2(\HDMI/hdmi_out/enc0/encb/n0q_m [3]),
-    .I3(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
+    .I3(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
     .I4(\HDMI/hdmi_out/enc0/encb/decision3 ),
-    .I5(\HDMI/hdmi_out/enc0/encb/decision2_132 ),
+    .I5(\HDMI/hdmi_out/enc0/encb/decision2_131 ),
     .O(\HDMI/hdmi_out/enc0/encb/c1_reg_decision3_mux_54_OUT[9] )
   );
   LUT5 #(
@@ -2365,9 +2354,9 @@ module mainController (
     .I0(\HDMI/v_pixel [9]),
     .I1(N4),
     .I2(N97),
-    .I3(\HDMI/pixel_enable1_279 ),
-    .I4(\HDMI/pixel_enable3_280 ),
-    .I5(\HDMI/pixel_enable4_281 ),
+    .I3(\HDMI/pixel_enable1_278 ),
+    .I4(\HDMI/pixel_enable3_279 ),
+    .I5(\HDMI/pixel_enable4_280 ),
     .O(\HDMI/pixel_enable )
   );
   LUT2 #(
@@ -2386,7 +2375,7 @@ module mainController (
     .I3(N99),
     .I4(\HDMI/Result<0>1 ),
     .I5(N6),
-    .O(\HDMI/v_pixel_0_dpot_307 )
+    .O(\HDMI/v_pixel_0_dpot_306 )
   );
   FD   \HDMI/hdmi_out/enc0/encb/cnt_4  (
     .C(\HDMI/pixel_clk ),
@@ -2572,7 +2561,7 @@ module mainController (
   LUT6 #(
     .INIT ( 64'h828A0008A2AA2028 ))
   \HDMI/hdmi_out/enc0/encb/Mmux_GND_6_o_cnt[4]_mux_55_OUT103  (
-    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
+    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
     .I1(\HDMI/hdmi_out/enc0/encb/n1q_m [3]),
     .I2(\HDMI/hdmi_out/enc0/encb/n0q_m [3]),
     .I3(N102),
@@ -2601,7 +2590,7 @@ module mainController (
   LUT6 #(
     .INIT ( 64'h828A0008A2AA2028 ))
   \HDMI/hdmi_out/enc0/encg/Mmux_GND_6_o_cnt[4]_mux_55_OUT103  (
-    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
+    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
     .I1(\HDMI/hdmi_out/enc0/encg/n1q_m [3]),
     .I2(\HDMI/hdmi_out/enc0/encg/n0q_m [3]),
     .I3(N105),
@@ -2630,7 +2619,7 @@ module mainController (
   LUT6 #(
     .INIT ( 64'h828A0008A2AA2028 ))
   \HDMI/hdmi_out/enc0/encr/Mmux_GND_6_o_cnt[4]_mux_55_OUT103  (
-    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
+    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
     .I1(\HDMI/hdmi_out/enc0/encr/n1q_m [3]),
     .I2(\HDMI/hdmi_out/enc0/encr/n0q_m [3]),
     .I3(N108),
@@ -2704,27 +2693,27 @@ module mainController (
   LUT5 #(
     .INIT ( 32'hFDDFA88A ))
   \HDMI/hdmi_out/enc0/encb/Mmux_c1_reg_decision3_mux_54_OUT21  (
-    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
+    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
     .I1(\HDMI/hdmi_out/enc0/encb/cnt [4]),
     .I2(\HDMI/hdmi_out/enc0/encb/n1q_m [3]),
     .I3(\HDMI/hdmi_out/enc0/encb/n0q_m [3]),
-    .I4(\HDMI/hdmi_out/enc0/encb/c0_reg_128 ),
+    .I4(\HDMI/hdmi_out/enc0/encb/c0_reg_127 ),
     .O(\HDMI/hdmi_out/enc0/encb/c1_reg_decision3_mux_54_OUT[1] )
   );
   LUT5 #(
     .INIT ( 32'hA88AFDDF ))
   \HDMI/hdmi_out/enc0/encb/Mmux_c1_reg_decision3_mux_54_OUT51  (
-    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
+    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
     .I1(\HDMI/hdmi_out/enc0/encb/cnt [4]),
     .I2(\HDMI/hdmi_out/enc0/encb/n1q_m [3]),
     .I3(\HDMI/hdmi_out/enc0/encb/n0q_m [3]),
-    .I4(\HDMI/hdmi_out/enc0/encb/c0_reg_128 ),
+    .I4(\HDMI/hdmi_out/enc0/encb/c0_reg_127 ),
     .O(\HDMI/hdmi_out/enc0/encb/c1_reg_decision3_mux_54_OUT[4] )
   );
   LUT4 #(
     .INIT ( 16'hA88A ))
   \HDMI/hdmi_out/enc0/encg/Mmux_c1_reg_decision3_mux_54_OUT21  (
-    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
+    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
     .I1(\HDMI/hdmi_out/enc0/encg/cnt [4]),
     .I2(\HDMI/hdmi_out/enc0/encg/n1q_m [3]),
     .I3(\HDMI/hdmi_out/enc0/encg/n0q_m [3]),
@@ -2735,14 +2724,14 @@ module mainController (
   \HDMI/hdmi_out/enc0/encg/Mmux_c1_reg_decision3_mux_54_OUT51  (
     .I0(\HDMI/hdmi_out/enc0/encg/n1q_m [3]),
     .I1(\HDMI/hdmi_out/enc0/encg/n0q_m [3]),
-    .I2(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
+    .I2(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
     .I3(\HDMI/hdmi_out/enc0/encg/cnt [4]),
     .O(\HDMI/hdmi_out/enc0/encg/c1_reg_decision3_mux_54_OUT[4] )
   );
   LUT4 #(
     .INIT ( 16'hA88A ))
   \HDMI/hdmi_out/enc0/encr/Mmux_c1_reg_decision3_mux_54_OUT21  (
-    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
+    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
     .I1(\HDMI/hdmi_out/enc0/encr/cnt [4]),
     .I2(\HDMI/hdmi_out/enc0/encr/n1q_m [3]),
     .I3(\HDMI/hdmi_out/enc0/encr/n0q_m [3]),
@@ -2753,14 +2742,14 @@ module mainController (
   \HDMI/hdmi_out/enc0/encr/Mmux_c1_reg_decision3_mux_54_OUT51  (
     .I0(\HDMI/hdmi_out/enc0/encr/n1q_m [3]),
     .I1(\HDMI/hdmi_out/enc0/encr/n0q_m [3]),
-    .I2(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
+    .I2(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
     .I3(\HDMI/hdmi_out/enc0/encr/cnt [4]),
     .O(\HDMI/hdmi_out/enc0/encr/c1_reg_decision3_mux_54_OUT[4] )
   );
   LUT4 #(
     .INIT ( 16'h757F ))
   \HDMI/hdmi_out/enc0/encg/Mmux_c1_reg_decision3_mux_54_OUT101  (
-    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
+    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
     .I1(\HDMI/hdmi_out/enc0/encg/n1q_m [3]),
     .I2(\HDMI/hdmi_out/enc0/encg/cnt [4]),
     .I3(\HDMI/hdmi_out/enc0/encg/n0q_m [3]),
@@ -2769,7 +2758,7 @@ module mainController (
   LUT4 #(
     .INIT ( 16'h757F ))
   \HDMI/hdmi_out/enc0/encr/Mmux_c1_reg_decision3_mux_54_OUT101  (
-    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
+    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
     .I1(\HDMI/hdmi_out/enc0/encr/n1q_m [3]),
     .I2(\HDMI/hdmi_out/enc0/encr/cnt [4]),
     .I3(\HDMI/hdmi_out/enc0/encr/n0q_m [3]),
@@ -2781,7 +2770,7 @@ module mainController (
     .I0(\HDMI/hdmi_out/enc0/encb/n1q_m [3]),
     .I1(\HDMI/hdmi_out/enc0/encb/cnt [4]),
     .I2(\HDMI/hdmi_out/enc0/encb/n0q_m [3]),
-    .I3(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
+    .I3(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
     .I4(N111),
     .I5(N110),
     .O(\HDMI/hdmi_out/enc0/encb/GND_6_o_cnt[4]_mux_55_OUT<3> )
@@ -2792,7 +2781,7 @@ module mainController (
     .I0(\HDMI/hdmi_out/enc0/encg/n1q_m [3]),
     .I1(\HDMI/hdmi_out/enc0/encg/cnt [4]),
     .I2(\HDMI/hdmi_out/enc0/encg/n0q_m [3]),
-    .I3(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
+    .I3(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
     .I4(N114),
     .I5(N113),
     .O(\HDMI/hdmi_out/enc0/encg/GND_6_o_cnt[4]_mux_55_OUT<3> )
@@ -2803,7 +2792,7 @@ module mainController (
     .I0(\HDMI/hdmi_out/enc0/encr/n1q_m [3]),
     .I1(\HDMI/hdmi_out/enc0/encr/cnt [4]),
     .I2(\HDMI/hdmi_out/enc0/encr/n0q_m [3]),
-    .I3(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
+    .I3(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
     .I4(N117),
     .I5(N116),
     .O(\HDMI/hdmi_out/enc0/encr/GND_6_o_cnt[4]_mux_55_OUT<3> )
@@ -2811,7 +2800,7 @@ module mainController (
   LUT5 #(
     .INIT ( 32'h88282888 ))
   \HDMI/hdmi_out/enc0/encg/Mmux_GND_6_o_cnt[4]_mux_55_OUT41  (
-    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
+    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
     .I1(\HDMI/hdmi_out/enc0/encg/cnt [1]),
     .I2(\HDMI/hdmi_out/enc0/encg/cnt [4]),
     .I3(\HDMI/hdmi_out/enc0/encg/n0q_m [3]),
@@ -2821,7 +2810,7 @@ module mainController (
   LUT5 #(
     .INIT ( 32'h88282888 ))
   \HDMI/hdmi_out/enc0/encr/Mmux_GND_6_o_cnt[4]_mux_55_OUT41  (
-    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
+    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
     .I1(\HDMI/hdmi_out/enc0/encr/cnt [1]),
     .I2(\HDMI/hdmi_out/enc0/encr/cnt [4]),
     .I3(\HDMI/hdmi_out/enc0/encr/n0q_m [3]),
@@ -2831,7 +2820,7 @@ module mainController (
   LUT6 #(
     .INIT ( 64'h8828828888888888 ))
   \HDMI/hdmi_out/enc0/encb/Mmux_GND_6_o_cnt[4]_mux_55_OUT63  (
-    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
+    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
     .I1(\HDMI/hdmi_out/enc0/encb/cnt [2]),
     .I2(\HDMI/hdmi_out/enc0/encb/cnt [1]),
     .I3(\HDMI/hdmi_out/enc0/encb/n1q_m [3]),
@@ -2842,7 +2831,7 @@ module mainController (
   LUT6 #(
     .INIT ( 64'h8828828888888888 ))
   \HDMI/hdmi_out/enc0/encg/Mmux_GND_6_o_cnt[4]_mux_55_OUT63  (
-    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
+    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
     .I1(\HDMI/hdmi_out/enc0/encg/cnt [2]),
     .I2(\HDMI/hdmi_out/enc0/encg/cnt [1]),
     .I3(\HDMI/hdmi_out/enc0/encg/n1q_m [3]),
@@ -2853,7 +2842,7 @@ module mainController (
   LUT6 #(
     .INIT ( 64'h8828828888888888 ))
   \HDMI/hdmi_out/enc0/encr/Mmux_GND_6_o_cnt[4]_mux_55_OUT63  (
-    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
+    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
     .I1(\HDMI/hdmi_out/enc0/encr/cnt [2]),
     .I2(\HDMI/hdmi_out/enc0/encr/cnt [1]),
     .I3(\HDMI/hdmi_out/enc0/encr/n1q_m [3]),
@@ -2864,7 +2853,7 @@ module mainController (
   LUT5 #(
     .INIT ( 32'h88282888 ))
   \HDMI/hdmi_out/enc0/encb/Mmux_GND_6_o_cnt[4]_mux_55_OUT41  (
-    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_144 ),
+    .I0(\HDMI/hdmi_out/enc0/encb/de_reg_143 ),
     .I1(\HDMI/hdmi_out/enc0/encb/cnt [1]),
     .I2(\HDMI/hdmi_out/enc0/encb/cnt [4]),
     .I3(\HDMI/hdmi_out/enc0/encb/n0q_m [3]),
@@ -2879,7 +2868,7 @@ module mainController (
     .I2(\HDMI/h_pixel [8]),
     .I3(\HDMI/h_pixel [5]),
     .I4(\HDMI/h_pixel [6]),
-    .O(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_321 )
+    .O(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_320 )
   );
   LUT5 #(
     .INIT ( 32'h80000000 ))
@@ -2896,11 +2885,11 @@ module mainController (
   \HDMI/h_pixel_9_rstpot  (
     .I0(\HDMI/Result [9]),
     .I1(\HDMI/GND_2_o_GND_2_o_equal_12_o ),
-    .O(\HDMI/h_pixel_9_rstpot_323 )
+    .O(\HDMI/h_pixel_9_rstpot_322 )
   );
   FD   \HDMI/h_pixel_9  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/h_pixel_9_rstpot_323 ),
+    .D(\HDMI/h_pixel_9_rstpot_322 ),
     .Q(\HDMI/h_pixel [9])
   );
   LUT2 #(
@@ -2908,11 +2897,11 @@ module mainController (
   \HDMI/h_pixel_8_rstpot  (
     .I0(\HDMI/Result [8]),
     .I1(\HDMI/GND_2_o_GND_2_o_equal_12_o ),
-    .O(\HDMI/h_pixel_8_rstpot_324 )
+    .O(\HDMI/h_pixel_8_rstpot_323 )
   );
   FD   \HDMI/h_pixel_8  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/h_pixel_8_rstpot_324 ),
+    .D(\HDMI/h_pixel_8_rstpot_323 ),
     .Q(\HDMI/h_pixel [8])
   );
   LUT2 #(
@@ -2920,11 +2909,11 @@ module mainController (
   \HDMI/h_pixel_7_rstpot  (
     .I0(\HDMI/Result [7]),
     .I1(\HDMI/GND_2_o_GND_2_o_equal_12_o ),
-    .O(\HDMI/h_pixel_7_rstpot_325 )
+    .O(\HDMI/h_pixel_7_rstpot_324 )
   );
   FD   \HDMI/h_pixel_7  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/h_pixel_7_rstpot_325 ),
+    .D(\HDMI/h_pixel_7_rstpot_324 ),
     .Q(\HDMI/h_pixel [7])
   );
   LUT2 #(
@@ -2932,11 +2921,11 @@ module mainController (
   \HDMI/h_pixel_6_rstpot  (
     .I0(\HDMI/Result [6]),
     .I1(\HDMI/GND_2_o_GND_2_o_equal_12_o ),
-    .O(\HDMI/h_pixel_6_rstpot_326 )
+    .O(\HDMI/h_pixel_6_rstpot_325 )
   );
   FD   \HDMI/h_pixel_6  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/h_pixel_6_rstpot_326 ),
+    .D(\HDMI/h_pixel_6_rstpot_325 ),
     .Q(\HDMI/h_pixel [6])
   );
   LUT2 #(
@@ -2944,11 +2933,11 @@ module mainController (
   \HDMI/h_pixel_5_rstpot  (
     .I0(\HDMI/Result [5]),
     .I1(\HDMI/GND_2_o_GND_2_o_equal_12_o ),
-    .O(\HDMI/h_pixel_5_rstpot_327 )
+    .O(\HDMI/h_pixel_5_rstpot_326 )
   );
   FD   \HDMI/h_pixel_5  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/h_pixel_5_rstpot_327 ),
+    .D(\HDMI/h_pixel_5_rstpot_326 ),
     .Q(\HDMI/h_pixel [5])
   );
   LUT2 #(
@@ -2956,11 +2945,11 @@ module mainController (
   \HDMI/h_pixel_4_rstpot  (
     .I0(\HDMI/Result [4]),
     .I1(\HDMI/GND_2_o_GND_2_o_equal_12_o ),
-    .O(\HDMI/h_pixel_4_rstpot_328 )
+    .O(\HDMI/h_pixel_4_rstpot_327 )
   );
   FD   \HDMI/h_pixel_4  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/h_pixel_4_rstpot_328 ),
+    .D(\HDMI/h_pixel_4_rstpot_327 ),
     .Q(\HDMI/h_pixel [4])
   );
   LUT2 #(
@@ -2968,11 +2957,11 @@ module mainController (
   \HDMI/h_pixel_3_rstpot  (
     .I0(\HDMI/Result [3]),
     .I1(\HDMI/GND_2_o_GND_2_o_equal_12_o ),
-    .O(\HDMI/h_pixel_3_rstpot_329 )
+    .O(\HDMI/h_pixel_3_rstpot_328 )
   );
   FD   \HDMI/h_pixel_3  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/h_pixel_3_rstpot_329 ),
+    .D(\HDMI/h_pixel_3_rstpot_328 ),
     .Q(\HDMI/h_pixel [3])
   );
   LUT2 #(
@@ -2980,11 +2969,11 @@ module mainController (
   \HDMI/h_pixel_2_rstpot  (
     .I0(\HDMI/Result [2]),
     .I1(\HDMI/GND_2_o_GND_2_o_equal_12_o ),
-    .O(\HDMI/h_pixel_2_rstpot_330 )
+    .O(\HDMI/h_pixel_2_rstpot_329 )
   );
   FD   \HDMI/h_pixel_2  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/h_pixel_2_rstpot_330 ),
+    .D(\HDMI/h_pixel_2_rstpot_329 ),
     .Q(\HDMI/h_pixel [2])
   );
   LUT2 #(
@@ -2992,11 +2981,11 @@ module mainController (
   \HDMI/h_pixel_1_rstpot  (
     .I0(\HDMI/Result [1]),
     .I1(\HDMI/GND_2_o_GND_2_o_equal_12_o ),
-    .O(\HDMI/h_pixel_1_rstpot_331 )
+    .O(\HDMI/h_pixel_1_rstpot_330 )
   );
   FD   \HDMI/h_pixel_1  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/h_pixel_1_rstpot_331 ),
+    .D(\HDMI/h_pixel_1_rstpot_330 ),
     .Q(\HDMI/h_pixel [1])
   );
   LUT2 #(
@@ -3004,16 +2993,16 @@ module mainController (
   \HDMI/h_pixel_0_rstpot  (
     .I0(\HDMI/Result [0]),
     .I1(\HDMI/GND_2_o_GND_2_o_equal_12_o ),
-    .O(\HDMI/h_pixel_0_rstpot_332 )
+    .O(\HDMI/h_pixel_0_rstpot_331 )
   );
   FD   \HDMI/h_pixel_0  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/h_pixel_0_rstpot_332 ),
+    .D(\HDMI/h_pixel_0_rstpot_331 ),
     .Q(\HDMI/h_pixel [0])
   );
   FD   \HDMI/v_pixel_0  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/v_pixel_0_rstpot_333 ),
+    .D(\HDMI/v_pixel_0_rstpot_332 ),
     .Q(\HDMI/v_pixel [0])
   );
   LUT4 #(
@@ -3021,58 +3010,58 @@ module mainController (
   \HDMI/v_pixel_0_rstpot  (
     .I0(\HDMI/v_pixel [0]),
     .I1(\HDMI/h_pixel [6]),
-    .I2(\HDMI/v_pixel_0_dpot_307 ),
+    .I2(\HDMI/v_pixel_0_dpot_306 ),
     .I3(\HDMI/GND_2_o_GND_2_o_equal_11_o ),
-    .O(\HDMI/v_pixel_0_rstpot_333 )
+    .O(\HDMI/v_pixel_0_rstpot_332 )
   );
   FD   \HDMI/v_pixel_8  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/v_pixel_8_rstpot_334 ),
+    .D(\HDMI/v_pixel_8_rstpot_333 ),
     .Q(\HDMI/v_pixel [8])
   );
   FD   \HDMI/v_pixel_7  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/v_pixel_7_rstpot_335 ),
+    .D(\HDMI/v_pixel_7_rstpot_334 ),
     .Q(\HDMI/v_pixel [7])
   );
   FD   \HDMI/v_pixel_6  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/v_pixel_6_rstpot_336 ),
+    .D(\HDMI/v_pixel_6_rstpot_335 ),
     .Q(\HDMI/v_pixel [6])
   );
   FD   \HDMI/v_pixel_5  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/v_pixel_5_rstpot_337 ),
+    .D(\HDMI/v_pixel_5_rstpot_336 ),
     .Q(\HDMI/v_pixel [5])
   );
   FD   \HDMI/v_pixel_4  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/v_pixel_4_rstpot_338 ),
+    .D(\HDMI/v_pixel_4_rstpot_337 ),
     .Q(\HDMI/v_pixel [4])
   );
   FD   \HDMI/v_pixel_3  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/v_pixel_3_rstpot_339 ),
+    .D(\HDMI/v_pixel_3_rstpot_338 ),
     .Q(\HDMI/v_pixel [3])
   );
   FD   \HDMI/v_pixel_2  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/v_pixel_2_rstpot_340 ),
+    .D(\HDMI/v_pixel_2_rstpot_339 ),
     .Q(\HDMI/v_pixel [2])
   );
   FD   \HDMI/v_pixel_1  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/v_pixel_1_rstpot_341 ),
+    .D(\HDMI/v_pixel_1_rstpot_340 ),
     .Q(\HDMI/v_pixel [1])
   );
   FD   \HDMI/v_pixel_9  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/v_pixel_9_rstpot_342 ),
+    .D(\HDMI/v_pixel_9_rstpot_341 ),
     .Q(\HDMI/v_pixel [9])
   );
   FD   \HDMI/v_pixel_10  (
     .C(\HDMI/pixel_clk ),
-    .D(\HDMI/v_pixel_10_rstpot_343 ),
+    .D(\HDMI/v_pixel_10_rstpot_342 ),
     .Q(\HDMI/v_pixel [10])
   );
   LUT5 #(
@@ -3080,115 +3069,115 @@ module mainController (
   \HDMI/v_pixel_8_rstpot  (
     .I0(\HDMI/v_pixel [8]),
     .I1(\HDMI/Result<8>1 ),
-    .I2(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_321 ),
+    .I2(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_320 ),
     .I3(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_cepot1 ),
     .I4(\HDMI/GND_2_o_GND_2_o_equal_11_o ),
-    .O(\HDMI/v_pixel_8_rstpot_334 )
+    .O(\HDMI/v_pixel_8_rstpot_333 )
   );
   LUT5 #(
     .INIT ( 32'h0000CAAA ))
   \HDMI/v_pixel_7_rstpot  (
     .I0(\HDMI/v_pixel [7]),
     .I1(\HDMI/Result<7>1 ),
-    .I2(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_321 ),
+    .I2(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_320 ),
     .I3(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_cepot1 ),
     .I4(\HDMI/GND_2_o_GND_2_o_equal_11_o ),
-    .O(\HDMI/v_pixel_7_rstpot_335 )
+    .O(\HDMI/v_pixel_7_rstpot_334 )
   );
   LUT5 #(
     .INIT ( 32'h0000CAAA ))
   \HDMI/v_pixel_6_rstpot  (
     .I0(\HDMI/v_pixel [6]),
     .I1(\HDMI/Result<6>1 ),
-    .I2(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_321 ),
+    .I2(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_320 ),
     .I3(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_cepot1 ),
     .I4(\HDMI/GND_2_o_GND_2_o_equal_11_o ),
-    .O(\HDMI/v_pixel_6_rstpot_336 )
+    .O(\HDMI/v_pixel_6_rstpot_335 )
   );
   LUT5 #(
     .INIT ( 32'h0000CAAA ))
   \HDMI/v_pixel_5_rstpot  (
     .I0(\HDMI/v_pixel [5]),
     .I1(\HDMI/Result<5>1 ),
-    .I2(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_321 ),
+    .I2(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_320 ),
     .I3(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_cepot1 ),
     .I4(\HDMI/GND_2_o_GND_2_o_equal_11_o ),
-    .O(\HDMI/v_pixel_5_rstpot_337 )
+    .O(\HDMI/v_pixel_5_rstpot_336 )
   );
   LUT5 #(
     .INIT ( 32'h0000CAAA ))
   \HDMI/v_pixel_4_rstpot  (
     .I0(\HDMI/v_pixel [4]),
     .I1(\HDMI/Result<4>1 ),
-    .I2(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_321 ),
+    .I2(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_320 ),
     .I3(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_cepot1 ),
     .I4(\HDMI/GND_2_o_GND_2_o_equal_11_o ),
-    .O(\HDMI/v_pixel_4_rstpot_338 )
+    .O(\HDMI/v_pixel_4_rstpot_337 )
   );
   LUT5 #(
     .INIT ( 32'h0000CAAA ))
   \HDMI/v_pixel_3_rstpot  (
     .I0(\HDMI/v_pixel [3]),
     .I1(\HDMI/Result<3>1 ),
-    .I2(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_321 ),
+    .I2(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_320 ),
     .I3(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_cepot1 ),
     .I4(\HDMI/GND_2_o_GND_2_o_equal_11_o ),
-    .O(\HDMI/v_pixel_3_rstpot_339 )
+    .O(\HDMI/v_pixel_3_rstpot_338 )
   );
   LUT5 #(
     .INIT ( 32'h0000CAAA ))
   \HDMI/v_pixel_2_rstpot  (
     .I0(\HDMI/v_pixel [2]),
     .I1(\HDMI/Result<2>1 ),
-    .I2(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_321 ),
+    .I2(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_320 ),
     .I3(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_cepot1 ),
     .I4(\HDMI/GND_2_o_GND_2_o_equal_11_o ),
-    .O(\HDMI/v_pixel_2_rstpot_340 )
+    .O(\HDMI/v_pixel_2_rstpot_339 )
   );
   LUT5 #(
     .INIT ( 32'h0000CAAA ))
   \HDMI/v_pixel_1_rstpot  (
     .I0(\HDMI/v_pixel [1]),
     .I1(\HDMI/Result<1>1 ),
-    .I2(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_321 ),
+    .I2(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_320 ),
     .I3(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_cepot1 ),
     .I4(\HDMI/GND_2_o_GND_2_o_equal_11_o ),
-    .O(\HDMI/v_pixel_1_rstpot_341 )
+    .O(\HDMI/v_pixel_1_rstpot_340 )
   );
   LUT5 #(
     .INIT ( 32'h0000CAAA ))
   \HDMI/v_pixel_9_rstpot  (
     .I0(\HDMI/v_pixel [9]),
     .I1(\HDMI/Result<9>1 ),
-    .I2(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_321 ),
+    .I2(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_320 ),
     .I3(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_cepot1 ),
     .I4(\HDMI/GND_2_o_GND_2_o_equal_11_o ),
-    .O(\HDMI/v_pixel_9_rstpot_342 )
+    .O(\HDMI/v_pixel_9_rstpot_341 )
   );
   LUT5 #(
     .INIT ( 32'h0000CAAA ))
   \HDMI/v_pixel_10_rstpot  (
     .I0(\HDMI/v_pixel [10]),
     .I1(\HDMI/Result<10>1 ),
-    .I2(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_321 ),
+    .I2(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_rstpot_320 ),
     .I3(\HDMI/GND_2_o_GND_2_o_equal_12_o<10>_cepot1 ),
     .I4(\HDMI/GND_2_o_GND_2_o_equal_11_o ),
-    .O(\HDMI/v_pixel_10_rstpot_343 )
-  );
-  INV   \HDMI/Mcount_v_pixel_lut<0>_INV_0  (
-    .I(\HDMI/v_pixel [0]),
-    .O(\HDMI/Mcount_v_pixel_lut [0])
+    .O(\HDMI/v_pixel_10_rstpot_342 )
   );
   INV   \HDMI/Mcount_h_pixel_lut<0>_INV_0  (
     .I(\HDMI/h_pixel [0]),
     .O(\HDMI/Mcount_h_pixel_lut [0])
+  );
+  INV   \HDMI/Mcount_v_pixel_lut<0>_INV_0  (
+    .I(\HDMI/v_pixel [0]),
+    .O(\HDMI/Mcount_v_pixel_lut [0])
   );
   INV   \HDMI/hdmi_out/bufpll_lock_inv1_INV_0  (
     .I(\HDMI/hdmi_out/bufpll_lock ),
     .O(\HDMI/hdmi_out/bufpll_lock_inv )
   );
   INV   \HDMI/hdmi_out/toggle_inv1_INV_0  (
-    .I(\HDMI/hdmi_out/toggle_116 ),
+    .I(\HDMI/hdmi_out/toggle_115 ),
     .O(\HDMI/hdmi_out/toggle_inv )
   );
   INV   \HDMI/hdmi_out/enc0/pixel2x/Mram_ra_d11_INV_0  (
@@ -3225,13 +3214,13 @@ module mainController (
     .CE(\HDMI/hdmi_out/enc0/encb/Msub_PWR_6_o_BUS_0017_sub_29_OUT_cy [1]),
     .CLK(\HDMI/pixel_clk ),
     .D(\HDMI/v_pixel [5]),
-    .Q(\HDMI/hdmi_out/enc0/encr/Mshreg_n1d_3_344 ),
+    .Q(\HDMI/hdmi_out/enc0/encr/Mshreg_n1d_3_343 ),
     .Q15(\NLW_HDMI/hdmi_out/enc0/encr/Mshreg_n1d_3_Q15_UNCONNECTED )
   );
   FDE   \HDMI/hdmi_out/enc0/encr/n1d_3  (
     .C(\HDMI/pixel_clk ),
     .CE(\HDMI/hdmi_out/enc0/encb/Msub_PWR_6_o_BUS_0017_sub_29_OUT_cy [1]),
-    .D(\HDMI/hdmi_out/enc0/encr/Mshreg_n1d_3_344 ),
+    .D(\HDMI/hdmi_out/enc0/encr/Mshreg_n1d_3_343 ),
     .Q(\HDMI/hdmi_out/enc0/encr/n1d [3])
   );
   SRLC16E #(
@@ -3244,13 +3233,13 @@ module mainController (
     .CE(\HDMI/hdmi_out/enc0/encb/Msub_PWR_6_o_BUS_0017_sub_29_OUT_cy [1]),
     .CLK(\HDMI/pixel_clk ),
     .D(\HDMI/h_pixel [5]),
-    .Q(\HDMI/hdmi_out/enc0/encb/Mshreg_n1d_3_345 ),
+    .Q(\HDMI/hdmi_out/enc0/encb/Mshreg_n1d_3_344 ),
     .Q15(\NLW_HDMI/hdmi_out/enc0/encb/Mshreg_n1d_3_Q15_UNCONNECTED )
   );
   FDE   \HDMI/hdmi_out/enc0/encb/n1d_3  (
     .C(\HDMI/pixel_clk ),
     .CE(\HDMI/hdmi_out/enc0/encb/Msub_PWR_6_o_BUS_0017_sub_29_OUT_cy [1]),
-    .D(\HDMI/hdmi_out/enc0/encb/Mshreg_n1d_3_345 ),
+    .D(\HDMI/hdmi_out/enc0/encb/Mshreg_n1d_3_344 ),
     .Q(\HDMI/hdmi_out/enc0/encb/n1d [3])
   );
   SRLC16E #(
@@ -3263,13 +3252,13 @@ module mainController (
     .CE(\HDMI/hdmi_out/enc0/encb/Msub_PWR_6_o_BUS_0017_sub_29_OUT_cy [1]),
     .CLK(\HDMI/pixel_clk ),
     .D(\HDMI/h_pixel [6]),
-    .Q(\HDMI/hdmi_out/enc0/encg/Mshreg_n1d_3_346 ),
+    .Q(\HDMI/hdmi_out/enc0/encg/Mshreg_n1d_3_345 ),
     .Q15(\NLW_HDMI/hdmi_out/enc0/encg/Mshreg_n1d_3_Q15_UNCONNECTED )
   );
   FDE   \HDMI/hdmi_out/enc0/encg/n1d_3  (
     .C(\HDMI/pixel_clk ),
     .CE(\HDMI/hdmi_out/enc0/encb/Msub_PWR_6_o_BUS_0017_sub_29_OUT_cy [1]),
-    .D(\HDMI/hdmi_out/enc0/encg/Mshreg_n1d_3_346 ),
+    .D(\HDMI/hdmi_out/enc0/encg/Mshreg_n1d_3_345 ),
     .Q(\HDMI/hdmi_out/enc0/encg/n1d [3])
   );
   PLL_BASE #(
@@ -3278,9 +3267,9 @@ module mainController (
     .COMPENSATION ( "SYSTEM_SYNCHRONOUS" ),
     .RESET_ON_LOSS_OF_LOCK ( "FALSE" ),
     .CLKFBOUT_MULT ( 38 ),
-    .CLKOUT0_DIVIDE ( 30 ),
+    .CLKOUT0_DIVIDE ( 3 ),
     .CLKOUT1_DIVIDE ( 15 ),
-    .CLKOUT2_DIVIDE ( 3 ),
+    .CLKOUT2_DIVIDE ( 30 ),
     .CLKOUT3_DIVIDE ( 1 ),
     .CLKOUT4_DIVIDE ( 1 ),
     .CLKOUT5_DIVIDE ( 1 ),
@@ -3302,16 +3291,16 @@ module mainController (
     .REF_JITTER ( 0.010000 ))
   \HDMI/pixel_clk_480p/pll_base_inst  (
     .CLKIN(\HDMI/pixel_clk_480p/clkin1 ),
-    .CLKFBIN(\HDMI/pixel_clk_480p/clkfbout_buf ),
     .CLKOUT1(\HDMI/pixel_clk_480p/clkout1 ),
-    .CLKOUT0(\HDMI/pixel_clk_480p/clkout0 ),
-    .CLKFBOUT(\HDMI/pixel_clk_480p/clkfbout ),
+    .CLKOUT0(\HDMI/pixel_clk_x10 ),
     .CLKOUT2(\HDMI/pixel_clk_480p/clkout2 ),
     .RST(\HDMI/hdmi_out/enc0/encb/Madd_cnt[4]_GND_6_o_sub_41_OUT_cy<2> ),
     .LOCKED(\HDMI/pixel_clk_LOCKED ),
     .CLKOUT3(\NLW_HDMI/pixel_clk_480p/pll_base_inst_CLKOUT3_UNCONNECTED ),
+    .CLKFBIN(\NLW_HDMI/pixel_clk_480p/pll_base_inst_CLKFBIN_UNCONNECTED ),
     .CLKOUT4(\NLW_HDMI/pixel_clk_480p/pll_base_inst_CLKOUT4_UNCONNECTED ),
-    .CLKOUT5(\NLW_HDMI/pixel_clk_480p/pll_base_inst_CLKOUT5_UNCONNECTED )
+    .CLKOUT5(\NLW_HDMI/pixel_clk_480p/pll_base_inst_CLKOUT5_UNCONNECTED ),
+    .CLKFBOUT(\NLW_HDMI/pixel_clk_480p/pll_base_inst_CLKFBOUT_UNCONNECTED )
   );
 endmodule
 

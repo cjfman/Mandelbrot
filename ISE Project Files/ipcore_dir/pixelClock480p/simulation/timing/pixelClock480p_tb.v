@@ -81,7 +81,6 @@ module pixelClock480p_tb ();
   // The high bits of the sampling counters
   wire [3:1]  COUNT;
   // Status and control signals
-  reg         RESET      = 0;
   wire        LOCKED;
   reg         COUNTER_RESET = 0;
   reg [13:0]  timeout_counter = 14'b00000000000000;
@@ -100,10 +99,6 @@ module pixelClock480p_tb ();
     $timeformat(-12, 2, "ps", 10);
     $display ("Timing checks are not valid");
     COUNTER_RESET = 0;
-    test_phase = "reset";
-    RESET = 1;
-    #(PER1*6);
-    RESET = 0;
     test_phase = "wait lock";
     `wait_lock;
     #(PER1*6);
@@ -143,7 +138,6 @@ module pixelClock480p_tb ();
     // High bits of the counters
     .COUNT              (COUNT),
     // Status and control signals
-    .RESET              (RESET),
     .LOCKED             (LOCKED));
 
 endmodule

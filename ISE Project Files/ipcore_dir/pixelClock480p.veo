@@ -54,9 +54,9 @@
 // "Output    Output      Phase     Duty      Pk-to-Pk        Phase"
 // "Clock    Freq (MHz) (degrees) Cycle (%) Jitter (ps)  Error (ps)"
 //----------------------------------------------------------------------------
-// CLK_OUT1____25.333______0.000______50.0______342.443____300.551
+// CLK_OUT1___253.333______0.000______50.0______220.290____300.551
 // CLK_OUT2____50.667______0.000______50.0______294.862____300.551
-// CLK_OUT3___253.333______0.000______50.0______220.290____300.551
+// CLK_OUT3____25.333______0.000______50.0______342.443____300.551
 //
 //----------------------------------------------------------------------------
 // "Input Clock   Freq (MHz)    Input Jitter (UI)"
@@ -73,10 +73,9 @@
    (// Clock in ports
     .CLK_IN(CLK_IN),      // IN
     // Clock out ports
-    .pixel_clk(pixel_clk),     // OUT
-    .pixel_clk_x2(pixel_clk_x2),     // OUT
     .pixel_clk_x10(pixel_clk_x10),     // OUT
+    .pixel_clk_x2(pixel_clk_x2),     // OUT
+    .pixel_clk(pixel_clk),     // OUT
     // Status and control signals
-    .RESET(RESET),// IN
     .LOCKED(LOCKED));      // OUT
 // INST_TAG_END ------ End INSTANTIATION Template ---------

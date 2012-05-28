@@ -47,16 +47,21 @@ module mainController(
 	//input nreset,
 	
 	// Buttons and switches
-	input [5:0] btn,
-	input [7:0] sw,
+	//input [5:0] btn,
+	//input [7:0] sw,
 	
 	// HDMI Out
 	output HDMIOUTCLKP,
 	output HDMIOUTCLKN,
 	output [2:0] HDMIOUTDP,
-	output [2:0] HDMIOUTDN
+	output [2:0] HDMIOUTDN,
+	
+	// LED Out
+	output wire [7:0] LED
     );
 	 
+	 
+	wire resetn = 1;
 	
 	/*
 	// Inputs
@@ -180,23 +185,31 @@ module mainController(
 		 .p0_wr_data(p0_wr_data)
 		 );*/
 		 
-		 
+	 
 	wire [3:0] tmdsint;
 	
 	HDMI_Controller HDMI (
     .clk(clk), 
-	 .reset(reset),
+	 .resetn(resetn),
     .TMDSP({HDMIOUTCLKP, HDMIOUTDP}), 
-    .TMDSN({HDMIOUTCLKN, HDMIOUTDN})
-	 //.tmdsint(tmdsint)
+    .TMDSN({HDMIOUTCLKN, HDMIOUTDN}),
+	 .led(LED[1])
     );
+
+	 /*reg [24:0] led_timer;
+	 assign LED[1] = led_timer [24];
 	 
-	//OBUFDS TMDS0 (.I(tmdsint[0]), .O(HDMIOUTDP[0]), .OB(HDMIOUTDN[0])) ;
-	//OBUFDS TMDS1 (.I(tmdsint[1]), .O(HDMIOUTDP[1]), .OB(HDMIOUTDN[1])) ;
-	//OBUFDS TMDS2 (.I(tmdsint[2]), .O(HDMIOUTDP[2]), .OB(HDMIOUTDN[2])) ;
-	//OBUFDS TMDS3 (.I(tmdsint[3]), .O(HDMICLKOUTP), .OB(HDMICLKOUTN)) ;
-	
-	
-
-
+	 always @ (posedge pixel_clk)
+		led_timer <= led_timer + 'b1;
+		
+	pixelClock480p pixel_clk_480p
+   (// Clock in ports
+    .CLK_IN(clk),      					// IN
+    // Clock out ports
+    .pixel_clk(pixel_clk),     		// OUT
+    .pixel_clk_x2(pixel_clk_x2),    // OUT
+    .pixel_clk_x10(pixel_clk_x10),  // OUT
+    // Status and control signals
+    .LOCKED(pixel_clk_LOCKED)); 	// OUT*/
+		
 endmodule

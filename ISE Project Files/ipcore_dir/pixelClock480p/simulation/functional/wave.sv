@@ -105,7 +105,7 @@ group set -comment {}
 group clear 0 end
 
 group insert \
-   {nc::pixelClock480p_tb.RESET}    {nc::pixelClock480p_tb.LOCKED}
+   {nc::pixelClock480p_tb.LOCKED}
 
 
 set id [waveform add -signals [list {nc::pixelClock480p_tb.COUNT} ]]

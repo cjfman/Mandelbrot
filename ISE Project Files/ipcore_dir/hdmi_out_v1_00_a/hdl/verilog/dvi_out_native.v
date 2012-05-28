@@ -100,9 +100,9 @@ module dvi_out_native (
 	
 	wire 		  serdes_rst = reset | ~bufpll_lock;
 
-//`define DEBUG
+//`define DEBUG_HDMI
 
-`ifdef DEBUG
+`ifdef DEBUG_HDMI
 
   wire [4:0] pattern = 5'b00011;
 

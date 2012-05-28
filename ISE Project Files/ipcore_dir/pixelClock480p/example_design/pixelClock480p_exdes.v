@@ -67,7 +67,6 @@ module pixelClock480p_exdes
   // High bits of counters driven by clocks
   output [3:1]  COUNT,
   // Status and control signals
-  input         RESET,
   output        LOCKED
  );
 
@@ -79,7 +78,7 @@ module pixelClock480p_exdes
   localparam    NUM_C     = 3;
   genvar        count_gen;
   // When the clock goes out of lock, reset the counters
-  wire          reset_int = !LOCKED || RESET || COUNTER_RESET;
+  wire          reset_int = !LOCKED || COUNTER_RESET;
 
    reg [NUM_C:1] rst_sync;
    reg [NUM_C:1] rst_sync_int;
@@ -98,16 +97,17 @@ module pixelClock480p_exdes
    (// Clock in ports
     .CLK_IN            (CLK_IN1),
     // Clock out ports
-    .pixel_clk           (clk_int[1]),
+    .pixel_clk_x10           (clk_int[1]),
     .pixel_clk_x2           (clk_int[2]),
-    .pixel_clk_x10           (clk_int[3]),
+    .pixel_clk           (clk_int[3]),
     // Status and control signals
-    .RESET              (RESET),
     .LOCKED             (LOCKED));
 
   // Connect the output clocks to the design
   //-----------------------------------------
-  assign clk[1] = clk_int[1];
+  BUFG clkout1_buf
+   (.O (clk[1]),
+    .I (clk_int[1]));
   assign clk[2] = clk_int[2];
   assign clk[3] = clk_int[3];
 

@@ -9,7 +9,6 @@ gui_sg_addsignal -group pixelClock480p_group {{Output_clocks}} -divider
 gui_sg_addsignal -group pixelClock480p_group {pixelClock480p_tb.dut.clk}
 gui_list_expand -id Wave.1 pixelClock480p_tb.dut.clk
 gui_sg_addsignal -group pixelClock480p_group {{Status_control}} -divider
-gui_sg_addsignal -group pixelClock480p_group {pixelClock480p_tb.RESET}
 gui_sg_addsignal -group pixelClock480p_group {pixelClock480p_tb.LOCKED}
 gui_sg_addsignal -group pixelClock480p_group {{Counters}} -divider
 gui_sg_addsignal -group pixelClock480p_group {pixelClock480p_tb.COUNT}
