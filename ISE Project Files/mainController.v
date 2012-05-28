@@ -43,12 +43,12 @@ module mainController(
 	output DDR2ODT,*/
 
 	// CLK
-	input clk, // 100 MHz oscillator = 10ns period (top level pin)
-	//input nreset,
+	input SYS_CLK, // 100 MHz oscillator = 10ns period (top level pin)
+	input SYS_RESET,
 	
 	// Buttons and switches
 	//input [5:0] btn,
-	//input [7:0] sw,
+	input [3:0] SW,
 	
 	// HDMI Out
 	output HDMIOUTCLKP,
@@ -60,9 +60,102 @@ module mainController(
 	output wire [7:0] LED
     );
 	 
-	 
-	wire resetn = 1;
+	//******************************************************************//
+	// Create global clock and synchronous system reset.                //
+	//******************************************************************//
+	wire          locked;
+	//wire          reset;
+
+	wire          clk50m, clk50m_bufg;
+
+	wire          pwrup;
+
+	IBUF sysclk_buf (.I(SYS_CLK), .O(sysclk));
+
+	BUFIO2 #(.DIVIDE_BYPASS("FALSE"), .DIVIDE(2))
+	sysclk_div (.DIVCLK(clk50m), .IOCLK(), .SERDESSTROBE(), .I(sysclk));
+
+	BUFG clk50m_bufgbufg (.I(clk50m), .O(clk50m_bufg));
+
+	wire pclk_lckd;
 	
+	SRL16E #(.INIT(16'h1)) pwrup_0 (
+		.Q(pwrup),
+		.A0(1'b1),
+		.A1(1'b1),
+		.A2(1'b1),
+		.A3(1'b1),
+		.CE(pclk_lckd),
+		.CLK(clk50m_bufg),
+		.D(1'b0)
+	);
+	
+	//////////////////////////////////////
+	/// Debounce and Syncronize Switches
+	//////////////////////////////////////
+	wire  [3:0] sws_sync; //synchronous output
+
+	synchro #(.INITIALIZE("LOGIC0"))
+	synchro_sws_3 (.async(SW[3]),.sync(sws_sync[3]),.clk(clk50m_bufg));
+
+	synchro #(.INITIALIZE("LOGIC0"))
+	synchro_sws_2 (.async(SW[2]),.sync(sws_sync[2]),.clk(clk50m_bufg));
+
+	synchro #(.INITIALIZE("LOGIC0"))
+	synchro_sws_1 (.async(SW[1]),.sync(sws_sync[1]),.clk(clk50m_bufg));
+
+	synchro #(.INITIALIZE("LOGIC0"))
+	synchro_sws_0 (.async(SW[0]),.sync(sws_sync[0]),.clk(clk50m_bufg));
+
+	reg [3:0] sws_sync_q;
+	always @ (posedge clk50m_bufg)
+	begin
+		sws_sync_q <= sws_sync;
+	end
+
+	wire sw0_rdy, sw1_rdy, sw2_rdy, sw3_rdy;
+
+	debnce debsw0 (
+		.sync(sws_sync_q[0]),
+		.debnced(sw0_rdy),
+		.clk(clk50m_bufg));
+
+	debnce debsw1 (
+		.sync(sws_sync_q[1]),
+		.debnced(sw1_rdy),
+		.clk(clk50m_bufg));
+
+	debnce debsw2 (
+		.sync(sws_sync_q[2]),
+		.debnced(sw2_rdy),
+		.clk(clk50m_bufg));
+
+	debnce debsw3 (
+		.sync(sws_sync_q[3]),
+		.debnced(sw3_rdy),
+		.clk(clk50m_bufg));
+
+  reg switch = 1'b0;
+  //reg [25:0] led_counter;
+  //reg led;
+  
+  always @ (posedge clk50m_bufg)
+  begin
+    switch <= pwrup | sw0_rdy | sw1_rdy | sw2_rdy | sw3_rdy;
+  end
+  
+  /*always @ (posedge clk50m_bufg) begin
+		if (switch) begin
+			led <= 1;
+			led_counter <= 0;
+		end else if (led_counter[25])
+			led <= 0;
+		else
+			led_counter <= led_counter + 1;
+  end
+  
+  assign LED[4] = led;*/
+  
 	/*
 	// Inputs
 	wire [2:0] p0_cmd_instr;
@@ -189,12 +282,19 @@ module mainController(
 	wire [3:0] tmdsint;
 	
 	HDMI_Controller HDMI (
-    .clk(clk), 
-	 .resetn(resetn),
+	 .clk50m(clk50m),
+    .clk50m_bufg(clk50m_bufg), 
+	 .RESET(SYS_RESET),
+	 .switch(switch),
+	 .SW(SW[3:0]),
+	 .switches(sws_sync_q),
     .TMDSP({HDMIOUTCLKP, HDMIOUTDP}), 
     .TMDSN({HDMIOUTCLKN, HDMIOUTDN}),
-	 .led(LED[1])
+	 .LED(LED[7:4]),
+	 .pclk_lckd(pclk_lckd)
     );
+	 
+	 assign LED[3:0] = sws_sync_q;
 
 	 /*reg [24:0] led_timer;
 	 assign LED[1] = led_timer [24];

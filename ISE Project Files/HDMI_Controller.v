@@ -19,189 +19,21 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module HDMI_Controller(
-	input clk,
-	input resetn,
+	input clk50m,
+	input clk50m_bufg, // 50M from bufg
+	input RESET,
+	input switch,
+	input [3:0] switches,
+	input [3:0] SW,
 	output wire [3:0] TMDSP,
 	output wire [3:0] TMDSN,
-	output wire led
+	output wire [3:0] LED,
+	output wire pclk_lckd
     );
-	/* 
-	wire reset = ~resetn;
 
-	// HDMI Out and pixel clock
+//`define COLORBARS
 	
-	//Input
-	reg [7:0] blue_in;
-	reg [7:0] green_in;
-	reg [7:0] red_in;
-	wire hsync;
-	wire vsync;
-	wire pixel_enable;
 	
-	wire pixel_clk;
-	wire pixel_clk_x2;
-	wire pixel_clk_x10;
-	wire pixel_clk_LOCKED;
-	
-	dvi_out_native hdmi_out (
-    .reset(reset), 
-    .pll_lckd(pixel_clk_LOCKED), 
-    .clkin(pixel_clk), 
-    .clkx2in(pixel_clk_x2), 
-    .clkx10in(pixel_clk_x10), 
-    .blue_din(blue_in), 
-    .green_din(green_in), 
-    .red_din(red_in), 
-    .hsync(hsync), 
-    .vsync(vsync), 
-    .de(pixel_enable), 
-    .TMDS(TMDSP), 
-    .TMDSB(TMDSN)
-	 //.tmdsint(tmdsint)
-    );	
-	
-	// Input
-	wire pixel_clk_reset;
-	
-	pixelClock480p pixel_clk_480p
-   (// Clock in ports
-    .CLK_IN(clk),      					// IN
-    // Clock out ports
-    .pixel_clk(pixel_clk),     		// OUT
-    .pixel_clk_x2(pixel_clk_x2),    // OUT
-    .pixel_clk_x10(pixel_clk_x10),  // OUT
-    // Status and control signals
-    .LOCKED(pixel_clk_LOCKED)); 	// OUT
-	 
-	 parameter hsync_start = 16;
-	 parameter hsync_end	  = 112;
-	 parameter vsync_start = 0;
-	 parameter vsync_end   = 2;
-	 parameter hdata_start = 160;
-	 parameter vdata_start = 35;
-	 parameter vdata_end   = 515;
-	 parameter h_size      = 800;
-	 parameter v_size      = 525;
-	 
-	 reg [10:0] h_pixel;
-	 reg [10:0] v_pixel;
-	 
-	 wire [10:0] next_h_pixel = h_pixel + 1;
-	 wire [10:0] next_v_pixel = v_pixel + 1;
-	 
-	 assign hsync = (h_pixel < hsync_start || h_pixel > hsync_end);
-	 assign vsync = (v_pixel < vsync_start || v_pixel > vsync_end);
-	 assign pixel_enable = (h_pixel < hdata_start || v_pixel < vdata_start || v_pixel > vdata_end);
-	 
-	 always @ (posedge pixel_clk, negedge resetn) begin
-		if (!resetn) begin
-			h_pixel <= 'd0;
-			v_pixel <= 'd0;
-		end else begin
-			h_pixel <= (next_h_pixel == h_size) ? 0 : next_h_pixel;
-			v_pixel <= (next_v_pixel == v_size) ? 0 :
-						  (next_h_pixel == h_size) ? next_v_pixel : v_pixel;
-		end
-	 end
-	 
-	 always @ (posedge pixel_clk) begin
-		blue_in  <= (h_pixel[5]) ? 8'hFF : 8'b0;
-		green_in <= (h_pixel[6]) ? 8'hFF : 8'b0;
-		red_in	<= (v_pixel[5]) ? 8'hFF : 8'b0;
-	 end
-	 
-	 reg [27:0] led_timer;
-	 assign led = led_timer [27];
-	 
-	 always @ (posedge pixel_clk_x10)
-		led_timer <= led_timer + 'b1;
-*/
-  //******************************************************************//
-  // Create global clock and synchronous system reset.                //
-  //******************************************************************//
-  wire          locked;
-  wire          reset;
-
-  wire          clk50m, clk50m_bufg;
-
-  wire          pwrup;
-
-  IBUF sysclk_buf (.I(SYS_CLK), .O(sysclk));
-
-  BUFIO2 #(.DIVIDE_BYPASS("FALSE"), .DIVIDE(2))
-  sysclk_div (.DIVCLK(clk50m), .IOCLK(), .SERDESSTROBE(), .I(sysclk));
-
-  BUFG clk50m_bufgbufg (.I(clk50m), .O(clk50m_bufg));
-
-  wire pclk_lckd;
-
-//`ifdef SIMULATION
-//  assign pwrup = 1'b0;
-//`else
-  SRL16E #(.INIT(16'h1)) pwrup_0 (
-    .Q(pwrup),
-    .A0(1'b1),
-    .A1(1'b1),
-    .A2(1'b1),
-    .A3(1'b1),
-    .CE(pclk_lckd),
-    .CLK(clk50m_bufg),
-    .D(1'b0)
-  );
-//`endif
-
-  //////////////////////////////////////
-  /// Switching screen formats
-  //////////////////////////////////////
-  wire busy;
-  wire  [3:0] sws_sync; //synchronous output
-
-  synchro #(.INITIALIZE("LOGIC0"))
-  synchro_sws_3 (.async(SW[3]),.sync(sws_sync[3]),.clk(clk50m_bufg));
-
-  synchro #(.INITIALIZE("LOGIC0"))
-  synchro_sws_2 (.async(SW[2]),.sync(sws_sync[2]),.clk(clk50m_bufg));
-
-  synchro #(.INITIALIZE("LOGIC0"))
-  synchro_sws_1 (.async(SW[1]),.sync(sws_sync[1]),.clk(clk50m_bufg));
-
-  synchro #(.INITIALIZE("LOGIC0"))
-  synchro_sws_0 (.async(SW[0]),.sync(sws_sync[0]),.clk(clk50m_bufg));
-
-  reg [3:0] sws_sync_q;
-  always @ (posedge clk50m_bufg)
-  begin
-    sws_sync_q <= sws_sync;
-  end
-
-  wire sw0_rdy, sw1_rdy, sw2_rdy, sw3_rdy;
-
-  debnce debsw0 (
-    .sync(sws_sync_q[0]),
-    .debnced(sw0_rdy),
-    .clk(clk50m_bufg));
-
-  debnce debsw1 (
-    .sync(sws_sync_q[1]),
-    .debnced(sw1_rdy),
-    .clk(clk50m_bufg));
-
-  debnce debsw2 (
-    .sync(sws_sync_q[2]),
-    .debnced(sw2_rdy),
-    .clk(clk50m_bufg));
-
-  debnce debsw3 (
-    .sync(sws_sync_q[3]),
-    .debnced(sw3_rdy),
-    .clk(clk50m_bufg));
-
-  reg switch = 1'b0;
-  always @ (posedge clk50m_bufg)
-  begin
-    switch <= pwrup | sw0_rdy | sw1_rdy | sw2_rdy | sw3_rdy;
-  end
-
   wire gopclk;
   SRL16E SRL16E_0 (
     .Q(gopclk),
@@ -213,6 +45,12 @@ module HDMI_Controller(
     .CLK(clk50m_bufg),
     .D(switch)
   );
+  
+  // LEDS
+  reg [3:0] led1;
+  //reg [3:0] led2;
+  assign LED = led1;
+  
   // The following defparam declaration 
   defparam SRL16E_0.INIT = 16'h0;
 
@@ -226,35 +64,41 @@ module HDMI_Controller(
   always @ (posedge clk50m_bufg)
   begin
     if(switch) begin
-      case (sws_sync_q)
+		//led1 <= switches;
+      case (switches)
         SW_VGA: //25 MHz pixel clock
         begin
           pclk_M <= 8'd2 - 8'd1;
           pclk_D <= 8'd4 - 8'd1;
+			 led1 <= SW_VGA;
         end
 
         SW_SVGA: //40 MHz pixel clock
         begin
          pclk_M <= 8'd4 - 8'd1;
          pclk_D <= 8'd5 - 8'd1;
+			led1 <= SW_SVGA;
         end
 
         SW_XGA: //65 MHz pixel clock
         begin
           pclk_M <= 8'd13 - 8'd1;
           pclk_D <= 8'd10 - 8'd1;
+			 led1 <= SW_XGA;
         end
 
         SW_SXGA: //108 MHz pixel clock
         begin
           pclk_M <= 8'd54 - 8'd1;
           pclk_D <= 8'd25 - 8'd1;
+			 led1 <= SW_SXGA;
         end
 
         default: //74.25 MHz pixel clock
         begin
           pclk_M <= 8'd37 - 8'd1;
           pclk_D <= 8'd25 - 8'd1;
+			 led1 <= SW_HDTV720P;
         end
        endcase
     end
@@ -448,6 +292,7 @@ module HDMI_Controller(
         tc_vssync =  VLINES_VGA - 11'd1 + VFNPRCH_VGA;
         tc_vesync =  VLINES_VGA - 11'd1 + VFNPRCH_VGA + VSYNCPW_VGA;
         tc_veblnk =  VLINES_VGA - 11'd1 + VFNPRCH_VGA + VSYNCPW_VGA + VBKPRCH_VGA;
+		  //led2 = SW_VGA; 
       end
 
       SW_SVGA:
@@ -462,6 +307,7 @@ module HDMI_Controller(
         tc_vssync =  VLINES_SVGA - 11'd1 + VFNPRCH_SVGA;
         tc_vesync =  VLINES_SVGA - 11'd1 + VFNPRCH_SVGA + VSYNCPW_SVGA;
         tc_veblnk =  VLINES_SVGA - 11'd1 + VFNPRCH_SVGA + VSYNCPW_SVGA + VBKPRCH_SVGA;
+		  //led2 = SW_SVGA;
       end
 
       SW_XGA:
@@ -476,6 +322,7 @@ module HDMI_Controller(
         tc_vssync =  VLINES_XGA - 11'd1 + VFNPRCH_XGA;
         tc_vesync =  VLINES_XGA - 11'd1 + VFNPRCH_XGA + VSYNCPW_XGA;
         tc_veblnk =  VLINES_XGA - 11'd1 + VFNPRCH_XGA + VSYNCPW_XGA + VBKPRCH_XGA;
+		  //led2 = SW_XGA;
       end
 
       SW_SXGA:
@@ -490,6 +337,7 @@ module HDMI_Controller(
         tc_vssync =  VLINES_SXGA - 11'd1 + VFNPRCH_SXGA;
         tc_vesync =  VLINES_SXGA - 11'd1 + VFNPRCH_SXGA + VSYNCPW_SXGA;
         tc_veblnk =  VLINES_SXGA - 11'd1 + VFNPRCH_SXGA + VSYNCPW_SXGA + VBKPRCH_SXGA;
+		  //led2 = SW_SXGA;
       end
 
       default: //SW_HDTV720P:
@@ -504,6 +352,7 @@ module HDMI_Controller(
         tc_vssync =  VLINES_HDTV720P - 11'd1 + VFNPRCH_HDTV720P;
         tc_vesync =  VLINES_HDTV720P - 11'd1 + VFNPRCH_HDTV720P + VSYNCPW_HDTV720P;
         tc_veblnk =  VLINES_HDTV720P - 11'd1 + VFNPRCH_HDTV720P + VSYNCPW_HDTV720P + VBKPRCH_HDTV720P;
+		  //led2 = SW_HDTV720P;
       end
     endcase
   end
@@ -585,6 +434,7 @@ module HDMI_Controller(
 
   assign {red_data, green_data, blue_data} = active_pixel;
 `else
+ `ifdef COLORBARS
   hdcolorbar clrbar(
     .i_clk_74M(pclk),
     .i_rst(reset),
@@ -596,6 +446,21 @@ module HDMI_Controller(
     .o_g(green_data),
     .o_b(blue_data)
   );
+  `else
+		reg [7:0] red_reg;
+		reg [7:0] green_reg;
+		reg [7:0] blue_reg;
+		
+		assign red_data = red_reg;
+		assign green_data = green_reg;
+		assign blue_data = blue_reg;
+		
+		always @(posedge pclk) begin
+			red_reg   <= (bgnd_hcount < 200 || bgnd_hcount > 400) ? 8'hFF : 8'h00;
+			green_reg <= (bgnd_hcount < 100 || bgnd_hcount > 300) ? 8'hFF : 8'h00;
+			blue_reg  <= (bgnd_vcount < 200 || bgnd_hcount > 400) ? 8'hFF : 8'h00;
+		end
+  `endif
 `endif
   ////////////////////////////////////////////////////////////////
   // DVI Encoder
@@ -619,7 +484,7 @@ module HDMI_Controller(
 
   wire [2:0] tmdsint;
 
-  wire serdes_rst = RSTBTN | ~bufpll_lock;
+  wire serdes_rst = RESET | ~bufpll_lock;
 
 //`define DEBUGDVI
 
@@ -680,9 +545,9 @@ module HDMI_Controller(
              .datain(tmds_data2),
              .iob_data_out(tmdsint[2])) ;
 
-  OBUFDS TMDS0 (.I(tmdsint[0]), .O(TMDS[0]), .OB(TMDSB[0])) ;
-  OBUFDS TMDS1 (.I(tmdsint[1]), .O(TMDS[1]), .OB(TMDSB[1])) ;
-  OBUFDS TMDS2 (.I(tmdsint[2]), .O(TMDS[2]), .OB(TMDSB[2])) ;
+  OBUFDS TMDS0 (.I(tmdsint[0]), .O(TMDSP[0]), .OB(TMDSN[0])) ;
+  OBUFDS TMDS1 (.I(tmdsint[1]), .O(TMDSP[1]), .OB(TMDSN[1])) ;
+  OBUFDS TMDS2 (.I(tmdsint[2]), .O(TMDSP[2]), .OB(TMDSN[2])) ;
 `endif
 
   reg [4:0] tmdsclkint = 5'b00000;
@@ -714,16 +579,16 @@ module HDMI_Controller(
     .reset        (serdes_rst),
     .datain       (tmdsclkint));
 
-  OBUFDS TMDS3 (.I(tmdsclk), .O(TMDS[3]), .OB(TMDSB[3])) ;// clock
+  OBUFDS TMDS3 (.I(tmdsclk), .O(TMDSP[3]), .OB(TMDSN[3])) ;// clock
 
   //
   // Debug Ports
   //
 
- assign DEBUG[0] = VGA_HSYNC;
- assign DEBUG[1] = VGA_VSYNC;
+ //assign DEBUG[0] = VGA_HSYNC;
+ //assign DEBUG[1] = VGA_VSYNC;
 
  // LEDs
- assign LED = {bufpll_lock, RSTBTN, VGA_HSYNC, VGA_VSYNC} ;
+ //assign LED = {bufpll_lock, RSTBTN, VGA_HSYNC, VGA_VSYNC} ;
 	
 endmodule
