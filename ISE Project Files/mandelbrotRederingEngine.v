@@ -30,7 +30,7 @@ module mandelbrotRederingEngine(
 	parameter HBP = 32;
 	parameter HBS = 32;
 	parameter HBI = 32;
-	parameter set_size = 10;
+	parameter set_size = 1;
 	
 	// Things that need to be labled better
 	wire start = (render_state == 1);

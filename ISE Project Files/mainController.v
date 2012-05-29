@@ -21,7 +21,7 @@
 module mainController(
 
 	// DDR2 Ram
-	/*output DDR2CLK_P,
+	output DDR2CLK_P,
 	output DDR2CLK_N,
 	output DDR2CKE,
 	output DDR2RASN,
@@ -40,7 +40,7 @@ module mainController(
 	output DDR2LDQS_N,
 	output DDR2LDM,
 	output DDR2UDM,
-	output DDR2ODT,*/
+	output DDR2ODT,
 
 	// CLK
 	input SYS_CLK, // 100 MHz oscillator = 10ns period (top level pin)
@@ -70,7 +70,7 @@ module mainController(
 
 	wire          pwrup;
 
-	IBUF sysclk_buf (.I(SYS_CLK), .O(sysclk));
+	IBUFG sysclk_buf (.I(SYS_CLK), .O(sysclk));
 
 	BUFIO2 #(.DIVIDE_BYPASS("FALSE"), .DIVIDE(2))
 	sysclk_div (.DIVCLK(clk50m), .IOCLK(), .SERDESSTROBE(), .I(sysclk));
@@ -89,74 +89,34 @@ module mainController(
 		.CLK(clk50m_bufg),
 		.D(1'b0)
 	);
+		
+//////////////////////////////////////
+/// HDMI Controller
+//////////////////////////////////////
+
+	wire [3:0] tmdsint;
 	
-	//////////////////////////////////////
-	/// Debounce and Syncronize Switches
-	//////////////////////////////////////
-	wire  [3:0] sws_sync; //synchronous output
+	HDMI_Controller HDMI (
+	 .clk50m(clk50m),
+    .clk50m_bufg(clk50m_bufg), 
+	 .RESET(SYS_RESET),
+	 //.switch(switch),
+	 .SW(SW[3:0]),
+	 //.switches(sws_sync_q),
+	 .pwrup(pwrup),
+    .TMDSP({HDMIOUTCLKP, HDMIOUTDP}), 
+    .TMDSN({HDMIOUTCLKN, HDMIOUTDN}),
+	 .LED(LED[7:4]),
+	 .pclk_lckd(pclk_lckd)
+    );
+	 
+	 //assign LED[3:0] = sws_sync_q;
 
-	synchro #(.INITIALIZE("LOGIC0"))
-	synchro_sws_3 (.async(SW[3]),.sync(sws_sync[3]),.clk(clk50m_bufg));
 
-	synchro #(.INITIALIZE("LOGIC0"))
-	synchro_sws_2 (.async(SW[2]),.sync(sws_sync[2]),.clk(clk50m_bufg));
-
-	synchro #(.INITIALIZE("LOGIC0"))
-	synchro_sws_1 (.async(SW[1]),.sync(sws_sync[1]),.clk(clk50m_bufg));
-
-	synchro #(.INITIALIZE("LOGIC0"))
-	synchro_sws_0 (.async(SW[0]),.sync(sws_sync[0]),.clk(clk50m_bufg));
-
-	reg [3:0] sws_sync_q;
-	always @ (posedge clk50m_bufg)
-	begin
-		sws_sync_q <= sws_sync;
-	end
-
-	wire sw0_rdy, sw1_rdy, sw2_rdy, sw3_rdy;
-
-	debnce debsw0 (
-		.sync(sws_sync_q[0]),
-		.debnced(sw0_rdy),
-		.clk(clk50m_bufg));
-
-	debnce debsw1 (
-		.sync(sws_sync_q[1]),
-		.debnced(sw1_rdy),
-		.clk(clk50m_bufg));
-
-	debnce debsw2 (
-		.sync(sws_sync_q[2]),
-		.debnced(sw2_rdy),
-		.clk(clk50m_bufg));
-
-	debnce debsw3 (
-		.sync(sws_sync_q[3]),
-		.debnced(sw3_rdy),
-		.clk(clk50m_bufg));
-
-  reg switch = 1'b0;
-  //reg [25:0] led_counter;
-  //reg led;
-  
-  always @ (posedge clk50m_bufg)
-  begin
-    switch <= pwrup | sw0_rdy | sw1_rdy | sw2_rdy | sw3_rdy;
-  end
-  
-  /*always @ (posedge clk50m_bufg) begin
-		if (switch) begin
-			led <= 1;
-			led_counter <= 0;
-		end else if (led_counter[25])
-			led <= 0;
-		else
-			led_counter <= led_counter + 1;
-  end
-  
-  assign LED[4] = led;*/
-  
-	/*
+//////////////////////////////////////
+/// Memory Controller
+//////////////////////////////////////
+	 
 	// Inputs
 	wire [2:0] p0_cmd_instr;
 	wire [5:0] p0_cmd_bl;
@@ -211,7 +171,7 @@ module mainController(
 		.DDR2LDM(DDR2LDM), 
 		.DDR2UDM(DDR2UDM), 
 		.DDR2ODT(DDR2ODT), 
-		.clk(clk), 
+		.clk(sysclk), 
 		.p0_cmd_instr(p0_cmd_instr), 
 		.p0_cmd_bl(p0_cmd_bl), 
 		.p0_cmd_byte_addr(p0_cmd_byte_addr), 
@@ -276,40 +236,6 @@ module mainController(
 		 .p0_cmd_bl(p0_cmd_bl), 
 		 .p0_cmd_byte_addr(p0_cmd_byte_addr), 
 		 .p0_wr_data(p0_wr_data)
-		 );*/
-		 
-	 
-	wire [3:0] tmdsint;
-	
-	HDMI_Controller HDMI (
-	 .clk50m(clk50m),
-    .clk50m_bufg(clk50m_bufg), 
-	 .RESET(SYS_RESET),
-	 .switch(switch),
-	 .SW(SW[3:0]),
-	 .switches(sws_sync_q),
-    .TMDSP({HDMIOUTCLKP, HDMIOUTDP}), 
-    .TMDSN({HDMIOUTCLKN, HDMIOUTDN}),
-	 .LED(LED[7:4]),
-	 .pclk_lckd(pclk_lckd)
-    );
-	 
-	 assign LED[3:0] = sws_sync_q;
-
-	 /*reg [24:0] led_timer;
-	 assign LED[1] = led_timer [24];
-	 
-	 always @ (posedge pixel_clk)
-		led_timer <= led_timer + 'b1;
-		
-	pixelClock480p pixel_clk_480p
-   (// Clock in ports
-    .CLK_IN(clk),      					// IN
-    // Clock out ports
-    .pixel_clk(pixel_clk),     		// OUT
-    .pixel_clk_x2(pixel_clk_x2),    // OUT
-    .pixel_clk_x10(pixel_clk_x10),  // OUT
-    // Status and control signals
-    .LOCKED(pixel_clk_LOCKED)); 	// OUT*/
+		 );
 		
 endmodule

@@ -22,8 +22,9 @@ module HDMI_Controller(
 	input clk50m,
 	input clk50m_bufg, // 50M from bufg
 	input RESET,
-	input switch,
-	input [3:0] switches,
+	//input switch,
+	//input [3:0] switches,
+	input pwrup,
 	input [3:0] SW,
 	output wire [3:0] TMDSP,
 	output wire [3:0] TMDSN,
@@ -31,10 +32,61 @@ module HDMI_Controller(
 	output wire pclk_lckd
     );
 
-//`define COLORBARS
-	
-	
-  wire gopclk;
+`define COLORBARS
+	 
+//////////////////////////////////////
+/// Debounce and Syncronize Switches
+//////////////////////////////////////
+	wire  [3:0] sws_sync; //synchronous output
+
+	synchro #(.INITIALIZE("LOGIC0"))
+	synchro_sws_3 (.async(SW[3]),.sync(sws_sync[3]),.clk(clk50m_bufg));
+
+	synchro #(.INITIALIZE("LOGIC0"))
+	synchro_sws_2 (.async(SW[2]),.sync(sws_sync[2]),.clk(clk50m_bufg));
+
+	synchro #(.INITIALIZE("LOGIC0"))
+	synchro_sws_1 (.async(SW[1]),.sync(sws_sync[1]),.clk(clk50m_bufg));
+
+	synchro #(.INITIALIZE("LOGIC0"))
+	synchro_sws_0 (.async(SW[0]),.sync(sws_sync[0]),.clk(clk50m_bufg));
+
+	reg [3:0] sws_sync_q;
+	always @ (posedge clk50m_bufg)
+	begin
+		sws_sync_q <= sws_sync;
+	end
+
+	wire sw0_rdy, sw1_rdy, sw2_rdy, sw3_rdy;
+
+	debnce debsw0 (
+		.sync(sws_sync_q[0]),
+		.debnced(sw0_rdy),
+		.clk(clk50m_bufg));
+
+	debnce debsw1 (
+		.sync(sws_sync_q[1]),
+		.debnced(sw1_rdy),
+		.clk(clk50m_bufg));
+
+	debnce debsw2 (
+		.sync(sws_sync_q[2]),
+		.debnced(sw2_rdy),
+		.clk(clk50m_bufg));
+
+	debnce debsw3 (
+		.sync(sws_sync_q[3]),
+		.debnced(sw3_rdy),
+		.clk(clk50m_bufg));
+
+  reg switch = 1'b0;
+  
+  always @ (posedge clk50m_bufg)
+  begin
+    switch <= pwrup | sw0_rdy | sw1_rdy | sw2_rdy | sw3_rdy;
+  end
+  
+   wire gopclk;
   SRL16E SRL16E_0 (
     .Q(gopclk),
     .A0(1'b1),
@@ -50,7 +102,8 @@ module HDMI_Controller(
   reg [3:0] led1;
   //reg [3:0] led2;
   assign LED = led1;
-  
+ 
+
   // The following defparam declaration 
   defparam SRL16E_0.INIT = 16'h0;
 
@@ -64,8 +117,7 @@ module HDMI_Controller(
   always @ (posedge clk50m_bufg)
   begin
     if(switch) begin
-		//led1 <= switches;
-      case (switches)
+      case (sws_sync_q)
         SW_VGA: //25 MHz pixel clock
         begin
           pclk_M <= 8'd2 - 8'd1;
