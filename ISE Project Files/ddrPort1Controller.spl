@@ -1,0 +1,26 @@
+[Inputs]
+clk
+reset
+base_selector
+update
+rd_empty
+rd_full
+mem_calib_done
+stream_data
+end_frame
+=resolution[3:0]=
+=rd_data[31:0]=
+=rd_count[6:0]=
+[Outputs]
+rd_en
+cmd_en
+data_out_valid
+start_output
+=cmd_instr[2:0]=
+=cmd_bl[5:0]=
+=cmd_byte_addr[29:0]=
+=data_out[23:0]=
+[BiDir]
+[ATTRIBUTES]
+VeriModel ddrPort1Controller
+

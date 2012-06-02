@@ -8,27 +8,21 @@
       <ClosedNodes>
          <ClosedNodesVersion>2</ClosedNodesVersion>
          <ClosedNode>/atlys_ddr_test C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot2|atlys_ddr_test.v/ddr_interface - ddr_interface</ClosedNode>
+         <ClosedNode>/ddrPort1Controller C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|ddrPort1Controller.v</ClosedNode>
          <ClosedNode>/dvi_out_native C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot2|dvi_out_native.v</ClosedNode>
          <ClosedNode>/dvi_out_native C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|dvi_out_native.v</ClosedNode>
+         <ClosedNode>/mainController C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|mainController.v/HDMI - HDMI_Controller</ClosedNode>
+         <ClosedNode>/mainController C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|mainController.v/mandelbrot - mandelbrotRederingEngine</ClosedNode>
+         <ClosedNode>/mainController C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|mainController.v/vram - videoRam</ClosedNode>
       </ClosedNodes>
       <SelectedItems>
-<<<<<<< HEAD
          <SelectedItem>mainController (C:/Users/Charles Franklin/Documents/FPGA/Mandelbrot/ISE Project Files/mainController.v)</SelectedItem>
       </SelectedItems>
       <ScrollbarPosition orientation="vertical" >0</ScrollbarPosition>
       <ScrollbarPosition orientation="horizontal" >0</ScrollbarPosition>
-      <ViewHeaderState orientation="horizontal" >000000ff0000000000000001000000010000000000000000000000000000000002020000000100000001000000640000036f000000020000000000000000000000000200000064ffffffff0000008100000003000000020000036f0000000100000003000000000000000100000003</ViewHeaderState>
+      <ViewHeaderState orientation="horizontal" >000000ff0000000000000001000000010000000000000000000000000000000002020000000100000001000000640000035e000000020000000000000000000000000200000064ffffffff0000008100000003000000020000035e0000000100000003000000000000000100000003</ViewHeaderState>
       <UserChangedColumnWidths orientation="horizontal" >true</UserChangedColumnWidths>
       <CurrentItem>mainController (C:/Users/Charles Franklin/Documents/FPGA/Mandelbrot/ISE Project Files/mainController.v)</CurrentItem>
-=======
-         <SelectedItem>mainController (C:/Users/Charles/Documents/Mandelbrot/ISE Project Files/mainController.v)</SelectedItem>
-      </SelectedItems>
-      <ScrollbarPosition orientation="vertical" >0</ScrollbarPosition>
-      <ScrollbarPosition orientation="horizontal" >0</ScrollbarPosition>
-      <ViewHeaderState orientation="horizontal" >000000ff000000000000000100000001000000000000000000000000000000000202000000010000000100000064000001d7000000020000000000000000000000000200000064ffffffff000000810000000300000002000001d70000000100000003000000000000000100000003</ViewHeaderState>
-      <UserChangedColumnWidths orientation="horizontal" >true</UserChangedColumnWidths>
-      <CurrentItem>mainController (C:/Users/Charles/Documents/Mandelbrot/ISE Project Files/mainController.v)</CurrentItem>
->>>>>>> 3a7e5fb14a1c98b0d1a3679970f65eadb49ccf67
    </ItemView>
    <ItemView engineview="SynthesisOnly" sourcetype="DESUT_VERILOG" guiview="Process" >
       <ClosedNodes>
@@ -38,16 +32,15 @@
          <ClosedNode>Implement Design/Map</ClosedNode>
          <ClosedNode>Implement Design/Place &amp; Route</ClosedNode>
          <ClosedNode>Implement Design/Translate</ClosedNode>
-         <ClosedNode>User Constraints</ClosedNode>
       </ClosedNodes>
       <SelectedItems>
-         <SelectedItem>Generate Programming File</SelectedItem>
+         <SelectedItem></SelectedItem>
       </SelectedItems>
       <ScrollbarPosition orientation="vertical" >0</ScrollbarPosition>
       <ScrollbarPosition orientation="horizontal" >0</ScrollbarPosition>
-      <ViewHeaderState orientation="horizontal" >000000ff000000000000000100000001000000000000000000000000000000000000000000000000f8000000010000000100000000000000000000000064ffffffff000000810000000000000001000000f80000000100000000</ViewHeaderState>
+      <ViewHeaderState orientation="horizontal" >000000ff000000000000000100000001000000000000000000000000000000000000000000000000e7000000010000000100000000000000000000000064ffffffff000000810000000000000001000000e70000000100000000</ViewHeaderState>
       <UserChangedColumnWidths orientation="horizontal" >false</UserChangedColumnWidths>
-      <CurrentItem>Generate Programming File</CurrentItem>
+      <CurrentItem></CurrentItem>
    </ItemView>
    <ItemView guiview="File" >
       <ClosedNodes>
@@ -56,13 +49,9 @@
       <SelectedItems/>
       <ScrollbarPosition orientation="vertical" >0</ScrollbarPosition>
       <ScrollbarPosition orientation="horizontal" >0</ScrollbarPosition>
-      <ViewHeaderState orientation="horizontal" >000000ff00000000000000010000000000000000010000000000000000000000000000000000000406000000040101000100000000000000000000000064ffffffff000000810000000000000004000002650000000100000000000000d70000000100000000000000660000000100000000000000640000000100000000</ViewHeaderState>
+      <ViewHeaderState orientation="horizontal" >000000ff00000000000000010000000000000000010000000000000000000000000000000000000449000000040101000100000000000000000000000064ffffffff000000810000000000000004000002b20000000100000000000000d700000001000000000000006600000001000000000000005a0000000100000000</ViewHeaderState>
       <UserChangedColumnWidths orientation="horizontal" >false</UserChangedColumnWidths>
-<<<<<<< HEAD
       <CurrentItem>C:\Users\Charles Franklin\Documents\FPGA\Mandelbrot\ISE Project Files\AtlysGeneral.ucf</CurrentItem>
-=======
-      <CurrentItem>AtlysGeneral.ucf</CurrentItem>
->>>>>>> 3a7e5fb14a1c98b0d1a3679970f65eadb49ccf67
    </ItemView>
    <ItemView guiview="Library" >
       <ClosedNodes>
@@ -76,22 +65,20 @@
       <UserChangedColumnWidths orientation="horizontal" >false</UserChangedColumnWidths>
       <CurrentItem>work</CurrentItem>
    </ItemView>
-   <ItemView engineview="SynthesisOnly" sourcetype="" guiview="Process" >
+   <ItemView engineview="SynthesisOnly" sourcetype="DESUT_UCF" guiview="Process" >
       <ClosedNodes>
          <ClosedNodesVersion>1</ClosedNodesVersion>
-         <ClosedNode>Design Utilities</ClosedNode>
+         <ClosedNode>User Constraints</ClosedNode>
       </ClosedNodes>
       <SelectedItems>
-         <SelectedItem/>
+         <SelectedItem></SelectedItem>
       </SelectedItems>
       <ScrollbarPosition orientation="vertical" >0</ScrollbarPosition>
       <ScrollbarPosition orientation="horizontal" >0</ScrollbarPosition>
       <ViewHeaderState orientation="horizontal" >000000ff000000000000000100000001000000000000000000000000000000000000000000000000f8000000010000000100000000000000000000000064ffffffff000000810000000000000001000000f80000000100000000</ViewHeaderState>
       <UserChangedColumnWidths orientation="horizontal" >false</UserChangedColumnWidths>
-      <CurrentItem/>
+      <CurrentItem></CurrentItem>
    </ItemView>
-   <SourceProcessView>000000ff00000000000000020000016c0000016d01000000050100000002</SourceProcessView>
-   <CurrentView>Implementation</CurrentView>
    <ItemView engineview="SynthesisOnly" sourcetype="DESUT_XCO" guiview="Process" >
       <ClosedNodes>
          <ClosedNodesVersion>1</ClosedNodesVersion>
@@ -105,18 +92,24 @@
       <UserChangedColumnWidths orientation="horizontal" >false</UserChangedColumnWidths>
       <CurrentItem></CurrentItem>
    </ItemView>
-   <ItemView engineview="SynthesisOnly" sourcetype="DESUT_UCF" guiview="Process" >
+   <ItemView engineview="SynthesisOnly" sourcetype="" guiview="Process" >
       <ClosedNodes>
          <ClosedNodesVersion>1</ClosedNodesVersion>
-         <ClosedNode>User Constraints</ClosedNode>
       </ClosedNodes>
-      <SelectedItems>
-         <SelectedItem></SelectedItem>
-      </SelectedItems>
+      <SelectedItems/>
       <ScrollbarPosition orientation="vertical" >0</ScrollbarPosition>
       <ScrollbarPosition orientation="horizontal" >0</ScrollbarPosition>
-      <ViewHeaderState orientation="horizontal" >000000ff000000000000000100000001000000000000000000000000000000000000000000000000dc000000010000000100000000000000000000000064ffffffff000000810000000000000001000000dc0000000100000000</ViewHeaderState>
+      <ViewHeaderState orientation="horizontal" ></ViewHeaderState>
       <UserChangedColumnWidths orientation="horizontal" >false</UserChangedColumnWidths>
       <CurrentItem></CurrentItem>
    </ItemView>
+   <SourceProcessView>000000ff00000000000000020000016c0000016d01000000050100000002</SourceProcessView>
+   <CurrentView>Implementation</CurrentView>
+</Project>
+<?xml version="1.0" encoding="utf-8"?>
+<!--This is an ISE project configuration file.-->
+<!--It holds project specific layout data for the projectmgr plugin.-->
+<!--Copyright (c) 1995-2009 Xilinx, Inc.  All rights reserved.-->
+<Project version="2" owner="projectmgr" name="Mandelbrot2" >
+   <!--This is an ISE project configuration file.-->
 </Project>

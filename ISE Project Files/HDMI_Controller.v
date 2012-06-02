@@ -22,17 +22,21 @@ module HDMI_Controller(
 	input clk50m,
 	input clk50m_bufg, // 50M from bufg
 	input RESET,
-	//input switch,
-	//input [3:0] switches,
 	input pwrup,
 	input [3:0] SW,
 	output wire [3:0] TMDSP,
 	output wire [3:0] TMDSN,
 	output wire [3:0] LED,
-	output wire pclk_lckd
+	output wire pclk_lckd,
+	input [7:0] red_data_in,
+	input [7:0] green_data_in,
+	input [7:0] blue_data_in,
+	input start_output,
+	output wire retrieve_data,
+	output wire pclk
     );
 
-`define COLORBARS
+//`define COLORBARS
 	 
 //////////////////////////////////////
 /// Debounce and Syncronize Switches
@@ -176,7 +180,7 @@ module HDMI_Controller(
   //
   // DCM_CLKGEN to generate a pixel clock with a variable frequency
   //
-  wire          clkfx, pclk;
+  wire          clkfx; //, pclk;
   DCM_CLKGEN #(
     .CLKFX_DIVIDE (21),
     .CLKFX_MULTIPLY (31),
@@ -244,7 +248,13 @@ module HDMI_Controller(
            .IOCLK(pclkx10), .SERDESSTROBE(serdesstrobe), .LOCK(bufpll_lock));
 
   synchro #(.INITIALIZE("LOGIC1"))
-  synchro_reset (.async(!pll_lckd),.sync(reset),.clk(pclk));
+  synchro_reset (.async(!pll_lckd),.sync(sreset),.clk(pclk));
+  
+`ifdef COLORBARS
+  wire reset = sreset;
+`else
+  wire reset = (sreset || !start_output);
+`endif
 
 ///////////////////////////////////////////////////////////////////////////
 // Video Timing Parameters
@@ -456,6 +466,8 @@ module HDMI_Controller(
     de <= active_q;
   end
 
+  assign retrieve_data = (active_q || de);
+	
   ///////////////////////////////////
   // Video pattern generator:
   //   SMPTE HD Color Bar
@@ -499,7 +511,7 @@ module HDMI_Controller(
     .o_b(blue_data)
   );
   `else
-		reg [7:0] red_reg;
+		/*reg [7:0] red_reg;
 		reg [7:0] green_reg;
 		reg [7:0] blue_reg;
 		
@@ -511,7 +523,11 @@ module HDMI_Controller(
 			red_reg   <= (bgnd_hcount < 200 || bgnd_hcount > 400) ? 8'hFF : 8'h00;
 			green_reg <= (bgnd_hcount < 100 || bgnd_hcount > 300) ? 8'hFF : 8'h00;
 			blue_reg  <= (bgnd_vcount < 200 || bgnd_hcount > 400) ? 8'hFF : 8'h00;
-		end
+		end*/
+		
+		assign red_data   = red_data_in;
+		assign green_data = green_data_in;
+		assign blue_data  = blue_data_in;
   `endif
 `endif
   ////////////////////////////////////////////////////////////////

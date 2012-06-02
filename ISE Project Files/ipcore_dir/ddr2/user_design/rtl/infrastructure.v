@@ -152,13 +152,15 @@ module infrastructure #
       // SINGLE_ENDED input clock input buffers
       //***********************************************************************
 
-      IBUFG  u_ibufg_sys_clk
+      /*IBUFG  u_ibufg_sys_clk
           (
            .I  (sys_clk),
            .O  (sys_clk_ibufg)
-           );
+           );*/
    end
   endgenerate
+  
+  assign sys_clk_ibufg = sys_clk;
 
   //***************************************************************************
   // Global clock generation and distribution

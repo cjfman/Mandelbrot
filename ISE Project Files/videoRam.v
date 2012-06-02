@@ -33,10 +33,10 @@ module videoRam(
 	output [12:0] DDR2A,
 	inout [15:0] DDR2DQ,
 
-	output DDR2UDQS_P,
-	output DDR2UDQS_N,
-	output DDR2LDQS_P,
-	output DDR2LDQS_N,
+	inout DDR2UDQS_P,
+	inout DDR2UDQS_N,
+	inout DDR2LDQS_P,
+	inout DDR2LDQS_N,
 	output DDR2LDM,
 	output DDR2UDM,
 	output DDR2ODT,
@@ -67,12 +67,17 @@ module videoRam(
 	output wire [6:0] p1_rd_count,
 	input wire p1_rd_en,
 	output wire p1_rd_empty,
+	output wire p1_rd_full,
 	input wire p1_wr_en,
 	input wire p0_cmd_en,
+	input wire p1_cmd_en,
 
 	output wire calib_done,
 	input wire reset,
-	output wire clk0
+	output wire clk0,
+	
+	input p0clk,
+	input p1clk
     );
 	 
 	wire rst0; // It's an output
@@ -83,7 +88,7 @@ module videoRam(
     .C3_P1_MASK_SIZE(4),
     .C3_P1_DATA_PORT_SIZE(32),
     .DEBUG_EN(0),
-    .C3_MEMCLK_PERIOD(3000),
+    .C3_MEMCLK_PERIOD(3200),
     .C3_CALIB_SOFT_IP("TRUE"),
     .C3_SIMULATION("FALSE"),
     .C3_RST_ACT_LOW(0),
@@ -93,7 +98,7 @@ module videoRam(
     .C3_MEM_ADDR_WIDTH(13),
     .C3_MEM_BANKADDR_WIDTH(3)
 	)
-	u_ramModule (
+	vram_port (
 
 	  .c3_sys_clk           (clk),
 	  .c3_sys_rst_i           (reset),                        
@@ -122,14 +127,14 @@ module videoRam(
 	  .mcb3_rzq               (DDR2RZQ),
 	  .mcb3_zio               (DDR2ZIO),
 						
-		.c3_p0_cmd_clk                          (clk0),					// Clock
+		.c3_p0_cmd_clk                          (p0clk),					// Clock
 		.c3_p0_cmd_en                           (p0_cmd_en),
 		.c3_p0_cmd_instr                        (p0_cmd_instr),
 		.c3_p0_cmd_bl                           (p0_cmd_bl),
 		.c3_p0_cmd_byte_addr                    (p0_cmd_byte_addr),
 		.c3_p0_cmd_empty                        (p0_cmd_empty),
 		.c3_p0_cmd_full                         (p0_cmd_full),
-		.c3_p0_wr_clk                           (clk0),					// Clock
+		.c3_p0_wr_clk                           (p0clk),					// Clock
 		.c3_p0_wr_en                            (p0_wr_en),
 		.c3_p0_wr_mask                          (p0_wr_mask),
 		.c3_p0_wr_data                          (p0_wr_data),
@@ -138,7 +143,7 @@ module videoRam(
 		.c3_p0_wr_count                         (p0_wr_count),
 		.c3_p0_wr_underrun                      (p0_wr_underrun),
 		.c3_p0_wr_error                         (p0_wr_error),
-		.c3_p0_rd_clk                           (clk0),					// Clock
+		.c3_p0_rd_clk                           (p0clk),					// Clock
 		.c3_p0_rd_en                            (p0_rd_en),
 		.c3_p0_rd_data                          (p0_rd_data),
 		.c3_p0_rd_full                          (p0_rd_full),
@@ -147,14 +152,14 @@ module videoRam(
 		.c3_p0_rd_overflow                      (p0_rd_overflow),
 		.c3_p0_rd_error                         (p0_rd_error),
 		
-		.c3_p1_cmd_clk                          (clk0),					// Clock
+		.c3_p1_cmd_clk                          (p1clk),					// Clock
 		.c3_p1_cmd_en                           (p1_cmd_en),
 		.c3_p1_cmd_instr                        (p1_cmd_instr),
 		.c3_p1_cmd_bl                           (p1_cmd_bl),
 		.c3_p1_cmd_byte_addr                    (p1_cmd_byte_addr),
 		.c3_p1_cmd_empty                        (p1_cmd_empty),
 		.c3_p1_cmd_full                         (p1_cmd_full),
-		.c3_p1_wr_clk                           (clk0),					// Clock
+		.c3_p1_wr_clk                           (p1clk),					// Clock
 		.c3_p1_wr_en                            (p1_wr_en),
 		.c3_p1_wr_mask                          (p1_wr_mask),
 		.c3_p1_wr_data                          (p1_wr_data),
@@ -163,7 +168,7 @@ module videoRam(
 		.c3_p1_wr_count                         (p1_wr_count),
 		.c3_p1_wr_underrun                      (p1_wr_underrun),
 		.c3_p1_wr_error                         (p1_wr_error),
-		.c3_p1_rd_clk                           (clk0),					// Clock
+		.c3_p1_rd_clk                           (p1clk),					// Clock
 		.c3_p1_rd_en                            (p1_rd_en),
 		.c3_p1_rd_data                          (p1_rd_data),
 		.c3_p1_rd_full                          (p1_rd_full),

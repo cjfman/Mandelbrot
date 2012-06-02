@@ -29,59 +29,72 @@ module ddrPort0Controller(
 	input mem_calib_done,
 	input p0_wr_full,
 	input p0_wr_empty,
-	output reg reset,
+	input [6:0] p0_wr_count,
+	output reg mem_reset,
 	output reg p0_wr_en,
 	output reg [2:0] p0_cmd_instr,
 	output reg p0_cmd_en,
 	output reg [5:0] p0_cmd_bl,
 	output reg [29:0] p0_cmd_byte_addr,
-	output reg [31:0] p0_wr_data
+	output reg [31:0] p0_wr_data,
+	output reg memory_frame,
+	output wire [3:0] LED
     );
 	 
-	wire [29:0] write_base_pointer = (memory_frame) ? 0 : 70560;
-	reg [29:0] write_pointer;
+	//assign LED[0] = (state != 0);
+	//assign LED[3:1] = 0;
+	
+	//reg [27:0] led_count;
+	//assign LED = led_count[24:21];
+	
+	//always @(posedge clk)
+	//	led_count <= led_count + 1;
+	
+	assign LED = state[3:0];
+	 
+	wire [29:0] base_pointer = 0; //(memory_frame) ? 0 : 70560;
+	reg [29:0] pointer;
 	reg [1:0] calib_done;
 	reg [5:0] write_count;
-	reg memory_frame;
-	
 	
 	initial begin
 		memory_frame <= 'd0;
-		reset <= 1;
+		mem_reset <= 1;
 	end
 	
-	always @(posedge clk)
+	always @(posedge clk) begin
 		calib_done <= {calib_done[0], mem_calib_done};
+	end
 
-	reg [4:0] write_state = 0;
+	reg [4:0] state;
 	reg [11:0] count;
 	
 	always @(posedge clk)
-		case(write_state)
+		case(state)
 		0: begin
-			reset <= 0;
-			if (calib_done[1]) write_state <= 1;
+			mem_reset <= 0;
+			if (calib_done[1]) state <= 1;
 		end
-		1: begin
+		/*1: begin
 			if (frame_ready) begin
 				memory_frame <= ~memory_frame;
 			end if (!p0_wr_full && ready) begin
-				p0_wr_data <= data;
+				p0_wr_data <= 32'd255; //data;
 				write_count <= write_count + 'd1;
 				p0_wr_en <= 1;
-				write_state <= 2;
+				state <= 2;
 				send_data <= 1;
 			end else begin
-				write_state <= 3;
+				state <= 3;
 			end
 		end
 		2: begin
 			if (p0_wr_full || !ready) begin
 				p0_wr_en <= 0;
 				send_data <= 0;
-				write_state <= 1;
+				state <= 1;
 			end else begin
-				p0_wr_data <= data;
+				p0_wr_data <= 32'd255; //data;
 				write_count <= write_count + 'd1;
 			end
 		end
@@ -89,19 +102,45 @@ module ddrPort0Controller(
 			p0_cmd_instr <= 0;
 			p0_cmd_en <= 1;
 			p0_cmd_bl <= write_count;
-			p0_cmd_byte_addr <= write_pointer;
-			write_pointer <= write_pointer + (write_count << 2);
+			p0_cmd_byte_addr <= pointer;
+			pointer <= pointer + (write_count << 2);
 			write_count <= 0;
-			write_state <= 4;
+			state <= 4;
 		end
 		4: begin
 			p0_cmd_en <= 0;
-			write_state <= 5;
+			state <= 5;
 		end
 		5: begin
-			if (p0_wr_empty) write_state <= 1;
+			if (p0_wr_empty) state <= 1;
+		end*/
+		1: begin
+			if (p0_wr_empty) begin
+				p0_wr_data <= 255;
+				p0_wr_en <= 1;
+				p0_cmd_byte_addr <= pointer;
+				state <= 2;
+			end
+		end
+		2: begin
+			if (p0_wr_count == 63) begin
+				p0_wr_en <= 0;
+				state <= 3;
+			end else begin
+				p0_wr_data <= ~p0_wr_data;
+			end
+		end
+		3: begin
+			p0_cmd_instr <= 0;
+			p0_cmd_en <= 1;
+			p0_cmd_bl <= 63;
+			pointer <= pointer + (64 << 2);
+			state <= 4;
+		end
+		4: begin
+			p0_cmd_en <= 0;
+			state <= 1;
 		end
 		endcase
-
 
 endmodule

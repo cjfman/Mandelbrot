@@ -1,0 +1,24 @@
+# Output products list for <MemoryReadFIFO>
+MemoryReadFIFO.asy
+MemoryReadFIFO.gise
+MemoryReadFIFO.ngc
+MemoryReadFIFO.sym
+MemoryReadFIFO.v
+MemoryReadFIFO.veo
+MemoryReadFIFO.xco
+MemoryReadFIFO.xise
+MemoryReadFIFO_flist.txt
+MemoryReadFIFO_ste\example_design\MemoryReadFIFO_top.ucf
+MemoryReadFIFO_ste\example_design\MemoryReadFIFO_top.vhd
+MemoryReadFIFO_ste\example_design\MemoryReadFIFO_top.xdc
+MemoryReadFIFO_ste\implement\implement.bat
+MemoryReadFIFO_ste\implement\implement.sh
+MemoryReadFIFO_ste\implement\planAhead_rdn.bat
+MemoryReadFIFO_ste\implement\planAhead_rdn.sh
+MemoryReadFIFO_ste\implement\planAhead_rdn.tcl
+MemoryReadFIFO_ste\implement\xst.prj
+MemoryReadFIFO_ste\implement\xst.scr
+MemoryReadFIFO_xmdf.tcl
+_xmsgs\pn_parser.xmsgs
+fifo_generator_ug175.pdf
+fifo_generator_v8_3_readme.txt
