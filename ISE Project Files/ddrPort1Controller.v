@@ -83,7 +83,7 @@ module ddrPort1Controller(
 	wire [23:0] FIFO_data_in = (rd_data == 255) ? 24'b0 : 24'hFFFFFF;
 	reg FIFO_wr_en;
 	//reg FIFO_rd_en;
-	wire FIFO_rd_en = (stream_data);// && !FIFO_empty);
+	wire FIFO_rd_en = (stream_data && !FIFO_empty);
 	
 	//Outpus
 	wire [23:0] FIFO_dout;
@@ -145,35 +145,6 @@ module ddrPort1Controller(
 	// Block HDMI from starting output untill there is data available
 	always @ (posedge clk)
 		start_output <= (start_output || FIFO_full);
-		
-	/*reg [26:0] hold;
-	reg [11:0] count;
-	reg [5:0] STATE;
-	
-	always @ (posedge pclk) begin
-		case (STATE)
-		0: begin
-			if (FIFO_full) STATE <= 1;
-		end
-		1: begin
-			if (!FIFO_empty) begin
-				FIFO_rd_en <= 1;
-				STATE <= 2;
-			end
-		end
-		2: begin
-			FIFO_rd_en <= 0;
-			STATE <= 3;
-		end
-		3: begin
-			hold <= hold + 27'd1;
-			if (hold[2]) begin
-				hold <= 27'd0;
-				STATE <= 1;
-			end
-		end
-		endcase
-	end*/
 	
 	
 	//////////////////////////////////////
