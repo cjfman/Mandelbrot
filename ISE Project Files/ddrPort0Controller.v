@@ -121,7 +121,7 @@ module ddrPort0Controller(
 		1: begin
 			if (p0_wr_empty) begin
 				p0_wr_en <= 1;
-				p0_wr_data <= 0; //255;
+				p0_wr_data <= 255;
 				state <= 2;
 			end
 		end
@@ -135,91 +135,13 @@ module ddrPort0Controller(
 				pointer <= pointer + (64 << 2);
 				state <= 3;
 			end else begin
-				p0_wr_data <= p0_wr_data + 1; //~p0_wr_data;
+				p0_wr_data <= ~p0_wr_data;
 			end
 		end
 		3: begin
 			p0_cmd_en <= 0;
 			state <= 1;
 		end
-		/*1: begin
-			p0_wr_en <= 1;
-			p0_wr_data <= 64'd1;
-			count <= 12'd0;
-			state <= 2;
-			end
-		2: begin
-			p0_wr_data <= 64'd2;
-			state <= 3;
-			end
-		3: begin
-			p0_wr_data <= 64'd3;
-			state <= 4;
-			end
-		4: begin
-			p0_wr_data <= 64'd4;
-			state <= 5;
-			end
-		5: begin
-			p0_wr_data <= 64'd5;
-			state <= 6;
-			end
-		6: begin
-			p0_wr_data <= 64'h6;
-			state <= 7;
-			end
-		7: begin
-			p0_wr_data <= 64'h7;
-			state <= 8;
-			end
-		8: begin
-			p0_wr_en <= 0;
-			p0_cmd_instr <= 3'b000; // Write
-			p0_cmd_bl <= 6'd7; // 6 bytes
-			p0_cmd_byte_addr <= 30'd16; // To address 16
-			p0_cmd_en <= 1;
-			state <= 9;
-			end
-		9: begin
-			p0_cmd_en <= 0;
-			state <= 10;
-			count <= 12'b0;
-			end
-		10: begin
-			count <= count + 1'b1;
-			if (count[11])
-				state <= 11;
-			end
-		11: begin
-			count <= 12'd0;
-			p0_cmd_bl <= 6'd7;
-			p0_cmd_byte_addr <= 30'd16;
-			p0_cmd_instr <= 3'b001;
-			p0_cmd_en <= 1;
-			state <= 12;
-			end
-		12: begin
-			p0_cmd_en <= 0;
-			count <= count + 1'b1;
-			if (count[11])
-				state <= 14;
-			end
-		13: begin
-			hold <= hold + 27'd1;
-			p0_rd_en <= 0;
-			if (hold[26]) begin
-				hold <= 27'd0;
-				state <= 14;
-			end
-			end
-		14: begin
-			if (!p0_rd_empty) begin
-				p0_rd_en <= 1;
-				LED <= p0_rd_data[3:0];
-				state <= 13;
-			end else
-				state <= 1;
-		end*/
 		endcase
 
 endmodule
