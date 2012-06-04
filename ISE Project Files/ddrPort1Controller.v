@@ -51,9 +51,9 @@ module ddrPort1Controller(
 	 output reg start_output
     );
 	 
-	wire restart;
+	wire restart = end_frame | update | reset;
 	
-	BUF restart_buf (I.(end_frame | update | reset), O.(restart));
+	//BUF restart_buf (.I(end_frame | update | reset), .O(restart));
 	
 	////////////////////////////
 	// Resolution configuration
