@@ -82,8 +82,8 @@ module ddrPort1Controller(
 	//Inputs
 	wire [23:0] FIFO_data_in = (rd_data == 255) ? 24'b0 : 24'hFFFFFF;
 	reg FIFO_wr_en;
-	reg FIFO_rd_en;
-	//wire FIFO_rd_en = (stream_data && !FIFO_empty);
+	//reg FIFO_rd_en;
+	wire FIFO_rd_en = (stream_data);// && !FIFO_empty);
 	
 	//Outpus
 	wire [23:0] FIFO_dout;
@@ -146,7 +146,7 @@ module ddrPort1Controller(
 	always @ (posedge clk)
 		start_output <= (start_output || FIFO_full);
 		
-	reg [26:0] hold;
+	/*reg [26:0] hold;
 	reg [11:0] count;
 	reg [5:0] STATE;
 	
@@ -173,7 +173,7 @@ module ddrPort1Controller(
 			end
 		end
 		endcase
-	end
+	end*/
 	
 	
 	//////////////////////////////////////
