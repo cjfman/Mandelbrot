@@ -187,11 +187,11 @@ module ddrPort1Controller(
 		1: begin
 			if (rd_empty) begin
 				cmd_instr <= 3'b001;
-				cmd_bl <= 63; //read_amount - 1;
-				cmd_byte_addr <= 0; //pointer + base_pointer;
+				cmd_bl <= read_amount - 1;
+				cmd_byte_addr <= pointer + base_pointer;
 				cmd_en <= 1;
-				read_count <= 64; //read_amount;
-				//pointer <= (inrange) ? next_pointer : 0;
+				read_count <= read_amount;
+				pointer <= (inrange) ? next_pointer : 0;
 				state <= 2;
 			end
 		end
