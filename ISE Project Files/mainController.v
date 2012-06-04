@@ -44,7 +44,7 @@ module mainController(
 
 	// CLK
 	input SYS_CLK, // 100 MHz oscillator = 10ns period (top level pin)
-	//input SYS_RESET,
+	input SYS_RESETn,
 	
 	// Buttons and switches
 	//input [5:0] btn,
@@ -65,7 +65,10 @@ module mainController(
 	//******************************************************************//
 	wire          locked;
 	//wire          reset;
-	wire SYS_RESET = 0;
+	wire sysreset = ~SYS_RESETn;
+	wire SYS_RESET;
+	
+	BUF sys_reset_buf (.I(sysreset), .O(SYS_RESET));
 
 	wire          clk50m, clk50m_bufg;
 
@@ -173,6 +176,7 @@ module mainController(
 	// Outputs
 	wire stream_data;
 	wire pclk;
+	wire end_frame;
 	
 	HDMI_Controller HDMI (
 	 .clk50m(clk50m),
@@ -316,6 +320,7 @@ module mainController(
     .data(point_data), 
     .ready(mandelbrot_data_ready), 
     .frame_ready(frame_ready)
+	 //.LED(LED[3:0])
     );
 	 
 	 
@@ -357,7 +362,7 @@ module mainController(
 //////////////////////////////////////
 /// Port1 Controller
 //////////////////////////////////////
-	
+
 	// Outputs
 	//wire [23:0] data_out;
 	wire data_out_valid;

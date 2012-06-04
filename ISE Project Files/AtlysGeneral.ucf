@@ -13,7 +13,7 @@
  NET "SYS_CLK"   LOC = "L15"; # Bank = 1, Pin name = IO_L42P_GCLK7_M1UDM, Type = GCLK, Sch name = GCLK
  
 #Reset
-# NET "SYS_RESETn"        LOC = "T15";
+ NET "SYS_RESETn"        LOC = "T15";
 
 
 
@@ -312,9 +312,9 @@ NET "DDR2ZIO"      IOSTANDARD = SSTL18_II;
 # NET "UartTx" LOC = "B16"; # Bank = 0, Pin name = IO_L66P_SCP1, Sch name = USBB-TXD
 
 
-###########################################
-# Timing Constraints
-###########################################
+############################################
+## Timing Constraints
+############################################
 NET "clk50m_bufg" TNM_NET = "TNM_CLK50M";
 TIMESPEC "TS_CLK50M" = PERIOD "TNM_CLK50M" 50 MHz HIGH 50 % PRIORITY 0 ;
 

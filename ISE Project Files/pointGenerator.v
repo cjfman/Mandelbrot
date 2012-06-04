@@ -18,13 +18,13 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-
-parameter HBP = 32;
-parameter HBS = 32;
-parameter HBI = 32;
 	
-module pointGenerator(
-    input CLK,
+module pointGenerator # (
+	 parameter HBP = 32,
+	 parameter HBS = 32,
+	 parameter HBI = 32
+	 )(
+	 input CLK,
     input start,
     input [HBS - 1 : 0] re_scale,
 	 input [HBS - 1 : 0] im_scale,
@@ -40,10 +40,7 @@ module pointGenerator(
 	// re, im, re_start, and im_start are signed decimal numbers.
 	// One sign bit, to bits to the left of the decimal, and the rest
 	// are to the right
-	 
-	// Output
-	//reg [HBI:0] iteration;
-
+/*
 	// Complex value
 	reg [HBP - 1 : 0] re;
 	reg [HBP - 1 : 0] im;
@@ -81,4 +78,20 @@ module pointGenerator(
 			im <= 2*re*im + im_pos;
 		end	
 	end
+*/
+
+	assign ready = (state == 0);
+
+	reg [3:0] state;
+	
+	always @ (posedge CLK) begin
+		case(state)
+		0: if (start) state <= 1;
+		1: begin
+			iteration <= (x[11:3] == y[11:3]) ? 255 : 0;
+			state <= 0;
+		end
+		endcase
+	end
+	
 endmodule

@@ -33,7 +33,8 @@ module HDMI_Controller(
 	input [7:0] blue_data_in,
 	input start_output,
 	output wire retrieve_data,
-	output wire pclk
+	output wire pclk,
+	output wire end_frame
     );
 
 //`define COLORBARS
@@ -449,11 +450,14 @@ module HDMI_Controller(
   // V/H SYNC and DE generator
   /////////////////////////////////////////
   assign active = !bgnd_hblnk && !bgnd_vblnk;
+  assign end_frame = (!de && frame_ending);
 
   reg active_q;
   reg vsync, hsync;
   reg VGA_HSYNC, VGA_VSYNC;
   reg de;
+  reg frame_ending;
+  
 
   always @ (posedge pclk)
   begin
@@ -464,9 +468,10 @@ module HDMI_Controller(
 
     active_q <= active;
     de <= active_q;
+	 frame_ending <= de;
   end
 
-  assign retrieve_data = (active_q || de);
+  assign retrieve_data = active_q; //(active_q || de);
 	
   ///////////////////////////////////
   // Video pattern generator:

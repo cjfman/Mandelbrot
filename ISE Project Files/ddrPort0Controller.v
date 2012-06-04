@@ -82,8 +82,9 @@ module ddrPort0Controller(
 		/*1: begin
 			if (frame_ready) begin
 				memory_frame <= ~memory_frame;
+				pointer <= 0;
 			end if (!p0_wr_full && ready) begin
-				p0_wr_data <= 32'd255; //data;
+				p0_wr_data <= data;
 				write_count <= write_count + 'd1;
 				p0_wr_en <= 1;
 				state <= 2;
@@ -98,7 +99,7 @@ module ddrPort0Controller(
 				send_data <= 0;
 				state <= 1;
 			end else begin
-				p0_wr_data <= 32'd255; //data;
+				p0_wr_data <= data;
 				write_count <= write_count + 'd1;
 			end
 		end
@@ -121,7 +122,7 @@ module ddrPort0Controller(
 		1: begin
 			if (p0_wr_empty) begin
 				p0_wr_en <= 1;
-				p0_wr_data <= 255;
+				//p0_wr_data <= 0; //255;
 				state <= 2;
 			end
 		end
@@ -135,12 +136,12 @@ module ddrPort0Controller(
 				pointer <= pointer + (64 << 2);
 				state <= 3;
 			end else begin
-				p0_wr_data <= ~p0_wr_data;
+				p0_wr_data <= p0_wr_data + 1;
 			end
 		end
 		3: begin
 			p0_cmd_en <= 0;
-			state <= 1;
+			state <= (pointer < (1310720 << 2)) ? 1 : 4;
 		end
 		endcase
 

@@ -18,7 +18,9 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module mandelbrotRederingEngine(
+module mandelbrotRederingEngine # (
+	 parameter max_iterations = 255
+	 )(
     input CLK,
 	 input SYS_RESET,
 	 input send_data,
@@ -27,7 +29,8 @@ module mandelbrotRederingEngine(
 	 input [3:0] resolution,
     output reg [31:0] data,
     output wire ready,
-	 output wire frame_ready
+	 output wire frame_ready,
+	 output reg [3:0] LED
     );
 
 	wire reset = (update || SYS_RESET);
@@ -49,40 +52,40 @@ module mandelbrotRederingEngine(
 	
 	reg [10:0] x_size;
 	reg [10:0] y_size;
-	reg [19:0] total_pixels;
+	reg [20:0] total_pixels;
 	
 	always @ (posedge CLK) begin
 		if (update) begin
 			case (resolution)
 			SW_VGA: begin
-				x_size <= 10'd640;
-				y_size <= 10'd480;
-				total_pixels <= 20'd307200;
+				x_size <= 11'd640;
+				y_size <= 11'd480;
+				total_pixels <= 21'd307200;
 			end
 			SW_SVGA: begin
-				x_size <= 10'd800;
-				y_size <= 10'd600;
-				total_pixels <= 20'd480000;
+				x_size <= 11'd800;
+				y_size <= 11'd600;
+				total_pixels <= 21'd480000;
 			end
 			SW_XGA: begin
-				x_size <= 10'd1024;
-				y_size <= 10'd768;
-				total_pixels <= 20'd786432;
+				x_size <= 11'd1024;
+				y_size <= 11'd768;
+				total_pixels <= 21'd786432;
 			end
 			SW_HDTV720P: begin
-				x_size <= 10'd1280;
-				y_size <= 10'd720;
-				total_pixels <= 20'd921600;
+				x_size <= 11'd1280;
+				y_size <= 11'd720;
+				total_pixels <= 21'd921600;
 			end
 			SW_SXGA: begin
-				x_size <= 10'd1280;
-				y_size <= 10'd1024;
-				total_pixels <= 20'd1310720;
+				x_size <= 11'd1280;
+				y_size <= 11'd1024;
+				total_pixels <= 21'd1310720;
 			end
 			default: begin
-				x_size <= 10'd640;
-				y_size <= 10'd480;
-				total_pixels <= 20'd307200;
+				x_size <= 11'd640;
+				y_size <= 11'd480;
+				total_pixels <= 21'd307200;
 			end
 			endcase
 		end
@@ -94,10 +97,7 @@ module mandelbrotRederingEngine(
 	
 	// Things that need to be labled better
 	wire start = (render_state == 1);
-		
-	// States
-	reg [7:0] render_state;
-	
+			
 	// Point Sets
 	reg [11:0] x [set_size - 1 : 0];								// X coordinate
 	reg [11:0] y [set_size - 1 : 0];								// Y coordinate
@@ -106,21 +106,17 @@ module mandelbrotRederingEngine(
 	wire [set_size - 1 : 0] set_ready;							// Signal taht point_gen units are done calculating
 	
 	// Setable Parameters
-	reg [HBI - 1 : 0] max_iterations;
 	reg signed [HBP - 1 : 0] re_start;
 	reg signed [HBP - 1 : 0] im_start;
 	reg signed [HBP - 1 : 0] re_end;
 	reg signed [HBP - 1 : 0] im_end;
 	
 	// Calculate parameters
-	wire [HBS - 1 : 0] re_scale = (re_end - re_start) / xymin;
-	wire [HBS - 1 : 0] im_scale = (im_end - im_start) / xymin;
-	wire [10:0] xymin = (x_size > y_size) ? y_size : x_size;
+	wire [HBS - 1 : 0] re_scale = (re_end - re_start) / y_size;
+	wire [HBS - 1 : 0] im_scale = (im_end - im_start) / y_size;
 	
 	// Pixels
 	reg  [23:0] base_pixel;
-	wire data_available = (base_pixel >= base_output);
-	reg done;			
 	
 	genvar i;
 	
@@ -147,21 +143,18 @@ module mandelbrotRederingEngine(
 	integer j;
 
 	initial begin
-		max_iterations <= 'd255;
-		//x_size <= 'd640;
-		//y_size <= 'd480;
 		re_start <= -'d3;
 		re_end 	<=  'd1;
 		im_start <= -'d2;
 		im_end	<=  'd2;
-		//base_pixel <= 'd0;
-		//render_state <= 'd0;
 		for (j = 0; j < set_size; j = j + 1) begin
 			iterations_reg[j] <= 'd0;
 		end
 	end
 		
 	// Rendering block
+	reg [7:0] render_state;
+
 	always @(posedge CLK, posedge reset) begin
 		if (reset) begin
 			render_state <= 0;
@@ -172,14 +165,11 @@ module mandelbrotRederingEngine(
 			//Wait until the start_render signal is asserted
 				if (start_render) begin
 					render_state <= 'd1;
-					//total_pixels <= x_size * y_size;
 				end
 			end
 			1: begin
 			// Set up the point_gen units and wait until they are done
 				for (j = 0; j < set_size; j = j + 1) begin
-					//x[j] <= (base_pixel + j) % x_size;
-					//y[j] <= (base_pixel + j) / x_size;
 					x[j] <= (x[j] + set_size < x_size) ? x[j] + set_size : x[j] + set_size - x_size;
 					y[j] <= (x[j] + set_size < x_size) ? y[j] : y[j] + 1;
 				end
@@ -189,7 +179,7 @@ module mandelbrotRederingEngine(
 				if (frame_ready) begin
 					render_state <= 'd0;
 					base_pixel <= 0;
-				end else if (&set_ready && done) begin
+				end else if (&set_ready && output_done) begin
 					for (j = 0; j < set_size; j = j + 1) begin
 						iterations_reg[j] <= iterations[j];
 					end
@@ -205,13 +195,20 @@ module mandelbrotRederingEngine(
 	// Output controller
 	///////////////////////
 	
-	//assign data = iterations_reg[base_output];			// The data to be written to memory
+	always @ (posedge CLK) begin
+		LED[0] <= (frame_ready);
+		LED[1] <= (render_state == 2);
+		LED[2] <= (output_state == 1);
+		LED[3] <= (&set_ready);
+	end
+	
 	reg [23:0] base_output;												// The pixel number that is being output
 	assign ready = (output_state == 'd1 && data_available);	// The data is ready to be written to memory
 	assign frame_ready = (base_output >= total_pixels);		// Every pixel has been calculated
+	wire data_available = (base_pixel >= base_output);
 	
 	reg [7:0] output_state;
-	
+	wire output_done = (output_state == 0);				
 	
 	always @(posedge CLK, posedge reset) begin
 		if (reset) begin
@@ -220,9 +217,7 @@ module mandelbrotRederingEngine(
 		end else begin
 			case(output_state)
 			0: begin
-			done <= 1;
 			if (data_available) begin
-				done <= 0;
 				output_state <= 'd1;
 				data <= iterations_reg[base_output];
 				end
@@ -233,7 +228,6 @@ module mandelbrotRederingEngine(
 					base_output <= base_output + 'd1;
 				end else if (!data_available) begin
 					output_state <= 'd0;
-					done <= 1;
 					if (frame_ready) base_output <= 0;
 				end
 			end

@@ -51,7 +51,9 @@ module ddrPort1Controller(
 	 output reg start_output
     );
 	 
-	wire restart = end_frame | update | reset;
+	wire restart;
+	
+	BUF restart_buf (I.(end_frame | update | reset), O.(restart));
 	
 	////////////////////////////
 	// Resolution configuration
@@ -63,7 +65,7 @@ module ddrPort1Controller(
 	parameter SW_HDTV720P  = 4'b0010; // 1280x720
 	parameter SW_SXGA      = 4'b1000; // 1280x1024
 	
-	reg [19:0] total_pixels;
+	reg [20:0] total_pixels;
 	
 	always @ (posedge clk) begin
 		if (update) begin
@@ -80,7 +82,7 @@ module ddrPort1Controller(
 	//////////////////
 	
 	//Inputs
-	wire [23:0] FIFO_data_in = (rd_data == 255) ? 24'b0 : 24'hFFFFFF;
+	wire [23:0] FIFO_data_in = rd_data; //(rd_data == 255) ? 24'b0 : 24'hFFFFFF;
 	reg FIFO_wr_en;
 	//reg FIFO_rd_en;
 	wire FIFO_rd_en = (stream_data && !FIFO_empty);
@@ -113,7 +115,6 @@ module ddrPort1Controller(
 	reg [5:0] FIFO_write_state;
 	reg continue_feed;
 	reg [26:0] led_count;
-	assign LED = led_count[23:20];
 
 	always @ (posedge clk) begin
 		case(FIFO_write_state)
@@ -138,8 +139,12 @@ module ddrPort1Controller(
 		endcase
 	end
 	
+	reg [20:0] count;
+	assign LED[0] = (count == total_pixels);
+	
 	always @ (posedge pclk) begin
-		if (FIFO_rd_en)	led_count <= led_count + 1;
+		if (stream_data)	led_count <= led_count + 1;
+		count <= (count < led_count) ? led_count : count;
 	end
 		
 	// Block HDMI from starting output untill there is data available
@@ -172,37 +177,40 @@ module ddrPort1Controller(
 	wire loaded = (rd_count == read_count && rd_count != 0);
 	wire rd_almost_empty = (rd_count == 1);
 		 
-	always @ (posedge clk) begin //, posedge reset, posedge restart) begin
-		/*if (reset) begin
+	always @ (posedge clk, posedge reset) begin //, posedge restart) begin
+		if (reset) begin
 			state <= 0;
 			pointer <= 0;
-		end else if (restart) begin
-			state <= 1;
-			pointer <= 0;
-		end else begin*/
-		case (state)
-		0: begin
-			if (calib_done[1]) state <= 1;
-		end
-		1: begin
-			if (rd_empty) begin
-				cmd_instr <= 3'b001;
-				cmd_bl <= read_amount - 1;
-				cmd_byte_addr <= pointer + base_pointer;
-				cmd_en <= 1;
-				read_count <= read_amount;
-				pointer <= (inrange) ? next_pointer : 0;
-				state <= 2;
-			end
-		end
-		2: begin
 			cmd_en <= 0;
-			state <= 3;
+			read_count <= 0;
+		/*end else if (restart) begin
+			state <= 1;
+			pointer <= 0;*/
+		end else begin
+			case (state)
+			0: begin
+				if (calib_done[1]) state <= 1;
+			end
+			1: begin
+				if (rd_empty) begin
+					cmd_instr <= 3'b001;
+					cmd_bl <= read_amount - 1;
+					cmd_byte_addr <= pointer + base_pointer;
+					cmd_en <= 1;
+					read_count <= read_amount;
+					pointer <= (inrange) ? next_pointer : 0;
+					state <= 2;
+				end
+			end
+			2: begin
+				cmd_en <= 0;
+				state <= 3;
+			end
+			3: begin
+				if (loaded) state <= 1;
+			end
+			endcase
 		end
-		3: begin
-			if (loaded) state <= 1;
-		end
-		endcase
 	end
 
 endmodule
