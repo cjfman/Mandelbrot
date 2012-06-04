@@ -113,10 +113,7 @@ module ddrPort1Controller(
 	reg [5:0] FIFO_write_state;
 	reg continue_feed;
 	reg [26:0] led_count;
-	reg [1:0] led;
-	//assign LED = led_count[23:20];
-	assign LED[1:0] = led;
-	assign LED[3:2] = {FIFO_empty, rd_empty};
+	assign LED = led_count[23:20];
 
 	always @ (posedge clk) begin
 		case(FIFO_write_state)
@@ -131,11 +128,11 @@ module ddrPort1Controller(
 			end
 		end
 		2: begin
-			if (FIFO_almost_full || rd_count == 1) begin
+			if (FIFO_almost_full || rd_almost_empty) begin
 				rd_en <= 0;
 				FIFO_wr_en <= 0;
 				FIFO_write_state <= 1;
-				continue_feed <= ~rd_empty;
+				continue_feed <= ~rd_almost_empty;
 			end
 		end
 		endcase
@@ -143,8 +140,6 @@ module ddrPort1Controller(
 	
 	always @ (posedge pclk) begin
 		if (FIFO_rd_en)	led_count <= led_count + 1;
-		led[0] <= (led[0] || state == 3);
-		led[1] <= ((led[0] && state == 2) || led[1]);
 	end
 		
 	// Block HDMI from starting output untill there is data available
@@ -168,12 +163,11 @@ module ddrPort1Controller(
 		end
 		2: begin
 			FIFO_rd_en <= 0;
-			//LED <= FIFO_dout[3:0];
 			STATE <= 3;
 		end
 		3: begin
 			hold <= hold + 27'd1;
-			if (hold[13]) begin
+			if (hold[2]) begin
 				hold <= 27'd0;
 				STATE <= 1;
 			end
@@ -205,6 +199,7 @@ module ddrPort1Controller(
 	wire inrange = (next_pointer < total_pixels << 2);
 	wire [7:0] read_amount = (inrange) ? 64 : (total_pixels - (pointer >> 2));
 	wire loaded = (rd_count == read_count && rd_count != 0);
+	wire rd_almost_empty = (rd_count == 1);
 		 
 	always @ (posedge clk) begin //, posedge reset, posedge restart) begin
 		/*if (reset) begin
