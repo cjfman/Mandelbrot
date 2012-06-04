@@ -101,8 +101,7 @@ module mainController(
 		
 		
 	reg [27:0] led_count;
-	assign LED[7:5] = led_count[27:25];
-	assign LED[4] = update;
+	assign LED[7:4] = led_count[27:24];
 	
 	always @(posedge color_clk)
 		led_count <= led_count + 1;
