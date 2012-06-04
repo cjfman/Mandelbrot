@@ -317,6 +317,8 @@ architecture xilinx of MemoryReadFIFO_top is
   PORT (
            WR_CLK                    : IN  std_logic;
      	   RD_CLK                    : IN  std_logic;
+           ALMOST_FULL               : OUT std_logic;
+           ALMOST_EMPTY              : OUT std_logic;
            RST                       : IN  std_logic;
            WR_EN 		     : IN  std_logic;
            RD_EN                     : IN  std_logic;
@@ -333,6 +335,8 @@ begin
     port map (
            WR_CLK                    => WR_CLK_i,
            RD_CLK                    => RD_CLK_i,
+           ALMOST_FULL               => ALMOST_FULL,
+           ALMOST_EMPTY              => ALMOST_EMPTY,
            RST                       => RST,
            WR_EN 		     => WR_EN,
            RD_EN                     => RD_EN,

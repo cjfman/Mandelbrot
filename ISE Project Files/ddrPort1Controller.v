@@ -24,7 +24,7 @@ module ddrPort1Controller(
 	 
     input base_selector,
 	 
-	 output [3:0] LED,
+	 output reg [3:0] LED,
 	 
 	 // Switches
 	 input [3:0] resolution,
@@ -80,33 +80,21 @@ module ddrPort1Controller(
 	//////////////////
 	
 	//Inputs
-	wire [23:0] FIFO_data_in = (rd_data == 255) ? 24'b0 : 24'hFFFFFF;
+	wire [23:0] FIFO_data_in = rd_data; //(rd_data == 255) ? 24'b0 : 24'hFFFFFF;
+	//reg [23:0] FIFO_data_in = 4'b1010;
 	reg FIFO_wr_en;
-	wire FIFO_rd_en = (stream_data && !FIFO_empty);
-	
-	reg led;
-	
-	assign LED[0] = inrange;
-	assign LED[1] = led;
-	assign LED[2] = rd_empty;
-	assign LED[3] = (state != 0);
-	
-	always @ (posedge clk)
-		led <= (FIFO_write_state == 1) | led;
-		
-	//reg [27:0] led_count;
-	//assign LED = led_count[24:21];
-	
-	//always @(posedge clk)
-	//	led_count <= led_count + 1;
+	reg FIFO_rd_en;
+	//wire FIFO_rd_en = (stream_data && !FIFO_empty);
 	
 	//Outpus
 	wire [23:0] FIFO_dout;
 	wire FIFO_full;
+	wire FIFO_almost_full;
+	wire FIFO_almost_empty;
 	wire FIFO_empty;
 	
 	MemoryReadFIFO pixel_FIFO (
-		.rst(restart), // input rst
+		.rst(reset), // input rst
 		.wr_clk(clk), // input wr_clk
 		.rd_clk(pclk), // input rd_clk
 		.din(FIFO_data_in), // input [23 : 0] din
@@ -114,7 +102,9 @@ module ddrPort1Controller(
 		.rd_en(FIFO_rd_en), // input rd_en
 		.dout(FIFO_dout), // output [23 : 0] dout
 		.full(FIFO_full), // output full
-		.empty(FIFO_empty) // output empty
+		.empty(FIFO_empty), // output empty
+		.almost_full(FIFO_almost_full),
+		.almost_empty(almost_empty)
 	);
 	
 	assign data_out_valid = ~FIFO_empty;
@@ -122,30 +112,116 @@ module ddrPort1Controller(
 	
 	// Feed FIFO
 	reg [5:0] FIFO_write_state;
-	
+
 	always @ (posedge clk) begin
 		case(FIFO_write_state)
 		0: begin
-			if (!FIFO_full && rd_count == read_count && read_count > 0) begin
-				rd_en <= 1;
-				FIFO_write_state <= 1;
-			end
+			if (calib_done[1]) FIFO_write_state <= 1;
 		end
 		1: begin
-			if (!FIFO_full && rd_count != 1) begin
+			if (!FIFO_full && loaded) begin
+				rd_en <= 1;
 				FIFO_wr_en <= 1;
-			end else begin
-				FIFO_wr_en <= 0;
-				FIFO_write_state <= 0;
+				FIFO_write_state <= 2;
+				//FIFO_data_in <= rd_data;
+			end
+		end
+		2: begin
+			//FIFO_data_in <= rd_data;
+			if (FIFO_almost_full || rd_count == 1) begin
 				rd_en <= 0;
+				FIFO_wr_en <= 0;
+				FIFO_write_state <= 1;
 			end
 		end
 		endcase
 	end
 	
+	/*always @ (posedge clk) begin
+		case(FIFO_write_state)
+		0: begin
+			if (FIFO_empty) begin
+				FIFO_wr_en <= 1;
+				FIFO_write_state <= 1;
+			end
+		end
+		1: begin
+			if (FIFO_almost_full) begin
+				FIFO_wr_en <= 0;
+				FIFO_write_state <= 0;
+			end
+		end
+		endcase
+	end*/
+		
 	// Block HDMI from starting output untill there is data available
-	always @ (posedge clk)
-		start_output <= (start_output || rd_count == 64);
+	always @ (posedge clk) begin
+		start_output <= (start_output || FIFO_full);
+		//FIFO_data_in <= rd_data; //~FIFO_data_in;
+		//LED <= FIFO_write_state;
+	end
+		
+	reg [26:0] hold;
+	reg [11:0] count;
+	reg [5:0] STATE;
+	
+	always @ (posedge pclk) begin
+	case (STATE)
+		0: begin
+			if (FIFO_full) STATE <= 1;
+		end
+		1: begin
+			if (!FIFO_empty) begin
+				FIFO_rd_en <= 1;
+				STATE <= 2;
+			end
+		end
+		2: begin
+			FIFO_rd_en <= 0;
+			LED <= FIFO_dout[3:0];
+			STATE <= 3;
+		end
+		3: begin
+			hold <= hold + 27'd1;
+			if (hold[24]) begin
+				hold <= 27'd0;
+				STATE <= 1;
+			end
+		end
+		endcase
+	end
+
+	/*always @ (posedge clk) begin
+		case (state2)
+		0: begin
+			LED <= 4'b1001;
+			if (calib_done[1]) state2 <= 2;
+		end
+		1: begin
+			LED <= 4'b1010;
+		end
+		2: begin
+			LED <= 4'b0101;
+			if (rd_full) state2 <= 4;
+		end
+		3: begin
+			hold <= hold + 27'd1;
+			rd_en <= 0;
+			if (hold[26]) begin
+				hold <= 27'd0;
+				state2 <= 4;
+			end
+			end
+		4: begin
+			if (!rd_empty) begin
+				rd_en <= 1;
+				LED <= rd_data[3:0];
+				state2 <= 3;
+			end else
+				state2 <= 1;
+		end
+		endcase
+	end*/
 	
 	
 	//////////////////////////////////////
@@ -161,35 +237,36 @@ module ddrPort1Controller(
 	
 	// Memory pointers
 	
-	wire [29:0] base_pointer = 0; //(base_selector) ? 30'd70560 : 0;
+	wire [29:0] base_pointer = 0; //(base_selector) ? 30'd70560 :  0;
 	reg [29:0] pointer;
 	
 	reg [5:0] state = 0;
-	reg [6:0] read_count;
+	reg [7:0] read_count;
 	
 	wire [29:0] next_pointer = pointer + (64 << 2);
-	wire inrange = (next_pointer < (total_pixels << 2) + base_pointer);
-	wire [6:0] read_amount = (inrange) ? 64 : (total_pixels - (pointer >> 2));
-	 
-	always @ (posedge clk, posedge reset, posedge restart) begin
-		if (reset) begin
+	wire inrange = (next_pointer < total_pixels << 2);
+	wire [7:0] read_amount = (inrange) ? 64 : (total_pixels - (pointer >> 2));
+	wire loaded = (rd_count == read_count && rd_count != 0);
+		 
+	always @ (posedge clk) begin //, posedge reset, posedge restart) begin
+		/*if (reset) begin
 			state <= 0;
 			pointer <= 0;
 		end else if (restart) begin
 			state <= 1;
 			pointer <= 0;
-		end else begin
+		end else begin*/
 			case (state)
 			0: begin
 				if (calib_done[1]) state <= 1;
 			end
 			1: begin
-				cmd_instr <= 1;
-				cmd_bl <= read_amount - 1;
-				cmd_byte_addr <= pointer + base_pointer;
+				cmd_instr <= 3'b001;
+				cmd_bl <= 63; //read_amount - 1;
+				cmd_byte_addr <= 0; //pointer + base_pointer;
 				cmd_en <= 1;
-				read_count <= read_amount;
-				pointer <= (inrange) ? next_pointer : 0;
+				read_count <= 64; //read_amount;
+				//pointer <= (inrange) ? next_pointer : 0;
 				state <= 2;
 			end
 			2: begin
@@ -197,11 +274,60 @@ module ddrPort1Controller(
 				state <= 3;
 			end
 			3: begin
+				if (loaded) state <= 4;
+			end
+			4: begin
 				if (rd_empty) state <= 1;
 			end
 			endcase
-		end
+		//end
 	end
+	
+	/*reg [11:0] count;
+	reg [26:0] hold;
+	
+	always @(posedge clk)
+		case(state)
+		0: begin
+			if (calib_done[1]) state <= 10;
+		end
+		10: begin
+			count <= count + 1'b1;
+			if (count[11])
+				state <= 11;
+			end
+		11: begin
+			count <= 12'd0;
+			cmd_bl <= 6'd63;
+			cmd_byte_addr <= pointer;
+			cmd_instr <= 3'b001;
+			cmd_en <= 1;
+			pointer <= pointer + (64 << 2);
+			state <= 12;
+			end
+		12: begin
+			cmd_en <= 0;
+			count <= count + 1'b1;
+			if (count[11])
+				state <= 14;
+			end
+		13: begin
+			hold <= hold + 27'd1;
+			rd_en <= 0;
+			if (hold[26]) begin
+				hold <= 27'd0;
+				state <= 14;
+			end
+			end
+		14: begin
+			if (!rd_empty) begin
+				rd_en <= 1;
+				LED <= rd_data[3:0];
+				state <= 13;
+			end else
+				state <= 10;
+		end
+		endcase*/
 
 
 endmodule

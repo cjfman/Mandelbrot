@@ -13,7 +13,7 @@
  NET "SYS_CLK"   LOC = "L15"; # Bank = 1, Pin name = IO_L42P_GCLK7_M1UDM, Type = GCLK, Sch name = GCLK
  
 #Reset
-# NET "SYS_RESET"        LOC = "N4";
+# NET "SYS_RESET"        LOC = "T15";
 
 
 

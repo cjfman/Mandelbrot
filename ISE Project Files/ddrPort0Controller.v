@@ -29,16 +29,19 @@ module ddrPort0Controller(
 	input mem_calib_done,
 	input p0_wr_full,
 	input p0_wr_empty,
+	input p0_rd_empty,
 	input [6:0] p0_wr_count,
+	input [31:0] p0_rd_data,
 	output reg mem_reset,
 	output reg p0_wr_en,
+	output reg p0_rd_en,
 	output reg [2:0] p0_cmd_instr,
 	output reg p0_cmd_en,
 	output reg [5:0] p0_cmd_bl,
 	output reg [29:0] p0_cmd_byte_addr,
 	output reg [31:0] p0_wr_data,
 	output reg memory_frame,
-	output wire [3:0] LED
+	output reg [3:0] LED
     );
 	 
 	//assign LED[0] = (state != 0);
@@ -50,7 +53,7 @@ module ddrPort0Controller(
 	//always @(posedge clk)
 	//	led_count <= led_count + 1;
 	
-	assign LED = state[3:0];
+	//assign LED = state[3:0];
 	 
 	wire [29:0] base_pointer = 0; //(memory_frame) ? 0 : 70560;
 	reg [29:0] pointer;
@@ -68,6 +71,7 @@ module ddrPort0Controller(
 
 	reg [4:0] state;
 	reg [11:0] count;
+	reg [26:0] hold;
 	
 	always @(posedge clk)
 		case(state)
@@ -116,31 +120,106 @@ module ddrPort0Controller(
 		end*/
 		1: begin
 			if (p0_wr_empty) begin
-				p0_wr_data <= 255;
 				p0_wr_en <= 1;
-				p0_cmd_byte_addr <= pointer;
+				p0_wr_data <= 0; //255;
 				state <= 2;
 			end
 		end
 		2: begin
 			if (p0_wr_count == 63) begin
 				p0_wr_en <= 0;
+				p0_cmd_instr <= 3'b000;
+				p0_cmd_en <= 1;
+				p0_cmd_bl <= 63;
+				p0_cmd_byte_addr <= pointer;
+				pointer <= pointer + (64 << 2);
 				state <= 3;
 			end else begin
-				p0_wr_data <= ~p0_wr_data;
+				p0_wr_data <= p0_wr_data + 1; //~p0_wr_data;
 			end
 		end
 		3: begin
-			p0_cmd_instr <= 0;
-			p0_cmd_en <= 1;
-			p0_cmd_bl <= 63;
-			pointer <= pointer + (64 << 2);
-			state <= 4;
-		end
-		4: begin
 			p0_cmd_en <= 0;
 			state <= 1;
 		end
+		/*1: begin
+			p0_wr_en <= 1;
+			p0_wr_data <= 64'd1;
+			count <= 12'd0;
+			state <= 2;
+			end
+		2: begin
+			p0_wr_data <= 64'd2;
+			state <= 3;
+			end
+		3: begin
+			p0_wr_data <= 64'd3;
+			state <= 4;
+			end
+		4: begin
+			p0_wr_data <= 64'd4;
+			state <= 5;
+			end
+		5: begin
+			p0_wr_data <= 64'd5;
+			state <= 6;
+			end
+		6: begin
+			p0_wr_data <= 64'h6;
+			state <= 7;
+			end
+		7: begin
+			p0_wr_data <= 64'h7;
+			state <= 8;
+			end
+		8: begin
+			p0_wr_en <= 0;
+			p0_cmd_instr <= 3'b000; // Write
+			p0_cmd_bl <= 6'd7; // 6 bytes
+			p0_cmd_byte_addr <= 30'd16; // To address 16
+			p0_cmd_en <= 1;
+			state <= 9;
+			end
+		9: begin
+			p0_cmd_en <= 0;
+			state <= 10;
+			count <= 12'b0;
+			end
+		10: begin
+			count <= count + 1'b1;
+			if (count[11])
+				state <= 11;
+			end
+		11: begin
+			count <= 12'd0;
+			p0_cmd_bl <= 6'd7;
+			p0_cmd_byte_addr <= 30'd16;
+			p0_cmd_instr <= 3'b001;
+			p0_cmd_en <= 1;
+			state <= 12;
+			end
+		12: begin
+			p0_cmd_en <= 0;
+			count <= count + 1'b1;
+			if (count[11])
+				state <= 14;
+			end
+		13: begin
+			hold <= hold + 27'd1;
+			p0_rd_en <= 0;
+			if (hold[26]) begin
+				hold <= 27'd0;
+				state <= 14;
+			end
+			end
+		14: begin
+			if (!p0_rd_empty) begin
+				p0_rd_en <= 1;
+				LED <= p0_rd_data[3:0];
+				state <= 13;
+			end else
+				state <= 1;
+		end*/
 		endcase
 
 endmodule

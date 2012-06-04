@@ -63,7 +63,9 @@ MemoryReadFIFO your_instance_name (
   .rd_en(rd_en), // input rd_en
   .dout(dout), // output [23 : 0] dout
   .full(full), // output full
-  .empty(empty) // output empty
+  .almost_full(almost_full), // output almost_full
+  .empty(empty), // output empty
+  .almost_empty(almost_empty) // output almost_empty
 );
 // INST_TAG_END ------ End INSTANTIATION Template ---------
 

@@ -45,7 +45,9 @@ module MemoryReadFIFO(
   rd_en,
   dout,
   full,
-  empty
+  almost_full,
+  empty,
+  almost_empty
 );
 
 input rst;
@@ -56,7 +58,9 @@ input wr_en;
 input rd_en;
 output [23 : 0] dout;
 output full;
+output almost_full;
 output empty;
+output almost_empty;
 
 // synthesis translate_off
 
@@ -108,8 +112,8 @@ output empty;
     .C_ERROR_INJECTION_TYPE_WRCH(0),
     .C_FAMILY("spartan6"),
     .C_FULL_FLAGS_RST_VAL(1),
-    .C_HAS_ALMOST_EMPTY(0),
-    .C_HAS_ALMOST_FULL(0),
+    .C_HAS_ALMOST_EMPTY(1),
+    .C_HAS_ALMOST_FULL(1),
     .C_HAS_AXI_ARUSER(0),
     .C_HAS_AXI_AWUSER(0),
     .C_HAS_AXI_BUSER(0),
@@ -259,7 +263,9 @@ output empty;
     .RD_EN(rd_en),
     .DOUT(dout),
     .FULL(full),
+    .ALMOST_FULL(almost_full),
     .EMPTY(empty),
+    .ALMOST_EMPTY(almost_empty),
     .BACKUP(),
     .BACKUP_MARKER(),
     .CLK(),
@@ -275,10 +281,8 @@ output empty;
     .INT_CLK(),
     .INJECTDBITERR(),
     .INJECTSBITERR(),
-    .ALMOST_FULL(),
     .WR_ACK(),
     .OVERFLOW(),
-    .ALMOST_EMPTY(),
     .VALID(),
     .UNDERFLOW(),
     .DATA_COUNT(),

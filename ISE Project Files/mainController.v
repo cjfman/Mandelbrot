@@ -101,7 +101,8 @@ module mainController(
 		
 		
 	reg [27:0] led_count;
-	assign LED[7:4] = led_count[27:24];
+	assign LED[7:5] = led_count[27:25];
+	assign LED[4] = update;
 	
 	always @(posedge color_clk)
 		led_count <= led_count + 1;
@@ -207,7 +208,7 @@ module mainController(
 	wire [29:0] p0_cmd_byte_addr;
 	reg [3:0] p0_wr_mask;
 	wire [31:0] p0_wr_data;
-	reg p0_rd_en;
+	wire p0_rd_en;
 	wire p0_wr_en;
 	wire [2:0] p1_cmd_instr;
 	wire [5:0] p1_cmd_bl;
@@ -335,8 +336,11 @@ module mainController(
 		 .mem_calib_done(mem_calib_done), 
 		 .p0_wr_full(p0_wr_full), 
 		 .p0_wr_empty(p0_wr_empty), 
+		 .p0_rd_empty(p0_rd_empty),
+		 .p0_rd_data(p0_rd_data),
 		 .mem_reset(mem_reset), 
 		 .p0_wr_en(p0_wr_en), 
+		 .p0_rd_en(p0_rd_en),
 		 .p0_wr_count(p0_wr_count),
 		 .p0_cmd_instr(p0_cmd_instr), 
 		 .p0_cmd_en(p0_cmd_en), 
