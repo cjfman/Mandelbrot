@@ -19,26 +19,26 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module mandelbrotRederingEngine # (
-	 parameter max_iterations = 255
+	 parameter max_iterations = 255,
+	 parameter HBP = 32,
+	 parameter HBS = 32,
+	 parameter HBI = 32,
+	 parameter set_size = 1
 	 )(
     input CLK,
 	 input SYS_RESET,
 	 input send_data,
 	 input start_render,
+	 input clear_frame,
 	 input update,
 	 input [3:0] resolution,
     output reg [31:0] data,
     output wire ready,
-	 output wire frame_ready,
+	 output reg frame_ready,
 	 output reg [3:0] LED
     );
 
 	wire reset = (update || SYS_RESET);
-	
-	parameter HBP = 32;
-	parameter HBS = 32;
-	parameter HBI = 32;
-	parameter set_size = 1;
 	
 	////////////////////////////
 	// Resolution configuration
@@ -149,22 +149,32 @@ module mandelbrotRederingEngine # (
 		im_end	<=  'd2;
 		for (j = 0; j < set_size; j = j + 1) begin
 			iterations_reg[j] <= 'd0;
+			x[j] = j;
+			y[j] = 0;
 		end
 	end
 		
 	// Rendering block
 	reg [7:0] render_state;
+	//wire [11:0] next_x = x[j] + set_size;
+	
+	reg startr;
 
 	always @(posedge CLK, posedge reset) begin
 		if (reset) begin
 			render_state <= 0;
 			base_pixel <= 0;
+			for (j = 0; j < set_size; j = j + 1) begin
+				x[j] <= j;
+				y[j] <= 0;
+			end
 		end else begin
 			case(render_state)
 			0: begin
 			//Wait until the start_render signal is asserted
 				if (start_render) begin
 					render_state <= 'd1;
+					startr <= 1;
 				end
 			end
 			1: begin
@@ -179,6 +189,10 @@ module mandelbrotRederingEngine # (
 				if (frame_ready) begin
 					render_state <= 'd0;
 					base_pixel <= 0;
+					for (j = 0; j < set_size; j = j + 1) begin
+						x[j] <= j;
+						y[j] <= 0;
+					end
 				end else if (&set_ready && output_done) begin
 					for (j = 0; j < set_size; j = j + 1) begin
 						iterations_reg[j] <= iterations[j];
@@ -191,44 +205,54 @@ module mandelbrotRederingEngine # (
 		end
 	end
 	
+	/////////////////////
+	//
+	/////////////////////
+		
+	always @ (posedge CLK) begin
+		frame_ready <= (clear_frame) ? 0 : (output_total >= total_pixels || frame_ready);
+	end
+
+	
 	///////////////////////
 	// Output controller
 	///////////////////////
 	
-	always @ (posedge CLK) begin
-		LED[0] <= (frame_ready);
-		LED[1] <= (render_state == 2);
-		LED[2] <= (output_state == 1);
-		LED[3] <= (&set_ready);
-	end
+	//reg frame_ready;
+	reg [3:0] output_state;
+	reg [7:0] output_count;
+	reg [20:0] output_total;
+	wire output_done = (output_state == 0);
+	assign ready = (output_state == 1);
 	
-	reg [23:0] base_output;												// The pixel number that is being output
-	assign ready = (output_state == 'd1 && data_available);	// The data is ready to be written to memory
-	assign frame_ready = (base_output >= total_pixels);		// Every pixel has been calculated
-	wire data_available = (base_pixel >= base_output);
-	
-	reg [7:0] output_state;
-	wire output_done = (output_state == 0);				
-	
-	always @(posedge CLK, posedge reset) begin
+	always @ (posedge CLK, posedge reset) begin
 		if (reset) begin
 			output_state <= 0;
-			base_output <= 0;
+			output_total <= 0;
+			output_count <= 0;
 		end else begin
 			case(output_state)
 			0: begin
-			if (data_available) begin
-				output_state <= 'd1;
-				data <= iterations_reg[base_output];
+				if (&set_ready) begin
+					output_state <= 1;
 				end
 			end
 			1: begin
 				if (send_data) begin
-					data <= iterations_reg[base_output];
-					base_output <= base_output + 'd1;
-				end else if (!data_available) begin
-					output_state <= 'd0;
-					if (frame_ready) base_output <= 0;
+					output_state <= 2;
+					output_total <= output_total + set_size;
+					data <= iterations_reg[output_count];
+					output_count <= output_count + 1;
+				end
+			end
+			2: begin
+				if (output_count < set_size) begin
+					data <= iterations_reg[output_count];
+					output_count <= output_count + 1;
+				end else begin
+					output_state <= 0;
+					output_count <= 0;
+					if (frame_ready) output_total <= 0;
 				end
 			end
 			endcase

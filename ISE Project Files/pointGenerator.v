@@ -80,7 +80,7 @@ module pointGenerator # (
 	end
 */
 
-	assign ready = (state == 0);
+	assign ready = (state == 2);
 
 	reg [3:0] state;
 	
@@ -88,9 +88,10 @@ module pointGenerator # (
 		case(state)
 		0: if (start) state <= 1;
 		1: begin
-			iteration <= (x[11:3] == y[11:3]) ? 255 : 0;
-			state <= 0;
+			iteration <= (x == 320 || x == y) ? 255 : 0;
+			state <= 2;
 		end
+		2: if (start) state <= 1;
 		endcase
 	end
 	

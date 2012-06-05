@@ -104,7 +104,9 @@ module mainController(
 		
 		
 	reg [27:0] led_count;
-	assign LED[7:4] = led_count[27:24];
+	assign LED[7:6] = led_count[27:26];
+	assign LED[4] = update;
+	assign LED[5] = 1;
 	
 	always @(posedge color_clk)
 		led_count <= led_count + 1;
@@ -195,7 +197,8 @@ module mainController(
 	 .blue_data_in(blue_data_in),
 	 .start_output(start_output),
 	 .retrieve_data(stream_data),
-	 .pclk(pclk)
+	 .pclk(pclk),
+	 .end_frame(end_frame)
     );
 	 
 	 //assign LED[3:0] = sws_sync_q;
@@ -301,6 +304,8 @@ module mainController(
 /// Mandelbrot Generator
 //////////////////////////////////////
 
+	parameter set_size = 1;
+
 	// Outputs
 	wire mandelbrot_data_ready;
 	wire frame_ready;
@@ -309,14 +314,18 @@ module mainController(
 	// Inputs
 	wire mandelbrot_send_data;
 	wire start_render = 1;
+	wire clear_frame;
 	
-	mandelbrotRederingEngine mandelbrot (
+	mandelbrotRederingEngine  # (
+		 .set_size(set_size)
+	) mandelbrot (
     .CLK(render_clk), 
 	 .SYS_RESET(SYS_RESET),
 	 .update(update),
 	 .resolution(resolution),
     .send_data(mandelbrot_send_data), 
     .start_render(start_render), 
+	 .clear_frame(clear_frame),
     .data(point_data), 
     .ready(mandelbrot_data_ready), 
     .frame_ready(frame_ready)
@@ -331,12 +340,15 @@ module mainController(
 	// Outputs
 	wire frame_selector;
 	 
-	ddrPort0Controller port0Controller (
+	ddrPort0Controller # (
+		 .set_size(set_size)
+	) port0Controller (
 		 .clk(render_clk), 
 		 .data(point_data), 
 		 .ready(mandelbrot_data_ready), 
 		 .frame_ready(frame_ready), 
 		 .send_data(mandelbrot_send_data), 
+		 .clear_frame(clear_frame),
 		 .mem_calib_done(mem_calib_done), 
 		 .p0_wr_full(p0_wr_full), 
 		 .p0_wr_empty(p0_wr_empty), 

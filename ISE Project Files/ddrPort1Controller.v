@@ -24,7 +24,7 @@ module ddrPort1Controller(
 	 
     input base_selector,
 	 
-	 output wire [3:0] LED,
+	 output reg [3:0] LED,
 	 
 	 // Switches
 	 input [3:0] resolution,
@@ -51,9 +51,13 @@ module ddrPort1Controller(
 	 output reg start_output
     );
 	 
-	wire restart = end_frame | update | reset;
+	wire restart;
+	wire re_start  = end_frame | update | reset;	
+	BUF restart_buf (.I(re_start), .O(restart));
 	
-	//BUF restart_buf (.I(end_frame | update | reset), .O(restart));
+	//wire FIFO_reset;
+	//wire FIFO_r = reset;
+	//BUF FIFO_reset_buf(.I(FIFO_r),.O(FIFO_reset));
 	
 	////////////////////////////
 	// Resolution configuration
@@ -69,10 +73,26 @@ module ddrPort1Controller(
 	
 	always @ (posedge clk) begin
 		if (update) begin
-			total_pixels <= (SW_VGA)      ? 307200:
-								 (SW_SVGA)     ? 480000:
-								 (SW_XGA)      ? 786432:
-								 (SW_HDTV720P) ? 921600: 1310720; // Assume SXGA
+			case (resolution)
+			SW_VGA: begin
+				total_pixels <= 21'd307200;
+			end
+			SW_SVGA: begin
+				total_pixels <= 21'd480000;
+			end
+			SW_XGA: begin
+				total_pixels <= 21'd786432;
+			end
+			SW_HDTV720P: begin
+				total_pixels <= 21'd921600;
+			end
+			SW_SXGA: begin
+				total_pixels <= 21'd1310720;
+			end
+			default: begin
+				total_pixels <= 21'd307200;
+			end
+			endcase
 		end
 	end
 		
@@ -82,10 +102,11 @@ module ddrPort1Controller(
 	//////////////////
 	
 	//Inputs
-	wire [23:0] FIFO_data_in = rd_data; //(rd_data == 255) ? 24'b0 : 24'hFFFFFF;
+	wire [23:0] FIFO_data_in = (rd_data == 255) ? 24'b0 : 24'hFFFFFF;
 	reg FIFO_wr_en;
-	//reg FIFO_rd_en;
-	wire FIFO_rd_en = (stream_data && !FIFO_empty);
+	wire FIFO_rd_en = (FIFO_state != 4) ? (stream_data && !FIFO_empty) : 1'bz;
+	wire FIFO_wr =    (FIFO_state != 4) ? FIFO_wr_en : 1'bz;
+	reg FIFO_reset;
 	
 	//Outpus
 	wire [23:0] FIFO_dout;
@@ -95,11 +116,11 @@ module ddrPort1Controller(
 	wire FIFO_empty;
 	
 	MemoryReadFIFO pixel_FIFO (
-		.rst(reset), // input rst
+		.rst(FIFO_reset), // input rst
 		.wr_clk(clk), // input wr_clk
 		.rd_clk(pclk), // input rd_clk
 		.din(FIFO_data_in), // input [23 : 0] din
-		.wr_en(FIFO_wr_en), // input wr_en
+		.wr_en(FIFO_wr), // input wr_en
 		.rd_en(FIFO_rd_en), // input rd_en
 		.dout(FIFO_dout), // output [23 : 0] dout
 		.full(FIFO_full), // output full
@@ -112,44 +133,54 @@ module ddrPort1Controller(
 	assign data_out = FIFO_dout;
 	
 	// Feed FIFO
-	reg [5:0] FIFO_write_state;
+	reg [5:0] FIFO_state;
 	reg continue_feed;
 	reg [26:0] led_count;
-
-	always @ (posedge clk) begin
-		case(FIFO_write_state)
-		0: begin
-			if (calib_done[1]) FIFO_write_state <= 1;
-		end
-		1: begin
-			if (!FIFO_full && (loaded || continue_feed)) begin
-				rd_en <= 1;
-				FIFO_wr_en <= 1;
-				FIFO_write_state <= 2;
-			end
-		end
-		2: begin
-			if (FIFO_almost_full || rd_almost_empty) begin
-				rd_en <= 0;
-				FIFO_wr_en <= 0;
-				FIFO_write_state <= 1;
-				continue_feed <= ~rd_almost_empty;
-			end
-		end
-		endcase
-	end
+	reg [2:0] reset_count;
 	
-	reg [20:0] count;
-	assign LED[0] = (count == total_pixels);
-	
-	always @ (posedge pclk) begin
-		if (stream_data)	led_count <= led_count + 1;
-		count <= (count < led_count) ? led_count : count;
+	always @ (posedge clk, posedge reset) begin
+		if (reset) begin
+			FIFO_state <= 4;
+			FIFO_wr_en <= 0;
+			rd_en <= 0;
+			continue_feed <= 0;
+		end else begin
+			case(FIFO_state)
+			0: begin
+				FIFO_reset <= 1;
+				if (calib_done[1]) FIFO_state <= 1;
+			end
+			1: begin
+				if (!FIFO_full && (loaded || continue_feed)) begin
+					rd_en <= 1;
+					FIFO_wr_en <= 1;
+					FIFO_state <= 2;
+				end
+			end
+			2: begin
+				if (FIFO_almost_full || rd_almost_empty) begin
+					rd_en <= 0;
+					FIFO_wr_en <= 0;
+					FIFO_state <= 1;
+					continue_feed <= ~rd_almost_empty;
+				end
+			end
+			3: begin
+				FIFO_reset <= 1;
+				FIFO_state <= 4;
+			end
+			4: begin
+				FIFO_reset <= 0;
+				reset_count <= reset_count + 1;
+				if (reset_count[2]) FIFO_state <= 1;
+			end
+			endcase
+		end
 	end
-		
+			
 	// Block HDMI from starting output untill there is data available
-	always @ (posedge clk)
-		start_output <= (start_output || FIFO_full);
+	always @ (posedge clk, posedge reset)
+		start_output <= (reset) ? 0 : (start_output || (FIFO_almost_full && FIFO_state == 2));
 	
 	
 	//////////////////////////////////////
@@ -162,6 +193,14 @@ module ddrPort1Controller(
 	always @(posedge clk)
 		calib_done <= {calib_done[0], mem_calib_done};
 		
+	reg old_stream;
+	
+	always @ (posedge pclk) begin
+		old_stream <= stream_data;
+		// LED <= pointer[5:2];
+		if (stream_data & ~old_stream) LED <= pointer[11:8];
+	end
+		
 	
 	// Memory pointers
 	
@@ -172,7 +211,7 @@ module ddrPort1Controller(
 	reg [7:0] read_count;
 	
 	wire [29:0] next_pointer = pointer + (64 << 2);
-	wire inrange = (next_pointer < total_pixels << 2);
+	wire inrange = (next_pointer < (total_pixels << 2));
 	wire [7:0] read_amount = (inrange) ? 64 : (total_pixels - (pointer >> 2));
 	wire loaded = (rd_count == read_count && rd_count != 0);
 	wire rd_almost_empty = (rd_count == 1);
@@ -185,7 +224,9 @@ module ddrPort1Controller(
 			read_count <= 0;
 		/*end else if (restart) begin
 			state <= 1;
-			pointer <= 0;*/
+			pointer <= 0;
+			cmd_en <= 0;
+			read_count <= 0;*/
 		end else begin
 			case (state)
 			0: begin
