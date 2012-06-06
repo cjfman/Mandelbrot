@@ -1,0 +1,11 @@
+
+
+
+// Instantiate the module
+signedFixedPointMult instance_name (
+    .A(A), 
+    .B(B), 
+    .O(O)
+    );
+
+

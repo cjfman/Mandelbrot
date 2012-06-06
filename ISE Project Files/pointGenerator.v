@@ -161,7 +161,6 @@ module pointGenerator # (
 				im <= productX2 + im_pos;
 			end else begin
 				done <= 1;
-				if (x == y) iteration <= max_iterations;
 				state <= 0;
 			end
 		end

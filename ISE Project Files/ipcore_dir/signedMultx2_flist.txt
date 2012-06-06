@@ -1,0 +1,15 @@
+# Output products list for <signedMultx2>
+_xmsgs\pn_parser.xmsgs
+signedMultx2.asy
+signedMultx2.gise
+signedMultx2.ngc
+signedMultx2.sym
+signedMultx2.v
+signedMultx2.veo
+signedMultx2.xco
+signedMultx2.xise
+signedMultx2\doc\mult_gen_ds255.pdf
+signedMultx2\doc\mult_gen_v11_2_readme.txt
+signedMultx2\doc\mult_gen_v11_2_vinfo.html
+signedMultx2_flist.txt
+signedMultx2_xmdf.tcl
