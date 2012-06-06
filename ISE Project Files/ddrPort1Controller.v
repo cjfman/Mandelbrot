@@ -108,7 +108,7 @@ module ddrPort1Controller # (
 	// Outpus
 	wire [23:0] color;
 	
-	colorRom instance_name (
+	colorRom255 color_rom_0 (
     .clk(clk), 
     .iteration(rd_data), 
     .offset(offset), 

@@ -18,7 +18,7 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module colorRom(
+module colorRom1000(
     input clk,
     input [31:0] iteration,
     input [31:0] offset,
