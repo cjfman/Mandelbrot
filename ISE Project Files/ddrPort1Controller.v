@@ -121,7 +121,7 @@ module ddrPort1Controller # (
 	//////////////////
 	
 	//Inputs
-	wire [23:0] FIFO_data_in = color; //(rd_data == max_iterations) ? 24'b0 : 24'hFFFFFF;
+	wire [23:0] FIFO_data_in = color;
 	reg FIFO_wr_en;
 	wire FIFO_rd_en = (FIFO_state != 4) ? (stream_data && !FIFO_empty) : 1'bz;
 	wire FIFO_wr =    (FIFO_state != 4) ? FIFO_wr_en : 1'bz;
