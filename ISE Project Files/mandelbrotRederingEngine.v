@@ -188,7 +188,7 @@ module mandelbrotRederingEngine # (
 		
 	// Rendering block
 	reg [7:0] render_state;
-	//wire [11:0] next_x = x[j] + set_size;
+	reg [20:0] rendered;
 	
 	reg start_render = 1;
 
@@ -238,7 +238,7 @@ module mandelbrotRederingEngine # (
 	end
 	
 	/////////////////////
-	//
+	// Frame Ready
 	/////////////////////
 		
 	always @ (posedge CLK) begin
@@ -254,6 +254,7 @@ module mandelbrotRederingEngine # (
 	reg [3:0] output_state;
 	reg [7:0] output_count;
 	reg [20:0] output_total;
+	wire data_available = (base_pixel > output_total);
 	wire output_done = (output_state == 0);
 	assign ready = (output_state == 1);
 	

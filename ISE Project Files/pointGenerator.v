@@ -141,9 +141,6 @@ module pointGenerator # (
 			end
 		end
 		1: begin
-			/*if (x == y) iteration <= max_iterations;
-			state <= 0;
-			done <= 1;*/
 			if (!ready) begin
 				iteration <= iteration + 'b1;
 				re <= re2 - im2 + re_pos;
