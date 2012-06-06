@@ -125,7 +125,7 @@ module pointGenerator # (
 		.oF(HBP-3)
 	) y_scale (	
 		.A({8'd0, im_scale}), 
-		.B({0, x, 29'd0}), 
+		.B({0, y, 29'd0}), 
 		.O(yscale)
 		);
 	
@@ -144,18 +144,18 @@ module pointGenerator # (
 			if(start) begin
 				done <= 0;
 				iteration <= 'b0;
-				/*re <= 'b0;
+				re <= 'b0;
 				im <= 'b0;
 				re_pos <= xscale + re_start;
-				im_pos <= yscale + im_start;*/
+				im_pos <= yscale + im_start;
 				state <= 1;
 			end
 		end
 		1: begin
-			if (x == y) iteration <= max_iterations;
+			/*if (x == y) iteration <= max_iterations;
 			state <= 0;
-			done <= 1;
-			/*if (!ready) begin
+			done <= 1;*/
+			if (!ready) begin
 				iteration <= iteration + 'b1;
 				re <= re2 - im2 + re_pos;
 				im <= productX2 + im_pos;
@@ -163,7 +163,7 @@ module pointGenerator # (
 				done <= 1;
 				if (x == y) iteration <= max_iterations;
 				state <= 0;
-			end*/
+			end
 		end
 		endcase
 	end

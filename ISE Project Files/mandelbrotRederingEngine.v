@@ -35,10 +35,13 @@ module mandelbrotRederingEngine # (
     output reg [31:0] data,
     output wire ready,
 	 output reg frame_ready,
-	 output reg [3:0] LED
+	 output reg [7:0] LED
     );
 
 	wire reset = (update || SYS_RESET);
+	
+	always @ (posedge CLK)
+		if (data != 255 && data > LED) LED <= data[7:0];
 	
 	////////////////////////////
 	// Resolution configuration
@@ -52,6 +55,7 @@ module mandelbrotRederingEngine # (
 	
 	reg [10:0] x_size;
 	reg [10:0] y_size;
+	reg [3:-(HBP-3)] y_inverse;
 	reg [20:0] total_pixels;
 	
 	always @ (posedge CLK) begin
@@ -60,31 +64,37 @@ module mandelbrotRederingEngine # (
 			SW_VGA: begin
 				x_size <= 11'd640;
 				y_size <= 11'd480;
+				y_inverse <= 33'b000000000000100010001000100010001;    
 				total_pixels <= 21'd307200;
 			end
 			SW_SVGA: begin
 				x_size <= 11'd800;
 				y_size <= 11'd600;
 				total_pixels <= 21'd480000;
+				y_inverse <= 33'b000000000000011011010011101000000;
 			end
 			SW_XGA: begin
 				x_size <= 11'd1024;
 				y_size <= 11'd768;
+				y_inverse <= 33'b000000000000010101010101010101010;
 				total_pixels <= 21'd786432;
 			end
 			SW_HDTV720P: begin
 				x_size <= 11'd1280;
 				y_size <= 11'd720;
+				y_inverse <= 33'b000000000000010110110000010110110;
 				total_pixels <= 21'd921600;
 			end
 			SW_SXGA: begin
 				x_size <= 11'd1280;
 				y_size <= 11'd1024;
+				y_inverse[-1:-5] <= 5'b00001;
 				total_pixels <= 21'd1310720;
 			end
 			default: begin
 				x_size <= 11'd640;
 				y_size <= 11'd480;
+				y_inverse <= 33'b000000000000100010001000100010001;    
 				total_pixels <= 21'd307200;
 			end
 			endcase
@@ -112,8 +122,32 @@ module mandelbrotRederingEngine # (
 	reg signed [3:-(HBP-3)] im_end;
 	
 	// Calculate parameters
-	wire [3:-(HBP-3)] re_scale = (re_end - re_start) / y_size;
-	wire [3:-(HBP-3)] im_scale = (im_end - im_start) / y_size;
+	wire signed [3:-(HBP-3)] re_diff = (re_end - re_start);
+	wire signed [3:-(HBP-3)] im_diff = (im_end - im_start);
+	wire signed [3:-(HBP-3)] re_scale;// = (re_end - re_start) / y_size;
+	wire signed [3:-(HBP-3)] im_scale; // = (im_end - im_start) / y_size;
+	
+	signedFixedPointMult # (
+		.iD(4),
+		.iF(HBP-3),
+		.oD(4),
+		.oF(HBP-3)
+	) re_scaled (	
+		.A(re_diff), 
+		.B(y_inverse), 
+		.O(re_scale)
+		);
+		
+	signedFixedPointMult # (
+		.iD(4),
+		.iF(HBP-3),
+		.oD(4),
+		.oF(HBP-3)
+	) im_scaled (	
+		.A(im_diff), 
+		.B(y_inverse), 
+		.O(im_scale)
+		);
 	
 	// Pixels
 	reg  [23:0] base_pixel;
@@ -142,10 +176,10 @@ module mandelbrotRederingEngine # (
 	integer j;
 
 	initial begin
-		re_start <= -4'd3;
-		re_end 	<=  4'd1;
-		im_start <= -4'd2;
-		im_end	<=  4'd2;
+		re_start <= {-4'd3, 29'hFFFFFFFF};
+		re_end 	<=  {4'd1, 29'd0};
+		im_start <= {-4'd2, 29'hFFFFFFFF};
+		im_end	<=  {4'd2, 29'd0};
 		for (j = 0; j < set_size; j = j + 1) begin
 			iterations_reg[j] <= 'd0;
 			x[j] = j;

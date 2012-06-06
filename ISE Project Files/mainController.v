@@ -103,13 +103,13 @@ module mainController(
     .Color_CLK(color_clk));  // OUT
 		
 		
-	reg [27:0] led_count;
+	/*reg [27:0] led_count;
 	assign LED[7:6] = led_count[27:26];
 	assign LED[4] = update;
 	assign LED[5] = 1;
 	
 	always @(posedge color_clk)
-		led_count <= led_count + 1;
+		led_count <= led_count + 1;*/
 
 
 //////////////////////////////////////
@@ -324,8 +324,8 @@ module mainController(
 	 .clear_frame(clear_frame),
     .data(point_data), 
     .ready(mandelbrot_data_ready), 
-    .frame_ready(frame_ready)
-	 //.LED(LED[3:0])
+    .frame_ready(frame_ready),
+	 .LED(LED[7:0])
     );
 	 
 	 
@@ -396,8 +396,8 @@ module mainController(
     .y_pos(y_pos),	 
 	 .pclk(pclk),
     .data_out({red_data_in, green_data_in, blue_data_in}), 
-    .data_out_valid(data_out_valid), 
-	 .LED(LED[3:0])
+    .data_out_valid(data_out_valid)
+	 //.LED(LED[3:0])
 	 //.LED(LED[1])
     );
 		
