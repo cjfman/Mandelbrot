@@ -177,9 +177,9 @@ module mandelbrotRederingEngine # (
 
 	initial begin
 		re_start <= {-4'd3, 29'hFFFFFFFF};
-		re_end 	<=  {4'd1, 29'd0};
+		re_end 	<=  {4'd0, 29'd0};
 		im_start <= {-4'd2, 29'hFFFFFFFF};
-		im_end	<=  {4'd2, 29'd0};
+		im_end	<=  {4'd1, 29'd0};
 		for (j = 0; j < set_size; j = j + 1) begin
 			iterations_reg[j] <= 'd0;
 			x[j] = j;

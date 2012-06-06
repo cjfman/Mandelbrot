@@ -301,6 +301,7 @@ module mainController(
 //////////////////////////////////////
 
 	parameter set_size = 1;
+	parameter max_iterations = 255;
 
 	// Outputs
 	wire mandelbrot_data_ready;
@@ -313,7 +314,8 @@ module mainController(
 	wire clear_frame;
 	
 	mandelbrotRederingEngine  # (
-		 .set_size(set_size)
+		 .set_size(set_size),
+		 .max_iterations(max_iterations)
 	) mandelbrot (
     .CLK(render_clk), 
 	 .SYS_RESET(SYS_RESET),
@@ -375,7 +377,9 @@ module mainController(
 	//wire [23:0] data_out;
 	wire data_out_valid;
 
-	ddrPort1Controller port1Controller (
+	ddrPort1Controller # (
+	 .max_iterations(max_iterations)
+	) port1Controller (
     .clk(color_clk), 
     .reset(SYS_RESET), 
     .base_selector(frame_selector), 
