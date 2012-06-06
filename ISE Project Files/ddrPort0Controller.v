@@ -60,7 +60,7 @@ module ddrPort0Controller # (
 		//LED[0] <= (LED[0] || state == 2);
 		//LED[1] <= (LED[1] || data == 255);
 		//LED[2] <= (LED[2] || (data == 255 && state == 2));
-		LED <= state;
+		//LED <= state;
 	end
 	
 	//assign LED = state[3:0];
@@ -112,6 +112,10 @@ module ddrPort0Controller # (
 				p0_wr_data <= data;
 				count <= count + 1;
 				state <= 4;
+				if (pointer == 0 && data == 255) LED[0] <= 1;
+				if (pointer == (318 << 2) && data == 255) LED[1] <= 1;
+				if (pointer < (10 << 2) && data == 255) LED[2] <= 1;
+				if (pointer < (100 << 2) && data == 255) LED[3] <= 1;
 			end
 			4: begin
 				if (count < set_size) begin

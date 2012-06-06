@@ -34,10 +34,12 @@ module HDMI_Controller(
 	input start_output,
 	output wire retrieve_data,
 	output wire pclk,
-	output wire end_frame
+	output wire end_frame,
+	output wire end_line,
+	output wire [10:0] y_pos
     );
 
-//`define COLORBARS
+`define COLORBARS
 	 
 //////////////////////////////////////
 /// Debounce and Syncronize Switches
@@ -248,14 +250,11 @@ module HDMI_Controller(
   BUFPLL #(.DIVIDE(5)) ioclk_buf (.PLLIN(pllclk0), .GCLK(pclkx2), .LOCKED(pll_lckd),
            .IOCLK(pclkx10), .SERDESSTROBE(serdesstrobe), .LOCK(bufpll_lock));
 
-  synchro #(.INITIALIZE("LOGIC1"))
-  synchro_reset (.async(!pll_lckd),.sync(sreset),.clk(pclk));
+  wire reset;
   
-`ifdef COLORBARS
-  wire reset = sreset;
-`else
-  wire reset = sreset; //(sreset || !start_output);
-`endif
+  synchro #(.INITIALIZE("LOGIC1"))
+  synchro_reset (.async(!pll_lckd),.sync(reset),.clk(pclk));
+
 
 ///////////////////////////////////////////////////////////////////////////
 // Video Timing Parameters
@@ -451,13 +450,15 @@ module HDMI_Controller(
   /////////////////////////////////////////
   assign active = !bgnd_hblnk && !bgnd_vblnk;
   assign end_frame = (bgnd_vblnk && !frame_ending);
+  assign end_line  = (bgnd_hblnk && !line_ending);
+  assign y_pos = bgnd_vcount;
 
   reg active_q;
   reg vsync, hsync;
   reg VGA_HSYNC, VGA_VSYNC;
   reg de;
   reg frame_ending;
-  
+  reg line_ending;
 
   always @ (posedge pclk)
   begin
@@ -469,6 +470,7 @@ module HDMI_Controller(
     active_q <= active;
     de <= active_q;
 	 frame_ending <= bgnd_vblnk;
+	 line_ending <= bgnd_hblnk;
   end
   
   reg first_active;
@@ -476,7 +478,7 @@ module HDMI_Controller(
   always @ (posedge pclk)
 		first_active <= (first_active || (bgnd_vcount == 0 && bgnd_hcount == 0 && start_output));
 
-  assign retrieve_data = (active_q); // && first_active); //(active_q || de);
+  assign retrieve_data = active_q; //(active_q && first_active); // && first_active); //(active_q || de);
 	
   ///////////////////////////////////
   // Video pattern generator:

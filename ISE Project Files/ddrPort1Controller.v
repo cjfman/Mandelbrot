@@ -45,6 +45,8 @@ module ddrPort1Controller(
     // HDMI Interface
 	 input stream_data,
 	 input end_frame,
+	 input end_line,	
+	 input [10:0] y_pos,
 	 input pclk,
     output wire [23:0] data_out,
     output wire data_out_valid,
@@ -70,26 +72,40 @@ module ddrPort1Controller(
 	parameter SW_SXGA      = 4'b1000; // 1280x1024
 	
 	reg [20:0] total_pixels;
+	reg [10:0] y_size;
+	reg [10:0] x_size;
 	
 	always @ (posedge clk) begin
 		if (update) begin
 			case (resolution)
 			SW_VGA: begin
+				x_size <= 11'd640;
+				y_size <= 11'd480;
 				total_pixels <= 21'd307200;
 			end
 			SW_SVGA: begin
+				x_size <= 11'd800;
+				y_size <= 11'd600;
 				total_pixels <= 21'd480000;
 			end
 			SW_XGA: begin
+				x_size <= 11'd1024;
+				y_size <= 11'd768;
 				total_pixels <= 21'd786432;
 			end
 			SW_HDTV720P: begin
+				x_size <= 11'd1280;
+				y_size <= 11'd720;
 				total_pixels <= 21'd921600;
 			end
 			SW_SXGA: begin
+				x_size <= 11'd1280;
+				y_size <= 11'd1024;
 				total_pixels <= 21'd1310720;
 			end
 			default: begin
+				x_size <= 11'd640;
+				y_size <= 11'd480;
 				total_pixels <= 21'd307200;
 			end
 			endcase
@@ -205,12 +221,13 @@ module ddrPort1Controller(
 	// Memory pointers
 	
 	wire [29:0] base_pointer = 0; //(base_selector) ? 30'd70560 :  0;
+	reg [29:0] line_pointer;
 	reg [29:0] pointer;
 	
 	reg [5:0] state = 0;
 	reg [7:0] read_count;
 	
-	wire [29:0] next_pointer = pointer + (64 << 2);
+	/*wire [29:0] next_pointer = pointer + (64 << 2);
 	wire inrange = (next_pointer < (total_pixels << 2));
 	wire [7:0] read_amount = (inrange) ? 64 : (total_pixels - (pointer >> 2));
 	wire loaded = (rd_count == read_count && rd_count != 0);
@@ -222,11 +239,11 @@ module ddrPort1Controller(
 			pointer <= 0;
 			cmd_en <= 0;
 			read_count <= 0;
-		/*end else if (restart) begin
+		end else if (restart) begin
 			state <= 1;
 			pointer <= 0;
 			cmd_en <= 0;
-			read_count <= 0;*/
+			read_count <= 0;
 		end else begin
 			case (state)
 			0: begin
@@ -252,6 +269,69 @@ module ddrPort1Controller(
 			end
 			endcase
 		end
+	end*/
+	
+	wire [29:0] next_pointer = pointer + (64 << 2);
+	wire inrange = (next_pointer < (x_size << 2));
+	wire [7:0] read_amount = (inrange) ? 64 : (x_size - (pointer >> 2));
+	wire loaded = (rd_count == read_count && rd_count != 0);
+	wire rd_almost_empty = (rd_count == 1);
+	
+	wire s_end_line;
+   synchro #(.INITIALIZE("LOGIC1"))
+   synchro_end_line (.async(end_line),.sync(s_end_line),.clk(clk));
+		 
+	always @ (posedge clk, posedge reset) begin //, posedge restart) begin
+		if (reset) begin
+			state <= 0;
+			pointer <= 0;
+			cmd_en <= 0;
+			read_count <= 0;
+		/*end else if (restart) begin
+			state <= 1;
+			pointer <= 0;
+			cmd_en <= 0;
+			read_count <= 0;*/
+		end else begin
+			case (state)
+			0: begin
+				if (calib_done[1]) state <= 5;
+			end
+			1: begin
+				if (rd_empty) begin
+					cmd_instr <= 3'b001;
+					cmd_bl <= read_amount - 1;
+					cmd_byte_addr <= pointer + line_pointer + base_pointer;
+					cmd_en <= 1;
+					read_count <= read_amount;
+					state <= 2;
+				end
+			end
+			2: begin
+				cmd_en <= 0;
+				state <= 3;
+			end
+			3: begin
+				if (loaded) state <= 4;
+			end
+			4: begin
+				if (inrange) begin
+					pointer <= next_pointer;
+					state <= 1;
+				end else begin
+					pointer <= 0;
+					state <= 5;
+				end
+			end
+			5: begin
+				if (s_end_line) begin
+					line_pointer <= (y_pos + 1) * x_size;
+					state <= 1;
+				end
+			end
+			endcase
+		end
 	end
+
 
 endmodule

@@ -164,45 +164,6 @@ module mainController(
     update <= pwrup | sw0_rdy | sw1_rdy | sw2_rdy | sw3_rdy;
   end
 
-  
-//////////////////////////////////////
-/// HDMI Controller
-//////////////////////////////////////
-
-	// Inputs
-	wire [7:0] red_data_in;
-	wire [7:0] green_data_in;
-	wire [7:0] blue_data_in;
-	wire start_output;
-	
-	// Outputs
-	wire stream_data;
-	wire pclk;
-	wire end_frame;
-	
-	HDMI_Controller HDMI (
-	 .clk50m(clk50m),
-    .clk50m_bufg(clk50m_bufg), 
-	 .RESET(SYS_RESET),
-	 //.switch(switch),
-	 .SW(SW[3:0]),
-	 //.switches(sws_sync_q),
-	 .pwrup(pwrup),
-    .TMDSP({HDMIOUTCLKP, HDMIOUTDP}), 
-    .TMDSN({HDMIOUTCLKN, HDMIOUTDN}),
-	 //.LED(LED[3:0]),
-	 .pclk_lckd(pclk_lckd),
-	 .red_data_in(red_data_in),
-	 .green_data_in(green_data_in),
-	 .blue_data_in(blue_data_in),
-	 .start_output(start_output),
-	 .retrieve_data(stream_data),
-	 .pclk(pclk),
-	 .end_frame(end_frame)
-    );
-	 
-	 //assign LED[3:0] = sws_sync_q;
-
 
 //////////////////////////////////////
 /// Memory Controller
@@ -301,6 +262,49 @@ module mainController(
 	
 
 //////////////////////////////////////
+/// HDMI Controller
+//////////////////////////////////////
+
+	// Inputs
+	wire [7:0] red_data_in;
+	wire [7:0] green_data_in;
+	wire [7:0] blue_data_in;
+	wire start_output;
+	
+	// Outputs
+	wire stream_data;
+	wire pclk;
+	wire end_frame;
+	wire end_line;
+	wire [10:0] y_pos;
+	
+	HDMI_Controller HDMI (
+	 .clk50m(clk50m),
+    .clk50m_bufg(clk50m_bufg), 
+	 .RESET(SYS_RESET),
+	 //.switch(switch),
+	 .SW(SW[3:0]),
+	 //.switches(sws_sync_q),
+	 .pwrup(pwrup),
+    .TMDSP({HDMIOUTCLKP, HDMIOUTDP}), 
+    .TMDSN({HDMIOUTCLKN, HDMIOUTDN}),
+	 //.LED(LED[3:0]),
+	 .pclk_lckd(pclk_lckd),
+	 .red_data_in(red_data_in),
+	 .green_data_in(green_data_in),
+	 .blue_data_in(blue_data_in),
+	 .start_output(start_output),
+	 .retrieve_data(stream_data),
+	 .pclk(pclk),
+	 .end_frame(end_frame),
+	 .end_line(end_line),
+	 .y_pos(y_pos)
+    );
+	 
+	 //assign LED[3:0] = sws_sync_q;
+	 
+
+//////////////////////////////////////
 /// Mandelbrot Generator
 //////////////////////////////////////
 
@@ -363,8 +367,8 @@ module mainController(
 		 .p0_cmd_bl(p0_cmd_bl), 
 		 .p0_cmd_byte_addr(p0_cmd_byte_addr), 
 		 .p0_wr_data(p0_wr_data),
-		 .memory_frame(frame_selector)
-		 //.LED(LED[3:0])
+		 .memory_frame(frame_selector),
+		 .LED(LED[3:0])
 		 //.LED(LED[0])
 		 );
 		 
@@ -397,12 +401,14 @@ module mainController(
     .rd_en(p1_rd_en), 
     .cmd_en(p1_cmd_en), 
     .stream_data(stream_data), 
-    .end_frame(end_frame), 
+    .end_frame(end_frame),
+	 .end_line(end_line),	
+	 .y_pos(y_pos),	 
 	 .pclk(pclk),
     .data_out({red_data_in, green_data_in, blue_data_in}), 
     .data_out_valid(data_out_valid), 
-    .start_output(start_output),
-	 .LED(LED[3:0])
+    .start_output(start_output)
+	 //.LED(LED[3:0])
 	 //.LED(LED[1])
     );
 		
