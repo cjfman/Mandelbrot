@@ -44,20 +44,13 @@ module ddrPort1Controller(
     
     // HDMI Interface
 	 input stream_data,
-	 input end_frame,
+	 input end_line,	
+	 input [10:0] y_pos,
 	 input pclk,
     output wire [23:0] data_out,
-    output wire data_out_valid,
-	 output reg start_output
+    output wire data_out_valid
     );
-	 
-	wire restart;
-	wire re_start  = end_frame | update | reset;	
-	BUF restart_buf (.I(re_start), .O(restart));
 	
-	//wire FIFO_reset;
-	//wire FIFO_r = reset;
-	//BUF FIFO_reset_buf(.I(FIFO_r),.O(FIFO_reset));
 	
 	////////////////////////////
 	// Resolution configuration
@@ -69,28 +62,35 @@ module ddrPort1Controller(
 	parameter SW_HDTV720P  = 4'b0010; // 1280x720
 	parameter SW_SXGA      = 4'b1000; // 1280x1024
 	
-	reg [20:0] total_pixels;
+	reg [10:0] y_size;
+	reg [10:0] x_size;
 	
 	always @ (posedge clk) begin
 		if (update) begin
 			case (resolution)
 			SW_VGA: begin
-				total_pixels <= 21'd307200;
+				x_size <= 11'd640;
+				y_size <= 11'd480;
 			end
 			SW_SVGA: begin
-				total_pixels <= 21'd480000;
+				x_size <= 11'd800;
+				y_size <= 11'd600;
 			end
 			SW_XGA: begin
-				total_pixels <= 21'd786432;
+				x_size <= 11'd1024;
+				y_size <= 11'd768;
 			end
 			SW_HDTV720P: begin
-				total_pixels <= 21'd921600;
+				x_size <= 11'd1280;
+				y_size <= 11'd720;
 			end
 			SW_SXGA: begin
-				total_pixels <= 21'd1310720;
+				x_size <= 11'd1280;
+				y_size <= 11'd1024;
 			end
 			default: begin
-				total_pixels <= 21'd307200;
+				x_size <= 11'd640;
+				y_size <= 11'd480;
 			end
 			endcase
 		end
@@ -177,10 +177,6 @@ module ddrPort1Controller(
 			endcase
 		end
 	end
-			
-	// Block HDMI from starting output untill there is data available
-	always @ (posedge clk, posedge reset)
-		start_output <= (reset) ? 0 : (start_output || (FIFO_almost_full && FIFO_state == 2));
 	
 	
 	//////////////////////////////////////
@@ -193,53 +189,45 @@ module ddrPort1Controller(
 	always @(posedge clk)
 		calib_done <= {calib_done[0], mem_calib_done};
 		
-	reg old_stream;
-	
-	always @ (posedge pclk) begin
-		old_stream <= stream_data;
-		// LED <= pointer[5:2];
-		if (stream_data & ~old_stream) LED <= pointer[11:8];
-	end
-		
 	
 	// Memory pointers
 	
 	wire [29:0] base_pointer = 0; //(base_selector) ? 30'd70560 :  0;
+	reg [29:0] line_pointer;
 	reg [29:0] pointer;
 	
 	reg [5:0] state = 0;
 	reg [7:0] read_count;
 	
 	wire [29:0] next_pointer = pointer + (64 << 2);
-	wire inrange = (next_pointer < (total_pixels << 2));
-	wire [7:0] read_amount = (inrange) ? 64 : (total_pixels - (pointer >> 2));
+	wire [29:0] next_line_pointer = (y_pos + 1) * x_size;
+	wire inrange = ((next_pointer >> 2) < x_size);
+	wire [7:0] read_amount = (inrange) ? 64 : (x_size - (pointer >> 2));
 	wire loaded = (rd_count == read_count && rd_count != 0);
 	wire rd_almost_empty = (rd_count == 1);
+	
+	wire s_end_line;
+   synchro #(.INITIALIZE("LOGIC1"))
+   synchro_end_line (.async(end_line),.sync(s_end_line),.clk(clk));
 		 
-	always @ (posedge clk, posedge reset) begin //, posedge restart) begin
+	always @ (posedge clk, posedge reset) begin
 		if (reset) begin
 			state <= 0;
 			pointer <= 0;
 			cmd_en <= 0;
 			read_count <= 0;
-		/*end else if (restart) begin
-			state <= 1;
-			pointer <= 0;
-			cmd_en <= 0;
-			read_count <= 0;*/
 		end else begin
 			case (state)
 			0: begin
-				if (calib_done[1]) state <= 1;
+				if (calib_done[1]) state <= 5;
 			end
 			1: begin
 				if (rd_empty) begin
 					cmd_instr <= 3'b001;
 					cmd_bl <= read_amount - 1;
-					cmd_byte_addr <= pointer + base_pointer;
+					cmd_byte_addr <= pointer + line_pointer + base_pointer;
 					cmd_en <= 1;
 					read_count <= read_amount;
-					pointer <= (inrange) ? next_pointer : 0;
 					state <= 2;
 				end
 			end
@@ -248,10 +236,30 @@ module ddrPort1Controller(
 				state <= 3;
 			end
 			3: begin
-				if (loaded) state <= 1;
+				if (loaded) state <= 4;
+			end
+			4: begin
+				LED[0] <= (x_size == 640);
+				if ((pointer >> 2) == 512) LED[1] <= 1;
+				if ((line_pointer >> 2) == 153601) LED[2] <= 1;
+				if ((line_pointer >> 2) == 307840) LED[3] <= 1;
+				if (inrange) begin
+					pointer <= next_pointer;
+					state <= 1;
+				end else begin
+					pointer <= 0;
+					state <= 5;
+				end
+			end
+			5: begin
+				if (s_end_line && y_pos < y_size) begin
+					line_pointer <= next_line_pointer << 2;
+					state <= 1;
+				end
 			end
 			endcase
 		end
 	end
+
 
 endmodule

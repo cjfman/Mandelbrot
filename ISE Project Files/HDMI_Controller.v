@@ -31,10 +31,10 @@ module HDMI_Controller(
 	input [7:0] red_data_in,
 	input [7:0] green_data_in,
 	input [7:0] blue_data_in,
-	input start_output,
 	output wire retrieve_data,
 	output wire pclk,
-	output wire end_frame
+	output wire end_line,
+	output wire [10:0] y_pos
     );
 
 //`define COLORBARS
@@ -248,14 +248,9 @@ module HDMI_Controller(
   BUFPLL #(.DIVIDE(5)) ioclk_buf (.PLLIN(pllclk0), .GCLK(pclkx2), .LOCKED(pll_lckd),
            .IOCLK(pclkx10), .SERDESSTROBE(serdesstrobe), .LOCK(bufpll_lock));
 
+  wire reset;
   synchro #(.INITIALIZE("LOGIC1"))
-  synchro_reset (.async(!pll_lckd),.sync(sreset),.clk(pclk));
-  
-`ifdef COLORBARS
-  wire reset = sreset;
-`else
-  wire reset = sreset; //(sreset || !start_output);
-`endif
+  synchro_reset (.async(!pll_lckd),.sync(reset),.clk(pclk));
 
 ///////////////////////////////////////////////////////////////////////////
 // Video Timing Parameters
@@ -443,20 +438,20 @@ module HDMI_Controller(
     .vcount(bgnd_vcount), //output
     .vsync(VGA_VSYNC_INT), //output
     .vblnk(bgnd_vblnk), //output
-    .restart(reset || !start_output),
+    .restart(reset),
     .clk(pclk));
 
   /////////////////////////////////////////
   // V/H SYNC and DE generator
   /////////////////////////////////////////
   assign active = !bgnd_hblnk && !bgnd_vblnk;
-  assign end_frame = (bgnd_vblnk && !frame_ending);
+  assign end_line = (bgnd_hcount == tc_hsblnk);
+  assign y_pos = bgnd_vcount;
 
   reg active_q;
   reg vsync, hsync;
   reg VGA_HSYNC, VGA_VSYNC;
   reg de;
-  reg frame_ending;
   
 
   always @ (posedge pclk)
@@ -468,15 +463,9 @@ module HDMI_Controller(
 
     active_q <= active;
     de <= active_q;
-	 frame_ending <= bgnd_vblnk;
   end
-  
-  reg first_active;
-  
-  always @ (posedge pclk)
-		first_active <= (first_active || (bgnd_vcount == 0 && bgnd_hcount == 0 && start_output));
 
-  assign retrieve_data = (active_q); // && first_active); //(active_q || de);
+  assign retrieve_data = (active_q);
 	
   ///////////////////////////////////
   // Video pattern generator:

@@ -164,45 +164,6 @@ module mainController(
     update <= pwrup | sw0_rdy | sw1_rdy | sw2_rdy | sw3_rdy;
   end
 
-  
-//////////////////////////////////////
-/// HDMI Controller
-//////////////////////////////////////
-
-	// Inputs
-	wire [7:0] red_data_in;
-	wire [7:0] green_data_in;
-	wire [7:0] blue_data_in;
-	wire start_output;
-	
-	// Outputs
-	wire stream_data;
-	wire pclk;
-	wire end_frame;
-	
-	HDMI_Controller HDMI (
-	 .clk50m(clk50m),
-    .clk50m_bufg(clk50m_bufg), 
-	 .RESET(SYS_RESET),
-	 //.switch(switch),
-	 .SW(SW[3:0]),
-	 //.switches(sws_sync_q),
-	 .pwrup(pwrup),
-    .TMDSP({HDMIOUTCLKP, HDMIOUTDP}), 
-    .TMDSN({HDMIOUTCLKN, HDMIOUTDN}),
-	 //.LED(LED[3:0]),
-	 .pclk_lckd(pclk_lckd),
-	 .red_data_in(red_data_in),
-	 .green_data_in(green_data_in),
-	 .blue_data_in(blue_data_in),
-	 .start_output(start_output),
-	 .retrieve_data(stream_data),
-	 .pclk(pclk),
-	 .end_frame(end_frame)
-    );
-	 
-	 //assign LED[3:0] = sws_sync_q;
-
 
 //////////////////////////////////////
 /// Memory Controller
@@ -300,6 +261,41 @@ module mainController(
 	);
 	
 
+  
+//////////////////////////////////////
+/// HDMI Controller
+//////////////////////////////////////
+
+	// Inputs
+	wire [7:0] red_data_in;
+	wire [7:0] green_data_in;
+	wire [7:0] blue_data_in;
+	
+	// Outputs
+	wire stream_data;
+	wire pclk;
+	wire end_line;
+	wire [10:0] y_pos;
+	
+	HDMI_Controller HDMI (
+	 .clk50m(clk50m),
+    .clk50m_bufg(clk50m_bufg), 
+	 .RESET(SYS_RESET),
+	 .SW(SW[3:0]),
+	 .pwrup(pwrup),
+    .TMDSP({HDMIOUTCLKP, HDMIOUTDP}), 
+    .TMDSN({HDMIOUTCLKN, HDMIOUTDN}),
+	 .pclk_lckd(pclk_lckd),
+	 .red_data_in(red_data_in),
+	 .green_data_in(green_data_in),
+	 .blue_data_in(blue_data_in),
+	 .retrieve_data(stream_data),
+	 .pclk(pclk),
+	 .end_line(end_line),
+	 .y_pos(y_pos)
+    );
+	 
+
 //////////////////////////////////////
 /// Mandelbrot Generator
 //////////////////////////////////////
@@ -378,7 +374,6 @@ module mainController(
 	// Outputs
 	//wire [23:0] data_out;
 	wire data_out_valid;
-	//wire start_output;
 
 	ddrPort1Controller port1Controller (
     .clk(color_clk), 
@@ -397,11 +392,11 @@ module mainController(
     .rd_en(p1_rd_en), 
     .cmd_en(p1_cmd_en), 
     .stream_data(stream_data), 
-    .end_frame(end_frame), 
+    .end_line(end_line),
+    .y_pos(y_pos),	 
 	 .pclk(pclk),
     .data_out({red_data_in, green_data_in, blue_data_in}), 
     .data_out_valid(data_out_valid), 
-    .start_output(start_output),
 	 .LED(LED[3:0])
 	 //.LED(LED[1])
     );
