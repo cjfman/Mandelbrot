@@ -106,14 +106,14 @@ module mandelbrotRederingEngine # (
 	wire [set_size - 1 : 0] set_ready;							// Signal taht point_gen units are done calculating
 	
 	// Setable Parameters
-	reg signed [HBP - 1 : 0] re_start;
-	reg signed [HBP - 1 : 0] im_start;
-	reg signed [HBP - 1 : 0] re_end;
-	reg signed [HBP - 1 : 0] im_end;
+	reg signed [3:-(HBP-3)] re_start;
+	reg signed [3:-(HBP-3)] im_start;
+	reg signed [3:-(HBP-3)] re_end;
+	reg signed [3:-(HBP-3)] im_end;
 	
 	// Calculate parameters
-	wire [HBS - 1 : 0] re_scale = (re_end - re_start) / y_size;
-	wire [HBS - 1 : 0] im_scale = (im_end - im_start) / y_size;
+	wire [3:-(HBP-3)] re_scale = (re_end - re_start) / y_size;
+	wire [3:-(HBP-3)] im_scale = (im_end - im_start) / y_size;
 	
 	// Pixels
 	reg  [23:0] base_pixel;
@@ -129,10 +129,9 @@ module mandelbrotRederingEngine # (
 				.im_scale(im_scale),
 				.x(x[i]),
 				.y(y[i]),
-				.max_iterations(max_iterations),
 				.re_start(re_start),
 				.im_start(im_start),
-				.ready(set_ready[i]),
+				.done(set_ready[i]),
 				.iteration(iterations[i])
 				);
 		end
@@ -143,10 +142,10 @@ module mandelbrotRederingEngine # (
 	integer j;
 
 	initial begin
-		re_start <= -'d3;
-		re_end 	<=  'd1;
-		im_start <= -'d2;
-		im_end	<=  'd2;
+		re_start <= -4'd3;
+		re_end 	<=  4'd1;
+		im_start <= -4'd2;
+		im_end	<=  4'd2;
 		for (j = 0; j < set_size; j = j + 1) begin
 			iterations_reg[j] <= 'd0;
 			x[j] = j;
