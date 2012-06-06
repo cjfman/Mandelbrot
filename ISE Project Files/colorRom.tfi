@@ -1,0 +1,12 @@
+
+
+
+// Instantiate the module
+colorRom instance_name (
+    .clk(clk), 
+    .iteration(iteration), 
+    .offset(offset), 
+    .color(color)
+    );
+
+
