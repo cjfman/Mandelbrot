@@ -28,6 +28,7 @@ module mandelbrotRederingEngine # (
     input CLK,
 	 input SYS_RESET,
 	 input send_data,
+	 input start_render,
 	 input clear_frame,
 	 input update,
 	 input [3:0] resolution,
@@ -188,10 +189,7 @@ module mandelbrotRederingEngine # (
 		
 	// Rendering block
 	reg [7:0] render_state;
-	reg [20:0] rendered;
 	
-	reg start_render = 1;
-
 	always @(posedge CLK, posedge reset) begin
 		if (reset) begin
 			render_state <= 0;
@@ -205,7 +203,6 @@ module mandelbrotRederingEngine # (
 			0: begin
 			//Wait until the start_render signal is asserted
 				if (start_render) begin
-					//start_render <= 0;
 					render_state <= 'd1;
 				end
 			end
@@ -238,7 +235,7 @@ module mandelbrotRederingEngine # (
 	end
 	
 	/////////////////////
-	// Frame Ready
+	//
 	/////////////////////
 		
 	always @ (posedge CLK) begin
@@ -254,8 +251,8 @@ module mandelbrotRederingEngine # (
 	reg [3:0] output_state;
 	reg [7:0] output_count;
 	reg [20:0] output_total;
-	wire data_available = (base_pixel > output_total);
 	wire output_done = (output_state == 0);
+	wire data_available = (base_pixel > output_total);
 	assign ready = (output_state == 1);
 	
 	always @ (posedge CLK, posedge reset) begin
@@ -266,7 +263,7 @@ module mandelbrotRederingEngine # (
 		end else begin
 			case(output_state)
 			0: begin
-				if (&set_ready) begin
+				if (data_available) begin
 					output_state <= 1;
 				end
 			end

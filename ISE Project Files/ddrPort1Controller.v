@@ -97,23 +97,6 @@ module ddrPort1Controller # (
 			endcase
 		end
 	end
-	
-	//////////////
-	// Color Rom
-	//////////////
-	
-	// Inputs
-	reg [31:0] offset;
-	
-	// Outpus
-	wire [23:0] color;
-	
-	colorRom255 color_rom_0 (
-    .clk(clk), 
-    .iteration(rd_data), 
-    .offset(offset), 
-    .color(color)
-    );
 		
 		
 	//////////////////
@@ -121,7 +104,7 @@ module ddrPort1Controller # (
 	//////////////////
 	
 	//Inputs
-	wire [23:0] FIFO_data_in = color;
+	wire [23:0] FIFO_data_in = rd_data; //(rd_data == max_iterations) ? 24'b0 : 24'hFFFFFF;
 	reg FIFO_wr_en;
 	wire FIFO_rd_en = (FIFO_state != 4) ? (stream_data && !FIFO_empty) : 1'bz;
 	wire FIFO_wr =    (FIFO_state != 4) ? FIFO_wr_en : 1'bz;
@@ -159,7 +142,7 @@ module ddrPort1Controller # (
 	
 	always @ (posedge clk, posedge reset) begin
 		if (reset) begin
-			FIFO_state <= 5;
+			FIFO_state <= 4;
 			FIFO_wr_en <= 0;
 			rd_en <= 0;
 			continue_feed <= 0;
@@ -172,34 +155,23 @@ module ddrPort1Controller # (
 			1: begin
 				if (!FIFO_full && (loaded || continue_feed)) begin
 					rd_en <= 1;
-					//FIFO_wr_en <= 1;
+					FIFO_wr_en <= 1;
 					FIFO_state <= 2;
 				end
 			end
 			2: begin
-				FIFO_wr_en <= 1;
-				if (rd_almost_empty) begin
-					rd_en <= 0;
-					FIFO_state <= 4;
-				end else FIFO_state <= 3;
-			end
-			3: begin
 				if (FIFO_almost_full || rd_almost_empty) begin
 					rd_en <= 0;
-					//FIFO_wr_en <= 0;
-					FIFO_state <= 4;
+					FIFO_wr_en <= 0;
+					FIFO_state <= 1;
 					continue_feed <= ~rd_almost_empty;
 				end
 			end
-			4: begin
-				FIFO_wr_en <= 0;
-				FIFO_state <= 1;
-			end
-			5: begin
+			3: begin
 				FIFO_reset <= 1;
-				FIFO_state <= 6;
+				FIFO_state <= 4;
 			end
-			6: begin
+			4: begin
 				FIFO_reset <= 0;
 				reset_count <= reset_count + 1;
 				if (reset_count[2]) FIFO_state <= 1;
@@ -222,7 +194,7 @@ module ddrPort1Controller # (
 	
 	// Memory pointers
 	
-	wire [29:0] base_pointer = 0; //(base_selector) ? 30'd70560 :  0;
+	wire [29:0] base_pointer = (base_selector) ? 30'd5242880 :  0;
 	reg [29:0] line_pointer;
 	reg [29:0] pointer;
 	

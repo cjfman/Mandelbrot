@@ -1,0 +1,12 @@
+
+
+
+// Instantiate the module
+colorRom255 instance_name (
+    .clk(clk), 
+    .iteration(iteration), 
+    .offset(offset), 
+    .color(color)
+    );
+
+
