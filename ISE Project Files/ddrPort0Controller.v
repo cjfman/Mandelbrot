@@ -47,25 +47,35 @@ module ddrPort0Controller # (
 	output reg memory_frame,
 	output reg [3:0] LED
     );
-	 
-	reg led;
-	//assign LED[0] = led; //(state != 0);
-	//assign LED[3:1] = 0;
-	
-	//reg [27:0] led_count;
-	//assign LED = led_count[24:21];
-	
+	 	
 	always @(posedge clk) begin
-		//led_count <= led_count + 1;
-		//LED[0] <= (LED[0] || state == 2);
-		//LED[1] <= (LED[1] || data == 255);
-		//LED[2] <= (LED[2] || (data == 255 && state == 2));
 		LED <= state;
 	end
 	
-	//assign LED = state[3:0];
-		 
-	wire [29:0] base_pointer = 0; //(memory_frame) ? 0 : 70560;
+	////////////////
+	// Color Rom
+	////////////////
+	
+	// Input
+	wire [31:0] iteration = data;
+	reg  [31:0] offset;
+	
+	// Output
+	wire [23:0] color;
+	
+	colorRom255 color_rom_0 (
+    .clk(clk), 
+    .iteration(iteration), 
+    .offset(offset), 
+    .color(color)
+    );
+	 
+	 
+	//////////////////////
+	// Memory Controller
+	//////////////////////
+			 
+	wire [29:0] base_pointer = (memory_frame) ? 0 : 30'd5242880;
 	reg [29:0] pointer;
 	reg [1:0] calib_done;
 	reg [5:0] write_count;
@@ -108,14 +118,14 @@ module ddrPort0Controller # (
 				state <= 3;
 			end
 			3: begin
-				p0_wr_en <= 1;
-				p0_wr_data <= data;
-				count <= count + 1;
+				//p0_wr_data <= data;
 				state <= 4;
 			end
 			4: begin
 				if (count < set_size) begin
-					p0_wr_data <= data;
+					count <= count + 1;
+					p0_wr_en <= 1;
+					p0_wr_data <= color;
 					count <= count + 1;
 				end else begin
 					p0_wr_en <= 0;
