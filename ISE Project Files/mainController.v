@@ -310,7 +310,6 @@ module mainController(
 	
 	// Inputs
 	wire mandelbrot_send_data;
-	wire start_render = 1;
 	wire clear_frame;
 	
 	mandelbrotRederingEngine  # (
@@ -322,7 +321,6 @@ module mainController(
 	 .update(update),
 	 .resolution(resolution),
     .send_data(mandelbrot_send_data), 
-    .start_render(start_render), 
 	 .clear_frame(clear_frame),
     .data(point_data), 
     .ready(mandelbrot_data_ready), 

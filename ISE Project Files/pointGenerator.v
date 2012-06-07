@@ -59,7 +59,7 @@ module pointGenerator # (
 	wire signed [3:-(HBP-3)] re2;
 	wire signed [3:-(HBP-3)] im2;
 	wire signed [3:-(HBP-3)] product;
-	wire signed [3:-(HBP-3)] productX2;
+	wire signed [3:-(HBP-3)] productX2 = product + product;
 	wire signed [3:-(HBP-3)] xscale;
 	wire signed [3:-(HBP-3)] yscale;
 	
@@ -94,17 +94,6 @@ module pointGenerator # (
 		.A(re), 
 		.B(im), 
 		.O(product)
-		);
-		
-	signedFixedPointMult # (
-		.iD(4),
-		.iF(HBP-3),
-		.oD(4),
-		.oF(HBP-3)
-	) factorX2 (	
-		.A(product), 
-		.B({4'd2, 29'd0}), 
-		.O(productX2)
 		);
 		
 	signedFixedPointMult # (
@@ -152,9 +141,6 @@ module pointGenerator # (
 			end
 		end
 		1: begin
-			/*if (x == y) iteration <= max_iterations;
-			state <= 0;
-			done <= 1;*/
 			if (!ready) begin
 				iteration <= iteration + 'b1;
 				re <= re2 - im2 + re_pos;
