@@ -306,6 +306,7 @@ module mainController(
 	// Outputs
 	wire mandelbrot_data_ready;
 	wire frame_ready;
+	wire render_reset;
 	wire [31:0] point_data;
 	
 	// Inputs
@@ -325,6 +326,7 @@ module mainController(
     .start_render(start_render), 
 	 .clear_frame(clear_frame),
     .data(point_data), 
+	 .render_reset(render_reset),
     .ready(mandelbrot_data_ready), 
     .frame_ready(frame_ready),
 	 .LED(LED[7:0])
@@ -343,6 +345,7 @@ module mainController(
 	) port0Controller (
 		 .clk(render_clk), 
 		 .data(point_data), 
+		 .render_reset(render_reset),
 		 .ready(mandelbrot_data_ready), 
 		 .frame_ready(frame_ready), 
 		 .send_data(mandelbrot_send_data), 

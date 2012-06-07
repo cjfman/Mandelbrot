@@ -33,12 +33,14 @@ module mandelbrotRederingEngine # (
 	 input update,
 	 input [3:0] resolution,
     output reg [31:0] data,
+	 output wire render_reset,
     output wire ready,
 	 output reg frame_ready,
 	 output reg [7:0] LED
     );
 
 	wire reset = (update || SYS_RESET);
+	assign render_reset = update;
 	
 	always @ (posedge CLK)
 		if (data != 255 && data > LED) LED <= data[7:0];
@@ -88,7 +90,7 @@ module mandelbrotRederingEngine # (
 			SW_SXGA: begin
 				x_size <= 11'd1280;
 				y_size <= 11'd1024;
-				y_inverse[-1:-5] <= 5'b00001;
+				y_inverse <= 33'b000000001000000000000000000000000;
 				total_pixels <= 21'd1310720;
 			end
 			default: begin

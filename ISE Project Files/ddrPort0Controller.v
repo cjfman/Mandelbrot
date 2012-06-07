@@ -25,6 +25,7 @@ module ddrPort0Controller # (
 	input reset,
 	
 	input [31:0] data,
+	input render_reset,
 	input ready,
 	input frame_ready,
 	output reg send_data,
@@ -97,6 +98,7 @@ module ddrPort0Controller # (
 	
 	always @(posedge clk, posedge reset) begin
 		if (reset) begin
+			pointer <= 0;
 			state <= 0;
 		end else begin
 			case(state)
@@ -105,7 +107,9 @@ module ddrPort0Controller # (
 				if (calib_done[1]) state <= 1;
 			end
 			1: begin
-				if (frame_ready) begin
+				if (render_reset) begin
+					pointer <= 0;
+				end else if (frame_ready) begin
 					memory_frame <= ~memory_frame;
 					pointer <= 0;
 				end else if (p0_wr_empty && ready) begin
