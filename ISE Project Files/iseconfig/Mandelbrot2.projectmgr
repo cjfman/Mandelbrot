@@ -9,21 +9,22 @@
          <ClosedNodesVersion>2</ClosedNodesVersion>
          <ClosedNode>/atlys_ddr_test C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot2|atlys_ddr_test.v/ddr_interface - ddr_interface</ClosedNode>
          <ClosedNode>/ddrPort1Controller C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|ddrPort1Controller.v</ClosedNode>
+         <ClosedNode>/dvi_encoder C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|ipcore_dir|hdmi_out_v1_00_a|hdl|verilog|dvi_encoder.v</ClosedNode>
          <ClosedNode>/dvi_out_native C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot2|dvi_out_native.v</ClosedNode>
          <ClosedNode>/dvi_out_native C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|dvi_out_native.v</ClosedNode>
          <ClosedNode>/mainController C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|mainController.v/HDMI - HDMI_Controller</ClosedNode>
+         <ClosedNode>/mainController C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|mainController.v/HDMI - HDMI_Controller/enc0 - dvi_encoder</ClosedNode>
          <ClosedNode>/mainController C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|mainController.v/mandelbrot - mandelbrotRederingEngine</ClosedNode>
-         <ClosedNode>/mainController C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|mainController.v/port1Controller - ddrPort1Controller</ClosedNode>
          <ClosedNode>/mainController C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|mainController.v/vram - videoRam</ClosedNode>
       </ClosedNodes>
       <SelectedItems>
-         <SelectedItem>mainController (C:/Users/Charles Franklin/Documents/FPGA/Mandelbrot/ISE Project Files/mainController.v)</SelectedItem>
+         <SelectedItem>HDMI - HDMI_Controller</SelectedItem>
       </SelectedItems>
       <ScrollbarPosition orientation="vertical" >0</ScrollbarPosition>
       <ScrollbarPosition orientation="horizontal" >0</ScrollbarPosition>
       <ViewHeaderState orientation="horizontal" >000000ff0000000000000001000000010000000000000000000000000000000002020000000100000001000000640000035e000000020000000000000000000000000200000064ffffffff0000008100000003000000020000035e0000000100000003000000000000000100000003</ViewHeaderState>
       <UserChangedColumnWidths orientation="horizontal" >true</UserChangedColumnWidths>
-      <CurrentItem>mainController (C:/Users/Charles Franklin/Documents/FPGA/Mandelbrot/ISE Project Files/mainController.v)</CurrentItem>
+      <CurrentItem>HDMI - HDMI_Controller</CurrentItem>
    </ItemView>
    <ItemView engineview="SynthesisOnly" sourcetype="DESUT_VERILOG" guiview="Process" >
       <ClosedNodes>
@@ -89,13 +90,13 @@
          <ClosedNodesVersion>1</ClosedNodesVersion>
       </ClosedNodes>
       <SelectedItems>
-         <SelectedItem></SelectedItem>
+         <SelectedItem>Regenerate Core</SelectedItem>
       </SelectedItems>
       <ScrollbarPosition orientation="vertical" >0</ScrollbarPosition>
       <ScrollbarPosition orientation="horizontal" >0</ScrollbarPosition>
       <ViewHeaderState orientation="horizontal" >000000ff000000000000000100000001000000000000000000000000000000000000000000000000f8000000010000000100000000000000000000000064ffffffff000000810000000000000001000000f80000000100000000</ViewHeaderState>
       <UserChangedColumnWidths orientation="horizontal" >false</UserChangedColumnWidths>
-      <CurrentItem></CurrentItem>
+      <CurrentItem>Regenerate Core</CurrentItem>
    </ItemView>
    <ItemView engineview="SynthesisOnly" sourcetype="" guiview="Process" >
       <ClosedNodes>
