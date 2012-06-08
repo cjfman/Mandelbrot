@@ -28,7 +28,7 @@ module mandelbrotRederingEngine # (
     input CLK,
 	 input SYS_RESET,
 	 input send_data,
-	 //input start_render,
+	 input start_render,
 	 input clear_frame,
 	 input update,
 	 input [3:0] resolution,
@@ -40,8 +40,8 @@ module mandelbrotRederingEngine # (
 	 output reg [7:0] LED
     );
 
-	wire reset = SYS_RESET;
-	assign render_reset = start_render;
+	wire reset = (SYS_RESET || update || button);
+	assign render_reset = (update || button);
 	
 	reg [7:0] led_count;
 	reg old_frame;
@@ -326,7 +326,6 @@ module mandelbrotRederingEngine # (
 	/////////////////////////
 	
 	reg [7:0] render_state;
-	reg start_render = 1;
 	
 	always @(posedge CLK, posedge reset) begin
 		if (reset) begin
@@ -341,7 +340,6 @@ module mandelbrotRederingEngine # (
 			0: begin
 			//Wait until the start_render signal is asserted
 				if (start_render) begin
-					start_render <= 0;
 					render_state <= 'd1;
 				end
 			end
