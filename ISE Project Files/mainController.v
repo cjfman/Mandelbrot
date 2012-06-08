@@ -113,59 +113,6 @@ module mainController(
 
 
 //////////////////////////////////////
-/// Debounce and Syncronize Switches
-//////////////////////////////////////
-	wire  [3:0] sws_sync; //synchronous output
-
-	synchro #(.INITIALIZE("LOGIC0"))
-	synchro_sws_3 (.async(SW[3]),.sync(sws_sync[3]),.clk(clk50m_bufg));
-
-	synchro #(.INITIALIZE("LOGIC0"))
-	synchro_sws_2 (.async(SW[2]),.sync(sws_sync[2]),.clk(clk50m_bufg));
-
-	synchro #(.INITIALIZE("LOGIC0"))
-	synchro_sws_1 (.async(SW[1]),.sync(sws_sync[1]),.clk(clk50m_bufg));
-
-	synchro #(.INITIALIZE("LOGIC0"))
-	synchro_sws_0 (.async(SW[0]),.sync(sws_sync[0]),.clk(clk50m_bufg));
-
-	reg [3:0] resolution;
-	always @ (posedge clk50m_bufg)
-	begin
-		resolution <= sws_sync;
-	end
-
-	wire sw0_rdy, sw1_rdy, sw2_rdy, sw3_rdy;
-
-	debnce debsw0 (
-		.sync(resolution[0]),
-		.debnced(sw0_rdy),
-		.clk(clk50m_bufg));
-
-	debnce debsw1 (
-		.sync(resolution[1]),
-		.debnced(sw1_rdy),
-		.clk(clk50m_bufg));
-
-	debnce debsw2 (
-		.sync(resolution[2]),
-		.debnced(sw2_rdy),
-		.clk(clk50m_bufg));
-
-	debnce debsw3 (
-		.sync(resolution[3]),
-		.debnced(sw3_rdy),
-		.clk(clk50m_bufg));
-
-  reg update = 1'b0;
-  
-  always @ (posedge clk50m_bufg)
-  begin
-    update <= pwrup | sw0_rdy | sw1_rdy | sw2_rdy | sw3_rdy;
-  end
-
-
-//////////////////////////////////////
 /// Memory Controller
 //////////////////////////////////////
 	 
@@ -300,7 +247,7 @@ module mainController(
 /// Mandelbrot Generator
 //////////////////////////////////////
 
-	parameter set_size = 8;
+	parameter set_size = 1;
 	parameter max_iterations = 255;
 
 	// Outputs
@@ -320,8 +267,8 @@ module mainController(
 	) mandelbrot (
     .CLK(render_clk), 
 	 .SYS_RESET(SYS_RESET),
-	 .update(update),
-	 .resolution(resolution),
+	 .pwrup(pwrup),
+	 .SW(SW),
 	 .btn(btn),
     .send_data(mandelbrot_send_data), 
     .start_render(start_render), 
@@ -345,6 +292,7 @@ module mainController(
 		 .set_size(set_size)
 	) port0Controller (
 		 .clk(render_clk), 
+		 .reset(SYS_RESET),
 		 .data(point_data), 
 		 .render_reset(render_reset),
 		 .ready(mandelbrot_data_ready), 
@@ -387,8 +335,8 @@ module mainController(
     .clk(color_clk), 
     .reset(SYS_RESET), 
     .base_selector(frame_selector), 
-    .resolution(resolution), 
-    .update(update), 
+	 .pwrup(pwrup),
+    .SW(SW), 
     .rd_data(p1_rd_data), 
     .rd_count(p1_rd_count), 
     .rd_empty(p1_rd_empty), 

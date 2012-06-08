@@ -14,7 +14,7 @@
  
 #Reset
  NET "SYS_RESETn"        LOC = "T15";
- NET "SYS_RESETn"        IOSTANDARD = SSTL18_II;
+# NET "SYS_RESETn"        IOSTANDARD = SSTL18_II;
 
 
 

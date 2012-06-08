@@ -23,15 +23,13 @@ module ddrPort1Controller # (
 	 )(
     input clk,
     input reset,
+	 input pwrup,
+	 input [3:0] SW,
 	 
     input base_selector,
 	 
 	 output reg [3:0] LED,
-	 
-	 // Switches
-	 input [3:0] resolution,
-	 input update,
-	 
+	 	 
 	 // Memory
 	 input [31:0] rd_data,
     input [6:0] rd_count,
@@ -52,6 +50,59 @@ module ddrPort1Controller # (
     output wire [23:0] data_out,
     output wire data_out_valid
     );
+	 
+//////////////////////////////////////
+/// Debounce and Syncronize Switches
+//////////////////////////////////////
+
+	wire  [3:0] sws_sync; //synchronous output
+
+	synchro #(.INITIALIZE("LOGIC0"))
+	synchro_sws_3 (.async(SW[3]),.sync(sws_sync[3]),.clk(clk));
+
+	synchro #(.INITIALIZE("LOGIC0"))
+	synchro_sws_2 (.async(SW[2]),.sync(sws_sync[2]),.clk(clk));
+
+	synchro #(.INITIALIZE("LOGIC0"))
+	synchro_sws_1 (.async(SW[1]),.sync(sws_sync[1]),.clk(clk));
+
+	synchro #(.INITIALIZE("LOGIC0"))
+	synchro_sws_0 (.async(SW[0]),.sync(sws_sync[0]),.clk(clk));
+
+	reg [3:0] resolution;
+	always @ (posedge clk)
+	begin
+		resolution <= sws_sync;
+	end
+
+	wire sw0_rdy, sw1_rdy, sw2_rdy, sw3_rdy;
+
+	debnce debsw0 (
+		.sync(resolution[0]),
+		.debnced(sw0_rdy),
+		.clk(clk));
+
+	debnce debsw1 (
+		.sync(resolution[1]),
+		.debnced(sw1_rdy),
+		.clk(clk));
+
+	debnce debsw2 (
+		.sync(resolution[2]),
+		.debnced(sw2_rdy),
+		.clk(clk));
+
+	debnce debsw3 (
+		.sync(resolution[3]),
+		.debnced(sw3_rdy),
+		.clk(clk));
+
+  reg update = 1'b0;
+  
+  always @ (posedge clk)
+  begin
+    update <= pwrup | sw0_rdy | sw1_rdy | sw2_rdy | sw3_rdy;
+  end
 	
 	
 	////////////////////////////

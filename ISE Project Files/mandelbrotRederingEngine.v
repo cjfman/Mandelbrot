@@ -30,8 +30,8 @@ module mandelbrotRederingEngine # (
 	 input send_data,
 	 input start_render,
 	 input clear_frame,
-	 input update,
-	 input [3:0] resolution,
+	 input pwrup,
+	 input [3:0] SW,
 	 input [4:0] btn,
     output reg [31:0] data,
 	 output wire render_reset,
@@ -53,6 +53,60 @@ module mandelbrotRederingEngine # (
 		//old_frame <= frame_ready;
 		LED <= {output_state, render_state};
 	end
+	
+	
+//////////////////////////////////////
+/// Debounce and Syncronize Switches
+//////////////////////////////////////
+	wire  [3:0] sws_sync; //synchronous output
+
+	synchro #(.INITIALIZE("LOGIC0"))
+	synchro_sws_3 (.async(SW[3]),.sync(sws_sync[3]),.clk(CLK));
+
+	synchro #(.INITIALIZE("LOGIC0"))
+	synchro_sws_2 (.async(SW[2]),.sync(sws_sync[2]),.clk(CLK));
+
+	synchro #(.INITIALIZE("LOGIC0"))
+	synchro_sws_1 (.async(SW[1]),.sync(sws_sync[1]),.clk(CLK));
+
+	synchro #(.INITIALIZE("LOGIC0"))
+	synchro_sws_0 (.async(SW[0]),.sync(sws_sync[0]),.clk(CLK));
+
+	reg [3:0] resolution;
+	always @ (posedge CLK)
+	begin
+		resolution <= sws_sync;
+	end
+
+	wire sw0_rdy, sw1_rdy, sw2_rdy, sw3_rdy;
+
+	debnce debsw0 (
+		.sync(resolution[0]),
+		.debnced(sw0_rdy),
+		.clk(CLK));
+
+	debnce debsw1 (
+		.sync(resolution[1]),
+		.debnced(sw1_rdy),
+		.clk(CLK));
+
+	debnce debsw2 (
+		.sync(resolution[2]),
+		.debnced(sw2_rdy),
+		.clk(CLK));
+
+	debnce debsw3 (
+		.sync(resolution[3]),
+		.debnced(sw3_rdy),
+		.clk(CLK));
+
+  reg update = 1'b0;
+  
+  always @ (posedge CLK)
+  begin
+    update <= pwrup | sw0_rdy | sw1_rdy | sw2_rdy | sw3_rdy;
+  end
+  
 	
 //////////////////////////////////////
 /// Debounce and Syncronize Buttons
