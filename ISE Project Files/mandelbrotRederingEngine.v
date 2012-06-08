@@ -28,10 +28,11 @@ module mandelbrotRederingEngine # (
     input CLK,
 	 input SYS_RESET,
 	 input send_data,
-	 input start_render,
+	 //input start_render,
 	 input clear_frame,
 	 input update,
 	 input [3:0] resolution,
+	 input [4:0] btn,
     output reg [31:0] data,
 	 output wire render_reset,
     output wire ready,
@@ -39,12 +40,86 @@ module mandelbrotRederingEngine # (
 	 output reg [7:0] LED
     );
 
-	wire reset = (update || SYS_RESET);
-	assign render_reset = update;
+	wire reset = SYS_RESET;
+	assign render_reset = start_render;
 	
+	reg [7:0] led_count;
+	reg old_frame;
+	
+	always @ (posedge CLK) begin
+	//	if (data != 255 && data > LED) LED <= data[7:0];
+		//if (frame_ready && !old_frame) led_count <= led_count + 1;
+		//LED <= led_count;
+		//old_frame <= frame_ready;
+		LED <= {output_state, render_state};
+	end
+	
+//////////////////////////////////////
+/// Debounce and Syncronize Buttons
+//////////////////////////////////////
+
+	//always @ (posedge CLK)
+	//	LED[7:5] <= btn[2:0];
+
+	wire  [4:0] btn_sync; //synchronous output
+
+	synchro #(.INITIALIZE("LOGIC0"))
+	synchro_btn_4 (.async(btn[4]),.sync(btn_sync[4]),.clk(CLK));
+	
+	synchro #(.INITIALIZE("LOGIC0"))
+	synchro_btn_3 (.async(btn[3]),.sync(btn_sync[3]),.clk(CLK));
+	
+	synchro #(.INITIALIZE("LOGIC0"))
+	synchro_btn_2 (.async(btn[2]),.sync(btn_sync[2]),.clk(CLK));
+	
+	synchro #(.INITIALIZE("LOGIC0"))
+	synchro_btn_1 (.async(btn[1]),.sync(btn_sync[1]),.clk(CLK));
+	
+	synchro #(.INITIALIZE("LOGIC0"))
+	synchro_btn_0 (.async(btn[0]),.sync(btn_sync[0]),.clk(CLK));
+	
+	reg [4:0] button;
 	always @ (posedge CLK)
-		if (data != 255 && data > LED) LED <= data[7:0];
+	begin
+		button <= btn_sync;
+	end
+
+	wire btn0_rdy, btn1_rdy, btn2_rdy, btn3_rdy, btn4_rdy;
 	
+	debnce deb_btn0 (
+		.sync(button[0]),
+		.debnced(btn0_rdy),
+		.clk(CLK));
+		
+	debnce deb_btn1 (
+		.sync(button[1]),
+		.debnced(btn1_rdy),
+		.clk(CLK));
+		
+	debnce deb_btn2 (
+		.sync(button[2]),
+		.debnced(btn2_rdy),
+		.clk(CLK));
+		
+	debnce deb_btn3 (
+		.sync(button[3]),
+		.debnced(btn3_rdy),
+		.clk(CLK));
+		
+	debnce deb_btn4 (
+		.sync(button[4]),
+		.debnced(btn4_rdy),
+		.clk(CLK));
+
+
+  reg btn_update = 1'b0;
+  
+  always @ (posedge CLK)
+  begin
+    btn_update <= btn0_rdy | btn1_rdy | btn2_rdy | btn3_rdy | btn4_rdy;
+  end
+  
+  
 	////////////////////////////
 	// Resolution configuration
 	////////////////////////////
@@ -178,19 +253,80 @@ module mandelbrotRederingEngine # (
 	integer j;
 
 	initial begin
-		re_start <= {-4'd2, 29'h0};
-		re_end 	<=  {4'd0, 29'd0};
-		im_start <= {-4'd1, 29'h0};
-		im_end	<=  {4'd1, 29'd0};
 		for (j = 0; j < set_size; j = j + 1) begin
 			iterations_reg[j] <= 'd0;
 			x[j] = j;
 			y[j] = 0;
 		end
 	end
+	
+///////////////////////
+// Changing Parameters
+///////////////////////
 		
-	// Rendering block
+	initial begin
+		re_start <= {-4'd2, 29'h0};
+		re_end 	<=  {4'd0, 29'd0};
+		im_start <= {-4'd1, 29'h0};
+		im_end	<=  {4'd1, 29'd0};
+	end
+	
+	wire signed [3:-(HBP-3)] percent10 = 33'b0000_00011001100110011001100110011;
+	wire signed [3:-(HBP-3)] re_increment;
+	wire signed [3:-(HBP-3)] im_increment;
+	
+	signedFixedPointMult # (
+		.iD(4),
+		.iF(HBP-3),
+		.oD(4),
+		.oF(HBP-3)
+	) re_incr (	
+		.A(re_diff), 
+		.B(percent10), 
+		.O(re_increment)
+		);
+		
+	signedFixedPointMult # (
+		.iD(4),
+		.iF(HBP-3),
+		.oD(4),
+		.oF(HBP-3)
+	) im_incr (	
+		.A(im_diff), 
+		.B(percent10), 
+		.O(im_increment)
+		);
+	
+	always @ (posedge CLK) begin
+		if (btn_update) begin
+			if (button[0]) begin // UP
+				im_start <= im_start - im_increment;
+				im_end   <= im_end   - im_increment;
+			end else if (button[1]) begin // LEFT
+				re_start <= re_start - re_increment;
+				re_end   <= re_end   - re_increment;
+			end else if (button[2]) begin // DOWN
+				im_start <= im_start + im_increment;
+				im_end   <= im_end   + im_increment;
+			end else if (button[3]) begin // RIGHT
+				re_start <= re_start + re_increment;
+				re_end   <= re_end   + re_increment;
+			end else if (button[4]) begin // IN
+				re_start <= re_start + re_increment;
+				re_end   <= re_end   - re_increment;
+				im_start <= im_start + im_increment;
+				im_end   <= im_end   - im_increment;
+			end
+		end
+	end
+		
+		
+	/////////////////////////
+	// Render Control Logic
+	/////////////////////////
+	
 	reg [7:0] render_state;
+	reg start_render = 1;
 	
 	always @(posedge CLK, posedge reset) begin
 		if (reset) begin
@@ -205,6 +341,7 @@ module mandelbrotRederingEngine # (
 			0: begin
 			//Wait until the start_render signal is asserted
 				if (start_render) begin
+					start_render <= 0;
 					render_state <= 'd1;
 				end
 			end
@@ -217,20 +354,23 @@ module mandelbrotRederingEngine # (
 				render_state <= 'd2;
 			end
 			2: begin
-				if (frame_ready) begin
+				if (&set_ready && output_done) begin
+					for (j = 0; j < set_size; j = j + 1) begin
+						iterations_reg[j] <= iterations[j];
+					end
+					base_pixel   <= base_pixel + set_size;
+					render_state <= 'd3;
+				end
+			end
+			3: begin
+				if (base_pixel >= total_pixels) begin
 					render_state <= 'd0;
 					base_pixel <= 0;
 					for (j = 0; j < set_size; j = j + 1) begin
 						x[j] <= j;
 						y[j] <= 0;
 					end
-				end else if (&set_ready && output_done) begin
-					for (j = 0; j < set_size; j = j + 1) begin
-						iterations_reg[j] <= iterations[j];
-					end
-					base_pixel   <= base_pixel + set_size;
-					render_state <= 'd1;
-				end
+				end else render_state <= 1;
 			end
 			endcase
 		end

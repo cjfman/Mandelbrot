@@ -47,7 +47,7 @@ module mainController(
 	input SYS_RESETn,
 	
 	// Buttons and switches
-	//input [5:0] btn,
+	input [4:0] btn,
 	input [3:0] SW,
 	
 	// HDMI Out
@@ -311,7 +311,7 @@ module mainController(
 	
 	// Inputs
 	wire mandelbrot_send_data;
-	wire start_render = 1;
+	//wire start_render = 1;
 	wire clear_frame;
 	
 	mandelbrotRederingEngine  # (
@@ -322,8 +322,9 @@ module mainController(
 	 .SYS_RESET(SYS_RESET),
 	 .update(update),
 	 .resolution(resolution),
+	 .btn(btn),
     .send_data(mandelbrot_send_data), 
-    .start_render(start_render), 
+    //.start_render(start_render), 
 	 .clear_frame(clear_frame),
     .data(point_data), 
 	 .render_reset(render_reset),

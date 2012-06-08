@@ -55,8 +55,8 @@
 // "Output    Output      Phase     Duty      Pk-to-Pk        Phase"
 // "Clock    Freq (MHz) (degrees) Cycle (%) Jitter (ps)  Error (ps)"
 //----------------------------------------------------------------------------
-// CLK_OUT1____44.643______0.000______50.0______326.618____226.768
-// CLK_OUT2___125.000______0.000______50.0______262.597____226.768
+// CLK_OUT1____25.000______0.000______50.0______241.564____215.375
+// CLK_OUT2___125.000______0.000______50.0______174.592____215.375
 //
 //----------------------------------------------------------------------------
 // "Input Clock   Freq (MHz)    Input Jitter (UI)"
@@ -100,13 +100,13 @@ module clockGeneration
   #(.BANDWIDTH              ("OPTIMIZED"),
     .CLK_FEEDBACK           ("CLKFBOUT"),
     .COMPENSATION           ("SYSTEM_SYNCHRONOUS"),
-    .DIVCLK_DIVIDE          (4),
-    .CLKFBOUT_MULT          (25),
+    .DIVCLK_DIVIDE          (1),
+    .CLKFBOUT_MULT          (5),
     .CLKFBOUT_PHASE         (0.000),
-    .CLKOUT0_DIVIDE         (14),
+    .CLKOUT0_DIVIDE         (20),
     .CLKOUT0_PHASE          (0.000),
     .CLKOUT0_DUTY_CYCLE     (0.500),
-    .CLKOUT1_DIVIDE         (5),
+    .CLKOUT1_DIVIDE         (4),
     .CLKOUT1_PHASE          (0.000),
     .CLKOUT1_DUTY_CYCLE     (0.500),
     .CLKIN_PERIOD           (10.000),
