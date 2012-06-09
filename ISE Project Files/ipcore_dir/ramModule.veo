@@ -160,7 +160,22 @@ u_ramModule (
    .c3_p1_rd_empty                         (c3_p1_rd_empty),
    .c3_p1_rd_count                         (c3_p1_rd_count),
    .c3_p1_rd_overflow                      (c3_p1_rd_overflow),
-   .c3_p1_rd_error                         (c3_p1_rd_error)
+   .c3_p1_rd_error                         (c3_p1_rd_error),
+   .c3_p2_cmd_clk                          (c3_p2_cmd_clk),
+   .c3_p2_cmd_en                           (c3_p2_cmd_en),
+   .c3_p2_cmd_instr                        (c3_p2_cmd_instr),
+   .c3_p2_cmd_bl                           (c3_p2_cmd_bl),
+   .c3_p2_cmd_byte_addr                    (c3_p2_cmd_byte_addr),
+   .c3_p2_cmd_empty                        (c3_p2_cmd_empty),
+   .c3_p2_cmd_full                         (c3_p2_cmd_full),
+   .c3_p2_rd_clk                           (c3_p2_rd_clk),
+   .c3_p2_rd_en                            (c3_p2_rd_en),
+   .c3_p2_rd_data                          (c3_p2_rd_data),
+   .c3_p2_rd_full                          (c3_p2_rd_full),
+   .c3_p2_rd_empty                         (c3_p2_rd_empty),
+   .c3_p2_rd_count                         (c3_p2_rd_count),
+   .c3_p2_rd_overflow                      (c3_p2_rd_overflow),
+   .c3_p2_rd_error                         (c3_p2_rd_error)
 );
 
 // INST_TAG_END ------ End INSTANTIATION Template ---------

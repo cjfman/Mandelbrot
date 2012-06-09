@@ -22,11 +22,16 @@ module colorRom255(
 	 input clk,
     input [31:0] iteration,
     input [31:0] offset,
-    output reg [23:0] color
+    output wire [23:0] color_out
     );
+	 
+	wire [31:0] color_select = (iteration == 255) ? 255 : (iteration + offset) % 256;
+	reg [23:0] color;
+	
+	assign color_out = color; //(iteration == 255) ? 24'h000000 : color;
 
 	always @ (posedge clk)
-		case(iteration)
+		case(color_select)
 		254: color <= 24'hff0600; 253: color <= 24'hff0c00; 252: color <= 24'hff1200; 251: color <= 24'hff1800; 250: color <= 24'hff1e00;
 		249: color <= 24'hff2400; 248: color <= 24'hff2a00; 247: color <= 24'hff3000; 246: color <= 24'hff3600; 245: color <= 24'hff3c00;
 		244: color <= 24'hff4200; 243: color <= 24'hff4800; 242: color <= 24'hff4e00; 241: color <= 24'hff5400; 240: color <= 24'hff5b00;

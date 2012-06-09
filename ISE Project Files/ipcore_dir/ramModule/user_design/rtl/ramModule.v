@@ -66,7 +66,7 @@
 //*****************************************************************************
 `timescale 1ns/1ps
 
-(* X_CORE_INFO = "mig_v3_9_ddr2_ddr2_s6, Coregen 13.3" , CORE_GENERATION_INFO = "ddr2_ddr2_s6,mig_v3_9,{component_name=ramModule, C3_MEM_INTERFACE_TYPE=DDR2_SDRAM, C3_CLK_PERIOD=3000, C3_MEMORY_PART=mt47h64m16xx-25e, C3_MEMORY_DEVICE_WIDTH=16, C3_OUTPUT_DRV=FULL, C3_RTT_NOM=50OHMS, C3_DQS#_ENABLE=YES, C3_HIGH_TEMP_SR=NORMAL, C3_PORT_CONFIG=Two 32-bit bi-directional and four 32-bit unidirectional ports, C3_MEM_ADDR_ORDER=ROW_BANK_COLUMN, C3_PORT_ENABLE=Port0_Port1, C3_CLASS_ADDR=II, C3_CLASS_DATA=II, C3_INPUT_PIN_TERMINATION=CALIB_TERM, C3_DATA_TERMINATION=25 Ohms, C3_CLKFBOUT_MULT_F=2, C3_CLKOUT_DIVIDE=1, C3_DEBUG_PORT=0, INPUT_CLK_TYPE=Single-Ended, LANGUAGE=Verilog, SYNTHESIS_TOOL=Foundation_ISE, NO_OF_CONTROLLERS=1}" *)
+(* X_CORE_INFO = "mig_v3_9_ddr2_ddr2_s6, Coregen 13.3" , CORE_GENERATION_INFO = "ddr2_ddr2_s6,mig_v3_9,{component_name=ramModule, C3_MEM_INTERFACE_TYPE=DDR2_SDRAM, C3_CLK_PERIOD=3000, C3_MEMORY_PART=mt47h64m16xx-25e, C3_MEMORY_DEVICE_WIDTH=16, C3_OUTPUT_DRV=FULL, C3_RTT_NOM=50OHMS, C3_DQS#_ENABLE=YES, C3_HIGH_TEMP_SR=NORMAL, C3_PORT_CONFIG=Two 32-bit bi-directional and four 32-bit unidirectional ports, C3_MEM_ADDR_ORDER=ROW_BANK_COLUMN, C3_PORT_ENABLE=Port0_Port1_Port2, C3_CLASS_ADDR=II, C3_CLASS_DATA=II, C3_INPUT_PIN_TERMINATION=CALIB_TERM, C3_DATA_TERMINATION=25 Ohms, C3_CLKFBOUT_MULT_F=2, C3_CLKOUT_DIVIDE=1, C3_DEBUG_PORT=0, INPUT_CLK_TYPE=Single-Ended, LANGUAGE=Verilog, SYNTHESIS_TOOL=Foundation_ISE, NO_OF_CONTROLLERS=1}" *)
 module ramModule #
 (
    parameter C3_P0_MASK_SIZE           = 4,
@@ -172,7 +172,22 @@ module ramModule #
       output		c3_p1_rd_empty,
       output [6:0]	c3_p1_rd_count,
       output		c3_p1_rd_overflow,
-      output		c3_p1_rd_error
+      output		c3_p1_rd_error,
+      input		c3_p2_cmd_clk,
+      input		c3_p2_cmd_en,
+      input [2:0]	c3_p2_cmd_instr,
+      input [5:0]	c3_p2_cmd_bl,
+      input [29:0]	c3_p2_cmd_byte_addr,
+      output		c3_p2_cmd_empty,
+      output		c3_p2_cmd_full,
+      input		c3_p2_rd_clk,
+      input		c3_p2_rd_en,
+      output [31:0]	c3_p2_rd_data,
+      output		c3_p2_rd_full,
+      output		c3_p2_rd_empty,
+      output [6:0]	c3_p2_rd_count,
+      output		c3_p2_rd_overflow,
+      output		c3_p2_rd_error
 );
 // The parameter CX_PORT_ENABLE shows all the active user ports in the design.
 // For example, the value 6'b111100 tells that only port-2, port-3, port-4
@@ -182,28 +197,28 @@ module ramModule #
 // Config-2: Four 32-bit bi-directional ports and the ports port-2 through
 // port-5 in Config-4: Two 64-bit bi-directional ports. Please look into the 
 // Chapter-2 of ug388.pdf in the /docs directory for further details.
-   localparam C3_PORT_ENABLE              = 6'b000011;
+   localparam C3_PORT_ENABLE              = 6'b000111;
    localparam C3_PORT_CONFIG             =  "B32_B32_R32_R32_R32_R32";
-   localparam C3_CLKOUT0_DIVIDE       = 1; // sysclk_2x = 625 MHz
+	localparam C3_CLKOUT0_DIVIDE       = 1; // sysclk_2x = 625 MHz
 	localparam C3_CLKOUT1_DIVIDE       = 1; // sysclk_2x_180 = 625 MHz
 	localparam C3_CLKOUT2_DIVIDE       = 8; // user clock = 78.125 MHz
 	localparam C3_CLKOUT3_DIVIDE       = 4; // calibration clock = 156.25 MHz - seems a bit high, actually!
 	localparam C3_CLKFBOUT_MULT        = 25;
-	localparam C3_DIVCLK_DIVIDE        = 4; // 100 * 25 / 4 = 625 MHz
+	localparam C3_DIVCLK_DIVIDE        = 4; // 100 * 25 / 4 = 625 MHz      
    localparam C3_ARB_ALGORITHM        = 0;       
    localparam C3_ARB_NUM_TIME_SLOTS   = 12;       
-   localparam C3_ARB_TIME_SLOT_0      = 6'o01;       
-   localparam C3_ARB_TIME_SLOT_1      = 6'o10;       
-   localparam C3_ARB_TIME_SLOT_2      = 6'o01;       
-   localparam C3_ARB_TIME_SLOT_3      = 6'o10;       
-   localparam C3_ARB_TIME_SLOT_4      = 6'o01;       
-   localparam C3_ARB_TIME_SLOT_5      = 6'o10;       
-   localparam C3_ARB_TIME_SLOT_6      = 6'o01;       
-   localparam C3_ARB_TIME_SLOT_7      = 6'o10;       
-   localparam C3_ARB_TIME_SLOT_8      = 6'o01;       
-   localparam C3_ARB_TIME_SLOT_9      = 6'o10;       
-   localparam C3_ARB_TIME_SLOT_10     = 6'o01;       
-   localparam C3_ARB_TIME_SLOT_11     = 6'o10;       
+   localparam C3_ARB_TIME_SLOT_0      = 9'o012;       
+   localparam C3_ARB_TIME_SLOT_1      = 9'o120;       
+   localparam C3_ARB_TIME_SLOT_2      = 9'o201;       
+   localparam C3_ARB_TIME_SLOT_3      = 9'o012;       
+   localparam C3_ARB_TIME_SLOT_4      = 9'o120;       
+   localparam C3_ARB_TIME_SLOT_5      = 9'o201;       
+   localparam C3_ARB_TIME_SLOT_6      = 9'o012;       
+   localparam C3_ARB_TIME_SLOT_7      = 9'o120;       
+   localparam C3_ARB_TIME_SLOT_8      = 9'o201;       
+   localparam C3_ARB_TIME_SLOT_9      = 9'o012;       
+   localparam C3_ARB_TIME_SLOT_10     = 9'o120;       
+   localparam C3_ARB_TIME_SLOT_11     = 9'o201;       
    localparam C3_MEM_TRAS             = 42500;       
    localparam C3_MEM_TRCD             = 12500;       
    localparam C3_MEM_TREFI            = 7800000;       
@@ -261,18 +276,18 @@ module ramModule #
    localparam C3_INCLK_PERIOD         = ((C3_MEMCLK_PERIOD * C3_CLKFBOUT_MULT) / (C3_DIVCLK_DIVIDE * C3_CLKOUT0_DIVIDE * 2));       
    localparam DBG_WR_STS_WIDTH        = 32;
    localparam DBG_RD_STS_WIDTH        = 32;
-   localparam C3_ARB_TIME0_SLOT  = {3'b000, 3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_0[5:3], C3_ARB_TIME_SLOT_0[2:0]};
-   localparam C3_ARB_TIME1_SLOT  = {3'b000, 3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_1[5:3], C3_ARB_TIME_SLOT_1[2:0]};
-   localparam C3_ARB_TIME2_SLOT  = {3'b000, 3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_2[5:3], C3_ARB_TIME_SLOT_2[2:0]};
-   localparam C3_ARB_TIME3_SLOT  = {3'b000, 3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_3[5:3], C3_ARB_TIME_SLOT_3[2:0]};
-   localparam C3_ARB_TIME4_SLOT  = {3'b000, 3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_4[5:3], C3_ARB_TIME_SLOT_4[2:0]};
-   localparam C3_ARB_TIME5_SLOT  = {3'b000, 3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_5[5:3], C3_ARB_TIME_SLOT_5[2:0]};
-   localparam C3_ARB_TIME6_SLOT  = {3'b000, 3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_6[5:3], C3_ARB_TIME_SLOT_6[2:0]};
-   localparam C3_ARB_TIME7_SLOT  = {3'b000, 3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_7[5:3], C3_ARB_TIME_SLOT_7[2:0]};
-   localparam C3_ARB_TIME8_SLOT  = {3'b000, 3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_8[5:3], C3_ARB_TIME_SLOT_8[2:0]};
-   localparam C3_ARB_TIME9_SLOT  = {3'b000, 3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_9[5:3], C3_ARB_TIME_SLOT_9[2:0]};
-   localparam C3_ARB_TIME10_SLOT  = {3'b000, 3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_10[5:3], C3_ARB_TIME_SLOT_10[2:0]};
-   localparam C3_ARB_TIME11_SLOT  = {3'b000, 3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_11[5:3], C3_ARB_TIME_SLOT_11[2:0]};
+   localparam C3_ARB_TIME0_SLOT  = {3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_0[8:6], C3_ARB_TIME_SLOT_0[5:3], C3_ARB_TIME_SLOT_0[2:0]};
+   localparam C3_ARB_TIME1_SLOT  = {3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_1[8:6], C3_ARB_TIME_SLOT_1[5:3], C3_ARB_TIME_SLOT_1[2:0]};
+   localparam C3_ARB_TIME2_SLOT  = {3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_2[8:6], C3_ARB_TIME_SLOT_2[5:3], C3_ARB_TIME_SLOT_2[2:0]};
+   localparam C3_ARB_TIME3_SLOT  = {3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_3[8:6], C3_ARB_TIME_SLOT_3[5:3], C3_ARB_TIME_SLOT_3[2:0]};
+   localparam C3_ARB_TIME4_SLOT  = {3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_4[8:6], C3_ARB_TIME_SLOT_4[5:3], C3_ARB_TIME_SLOT_4[2:0]};
+   localparam C3_ARB_TIME5_SLOT  = {3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_5[8:6], C3_ARB_TIME_SLOT_5[5:3], C3_ARB_TIME_SLOT_5[2:0]};
+   localparam C3_ARB_TIME6_SLOT  = {3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_6[8:6], C3_ARB_TIME_SLOT_6[5:3], C3_ARB_TIME_SLOT_6[2:0]};
+   localparam C3_ARB_TIME7_SLOT  = {3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_7[8:6], C3_ARB_TIME_SLOT_7[5:3], C3_ARB_TIME_SLOT_7[2:0]};
+   localparam C3_ARB_TIME8_SLOT  = {3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_8[8:6], C3_ARB_TIME_SLOT_8[5:3], C3_ARB_TIME_SLOT_8[2:0]};
+   localparam C3_ARB_TIME9_SLOT  = {3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_9[8:6], C3_ARB_TIME_SLOT_9[5:3], C3_ARB_TIME_SLOT_9[2:0]};
+   localparam C3_ARB_TIME10_SLOT  = {3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_10[8:6], C3_ARB_TIME_SLOT_10[5:3], C3_ARB_TIME_SLOT_10[2:0]};
+   localparam C3_ARB_TIME11_SLOT  = {3'b000, 3'b000, 3'b000, C3_ARB_TIME_SLOT_11[8:6], C3_ARB_TIME_SLOT_11[5:3], C3_ARB_TIME_SLOT_11[2:0]};
 
   wire                              c3_sys_clk_p;
   wire                              c3_sys_clk_n;
@@ -289,13 +304,6 @@ module ramModule #
   wire  [2:0]                      c3_vio_data_mode_value;
   wire  [2:0]                      c3_vio_addr_mode_value;
   wire  [31:0]                      c3_cmp_data;
-wire				c3_p2_cmd_clk;
-wire				c3_p2_cmd_en;
-wire[2:0]			c3_p2_cmd_instr;
-wire[5:0]			c3_p2_cmd_bl;
-wire[29:0]			c3_p2_cmd_byte_addr;
-wire				c3_p2_cmd_empty;
-wire				c3_p2_cmd_full;
 wire				c3_p2_wr_clk;
 wire				c3_p2_wr_en;
 wire[3:0]			c3_p2_wr_mask;
@@ -305,14 +313,6 @@ wire				c3_p2_wr_empty;
 wire[6:0]			c3_p2_wr_count;
 wire				c3_p2_wr_underrun;
 wire				c3_p2_wr_error;
-wire				c3_p2_rd_clk;
-wire				c3_p2_rd_en;
-wire[31:0]			c3_p2_rd_data;
-wire				c3_p2_rd_full;
-wire				c3_p2_rd_empty;
-wire[6:0]			c3_p2_rd_count;
-wire				c3_p2_rd_overflow;
-wire				c3_p2_rd_error;
 wire				c3_p3_cmd_clk;
 wire				c3_p3_cmd_en;
 wire[2:0]			c3_p3_cmd_instr;

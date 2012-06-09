@@ -65,7 +65,7 @@ module clockGeneration_exdes
   // Reset that only drives logic in example design
   input         COUNTER_RESET,
   // High bits of counters driven by clocks
-  output [2:1]  COUNT
+  output [3:1]  COUNT
  );
 
   // Parameters for the counters
@@ -73,7 +73,7 @@ module clockGeneration_exdes
   // Counter width
   localparam    C_W       = 16;
   // Number of counters
-  localparam    NUM_C     = 2;
+  localparam    NUM_C     = 3;
   genvar        count_gen;
   // Create reset for the counters
   wire          reset_int = COUNTER_RESET;
@@ -96,12 +96,14 @@ module clockGeneration_exdes
     .CLK_IN100m            (CLK_IN1),
     // Clock out ports
     .Render_CLK           (clk_int[1]),
-    .Color_CLK           (clk_int[2]));
+    .Read_CLK           (clk_int[2]),
+    .Color_CLK           (clk_int[3]));
 
   // Connect the output clocks to the design
   //-----------------------------------------
   assign clk[1] = clk_int[1];
   assign clk[2] = clk_int[2];
+  assign clk[3] = clk_int[3];
 
 
   // Reset synchronizer

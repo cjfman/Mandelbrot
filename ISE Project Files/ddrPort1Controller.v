@@ -245,7 +245,7 @@ module ddrPort1Controller # (
 	
 	// Memory pointers
 	
-	wire [29:0] base_pointer = (base_selector) ? 30'd5242880 :  0;
+	wire [29:0] base_pointer = 30'd5242880;
 	reg [29:0] line_pointer;
 	reg [29:0] pointer;
 	

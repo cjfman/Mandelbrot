@@ -7,7 +7,6 @@ clockGeneration.sym
 clockGeneration.v
 clockGeneration.veo
 clockGeneration.xco
-clockGeneration.xise
 clockGeneration\clk_wiz_v3_2_readme.txt
 clockGeneration\clockGeneration.ucf
 clockGeneration\clockGeneration.xdc

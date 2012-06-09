@@ -96,11 +96,13 @@ module mainController(
 	
 	wire render_clk;
 	wire color_clk;
+	wire read_clk;
 	
 	clockGeneration mainClockGen (
-    .CLK_IN100m(sysclk),      // IN
+    .CLK_IN100m(sysclk),     // IN
     .Render_CLK(render_clk), // OUT
-    .Color_CLK(color_clk));  // OUT
+    .Color_CLK(color_clk),	  // OUT
+	 .Read_CLK(read_clk));	  // OUT
 		
 		
 	/*reg [27:0] led_count;
@@ -124,15 +126,22 @@ module mainController(
 	wire [31:0] p0_wr_data;
 	wire p0_rd_en;
 	wire p0_wr_en;
+	
 	wire [2:0] p1_cmd_instr;
 	wire [5:0] p1_cmd_bl;
 	wire [29:0] p1_cmd_byte_addr;
 	reg [3:0] p1_wr_mask;
-	reg [31:0] p1_wr_data;
+	wire [31:0] p1_wr_data;
 	wire p1_rd_en;
-	reg p1_wr_en;
+	wire p1_wr_en;
+	
+	wire [2:0] p2_cmd_instr;
+	wire [5:0] p2_cmd_bl;
+	wire [29:0] p2_cmd_byte_addr;
+	wire p2_rd_en;
 	wire p0_cmd_en;
 	wire p1_cmd_en;
+	wire p2_cmd_en;
 	wire mem_reset;
 
 	// Outputs
@@ -142,14 +151,20 @@ module mainController(
 	wire p0_rd_empty;
 	wire p0_wr_full;
 	wire p0_wr_empty;
+	
 	wire [6:0] p1_wr_count;
 	wire [31:0] p1_rd_data;
 	wire [6:0] p1_rd_count;
 	wire p1_rd_empty;
 	wire p1_rd_full;
+	wire p1_wr_empty;
+	
+	wire [31:0] p2_rd_data;
+	wire [6:0] p2_rd_count;
+	wire p2_rd_empty;
+	wire p2_rd_full;
 	wire mem_calib_done;
 	wire clk0;
-	//wire CLK = clk;
 
 
 	// Instantiate the Unit Under Test (UUT)
@@ -197,14 +212,25 @@ module mainController(
 		.p1_rd_en(p1_rd_en), 
 		.p1_rd_empty(p1_rd_empty),
 		.p1_rd_full(p1_rd_full),
+		.p1_wr_empty(p1_wr_empty),
 		.p1_wr_en(p1_wr_en), 
+		.p2_cmd_instr(p2_cmd_instr), 
+		.p2_cmd_bl(p2_cmd_bl), 
+		.p2_cmd_byte_addr(p2_cmd_byte_addr), 
+		.p2_rd_data(p2_rd_data), 
+		.p2_rd_count(p2_rd_count), 
+		.p2_rd_en(p2_rd_en), 
+		.p2_rd_empty(p2_rd_empty),
+		.p2_rd_full(p2_rd_full),
 		.p0_cmd_en(p0_cmd_en),
 		.p1_cmd_en(p1_cmd_en),
+		.p2_cmd_en(p2_cmd_en),
 		.calib_done(mem_calib_done), 
 		.reset(mem_reset),
 		.clk0(clk0),
 		.p0clk(render_clk),
-		.p1clk(color_clk)
+		.p1clk(color_clk),
+		.p2clk(read_clk)
 	);
 	
 
@@ -322,7 +348,7 @@ module mainController(
 		 
 
 //////////////////////////////////////
-/// Port1 Controller
+/// Port2 Controller
 //////////////////////////////////////
 
 	// Outputs
@@ -331,22 +357,22 @@ module mainController(
 
 	ddrPort1Controller # (
 	 .max_iterations(max_iterations)
-	) port1Controller (
-    .clk(color_clk), 
+	) port2Controller (
+    .clk(read_clk), 
     .reset(SYS_RESET), 
     .base_selector(frame_selector), 
 	 .pwrup(pwrup),
     .SW(SW), 
-    .rd_data(p1_rd_data), 
-    .rd_count(p1_rd_count), 
-    .rd_empty(p1_rd_empty), 
-    .rd_full(p1_rd_full), 
+    .rd_data(p2_rd_data), 
+    .rd_count(p2_rd_count), 
+    .rd_empty(p2_rd_empty), 
+    .rd_full(p2_rd_full), 
     .mem_calib_done(mem_calib_done), 
-    .cmd_instr(p1_cmd_instr), 
-    .cmd_bl(p1_cmd_bl), 
-    .cmd_byte_addr(p1_cmd_byte_addr), 
-    .rd_en(p1_rd_en), 
-    .cmd_en(p1_cmd_en), 
+    .cmd_instr(p2_cmd_instr), 
+    .cmd_bl(p2_cmd_bl), 
+    .cmd_byte_addr(p2_cmd_byte_addr), 
+    .rd_en(p2_rd_en), 
+    .cmd_en(p2_cmd_en), 
     .stream_data(stream_data), 
     .end_line(end_line),
     .y_pos(y_pos),	 
@@ -355,6 +381,32 @@ module mainController(
     .data_out_valid(data_out_valid)
 	 //.LED(LED[3:0])
 	 //.LED(LED[1])
+    );
+	
+
+//////////////////////////////////////
+/// Color Rom Controller
+//////////////////////////////////////
+	
+	colorModule port1Controller (
+    .clk(color_clk), 
+    .reset(SYS_RESET), 
+    .pwrup(pwrup), 
+    .SW(SW), 
+	 //.LED(LED),
+    .rd_data(p1_rd_data), 
+    .rd_count(p1_rd_count), 
+    .rd_empty(p1_rd_empty), 
+    .rd_en(p1_rd_en), 
+    .wr_empty(p1_wr_empty), 
+    .wr_count(p1_wr_count), 
+    .wr_data(p1_wr_data), 
+    .wr_en(p1_wr_en), 
+    .mem_calib_done(mem_calib_done), 
+    .cmd_instr(p1_cmd_instr), 
+    .cmd_bl(p1_cmd_bl), 
+    .cmd_byte_addr(p1_cmd_byte_addr), 
+    .cmd_en(p1_cmd_en)
     );
 		
 endmodule

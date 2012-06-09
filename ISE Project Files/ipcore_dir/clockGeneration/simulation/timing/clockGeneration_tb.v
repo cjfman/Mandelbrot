@@ -78,7 +78,7 @@ module clockGeneration_tb ();
   reg         CLK_IN1     = 1;
 
   // The high bits of the sampling counters
-  wire [2:1]  COUNT;
+  wire [3:1]  COUNT;
   reg         COUNTER_RESET = 0;
   reg [13:0]  timeout_counter = 14'b00000000000000;
 

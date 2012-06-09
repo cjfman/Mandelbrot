@@ -158,10 +158,9 @@ module infrastructure #
            .I  (sys_clk),
            .O  (sys_clk_ibufg)
            );*/
+		assign sys_clk_ibufg = sys_clk;
    end
   endgenerate
-
-  assign sys_clk_ibufg = sys_clk;
 
   //***************************************************************************
   // Global clock generation and distribution

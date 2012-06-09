@@ -52,31 +52,13 @@ module ddrPort0Controller # (
 	always @(posedge clk) begin
 		LED <= state;
 	end
-	
-	////////////////
-	// Color Rom
-	////////////////
-	
-	// Input
-	wire [31:0] iteration = data;
-	reg  [31:0] offset;
-	
-	// Output
-	wire [23:0] color;
-	
-	colorRom255 color_rom_0 (
-    .clk(clk), 
-    .iteration(iteration), 
-    .offset(offset), 
-    .color(color)
-    );
 	 
 	 
 	//////////////////////
 	// Memory Controller
 	//////////////////////
 			 
-	wire [29:0] base_pointer = (memory_frame) ? 0 : 30'd5242880;
+	wire [29:0] base_pointer = 0; //(memory_frame) ? 0 : 30'd5242880;
 	reg [29:0] pointer;
 	reg [1:0] calib_done;
 	reg [5:0] write_count;
@@ -122,14 +104,14 @@ module ddrPort0Controller # (
 				state <= 3;
 			end
 			3: begin
-				//p0_wr_data <= data;
+				p0_wr_data <= data;
+				p0_wr_en <= 1;
+				count <= count + 1;
 				state <= 4;
 			end
 			4: begin
 				if (count < set_size) begin
-					count <= count + 1;
-					p0_wr_en <= 1;
-					p0_wr_data <= color;
+					p0_wr_data <= data;
 					count <= count + 1;
 				end else begin
 					p0_wr_en <= 0;

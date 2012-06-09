@@ -1,5 +1,5 @@
 # Output products list for <ramModule>
-mig.prj
+_xmsgs\pn_parser.xmsgs
 ramModule.gise
 ramModule.veo
 ramModule.xco

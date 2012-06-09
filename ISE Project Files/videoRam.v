@@ -68,16 +68,29 @@ module videoRam(
 	input wire p1_rd_en,
 	output wire p1_rd_empty,
 	output wire p1_rd_full,
+	output wire p1_wr_empty,
 	input wire p1_wr_en,
+	
+	input wire [2:0] p2_cmd_instr,
+	input wire [5:0] p2_cmd_bl,
+	input wire [29:0] p2_cmd_byte_addr,
+	output wire [31:0] p2_rd_data,
+	output wire [6:0] p2_rd_count,
+	input wire p2_rd_en,
+	output wire p2_rd_empty,
+	output wire p2_rd_full,
+	
 	input wire p0_cmd_en,
 	input wire p1_cmd_en,
+	input wire p2_cmd_en,
 
 	output wire calib_done,
 	input wire reset,
 	output wire clk0,
 	
 	input p0clk,
-	input p1clk
+	input p1clk,
+	input p2clk
     );
 	 
 	wire rst0; // It's an output
@@ -175,7 +188,23 @@ module videoRam(
 		.c3_p1_rd_empty                         (p1_rd_empty),
 		.c3_p1_rd_count                         (p1_rd_count),
 		.c3_p1_rd_overflow                      (p1_rd_overflow),
-		.c3_p1_rd_error                         (p1_rd_error)
+		.c3_p1_rd_error                         (p1_rd_error),
+		
+		.c3_p2_cmd_clk                          (p2clk),				  // Clock
+		.c3_p2_cmd_en                           (p2_cmd_en),
+		.c3_p2_cmd_instr                        (p2_cmd_instr),
+		.c3_p2_cmd_bl                           (p2_cmd_bl),
+		.c3_p2_cmd_byte_addr                    (p2_cmd_byte_addr),
+		.c3_p2_cmd_empty                        (p2_cmd_empty),
+		.c3_p2_cmd_full                         (p2_cmd_full),
+		.c3_p2_rd_clk                           (p2clk),				  // Clock
+		.c3_p2_rd_en                            (p2_rd_en),
+		.c3_p2_rd_data                          (p2_rd_data),
+		.c3_p2_rd_full                          (p2_rd_full),
+		.c3_p2_rd_empty                         (p2_rd_empty),
+		.c3_p2_rd_count                         (p2_rd_count),
+		.c3_p2_rd_overflow                      (p2_rd_overflow),
+		.c3_p2_rd_error                         (p2_rd_error)
 	);
 
 

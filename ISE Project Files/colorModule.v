@@ -99,7 +99,7 @@ module colorModule (
     update <= pwrup | sw0_rdy | sw1_rdy | sw2_rdy | sw3_rdy;
   end
   
-  ////////////////////////////
+	////////////////////////////
 	// Resolution configuration
 	////////////////////////////
 	
@@ -140,21 +140,38 @@ module colorModule (
 	////////////////
 	// Color Rom
 	////////////////
-	
+
 	// Input
 	reg  [31:0] offset;
-	
+
 	// Output
 	wire [23:0] color;
-	
+
 	colorRom255 color_rom_0 (
-    .clk(clk), 
-    .iteration(rd_data), 
-    .offset(offset), 
-    .color(color)
-    );
-	 
-	 assign wr_data = {8'b0, color};
+		.clk(clk), 
+		.iteration(rd_data), 
+		.offset(offset), 
+		.color_out(color)
+	);
+
+	assign wr_data = {8'b0, color};
+
+
+	// Color Change
+
+	reg [26:0] color_count;
+
+	always @ (posedge clk, posedge reset) begin
+		if (reset) begin
+			color_count <= 27'd0;
+			offset <= 32'd0;
+		end else begin
+			if (color_count[23]) begin
+				color_count <= 27'd0;
+				offset <= offset + 1;
+			end else color_count <= color_count + 1;
+		end
+	end
 	
 
 	//////////////////////
