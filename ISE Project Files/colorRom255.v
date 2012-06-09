@@ -25,7 +25,7 @@ module colorRom255(
     output wire [23:0] color_out
     );
 	 
-	wire [31:0] color_select = (iteration == 255) ? 255 : (iteration + offset) % 256;
+	wire [31:0] color_select = (iteration == 255) ? 255 : (iteration + offset) % 255;
 	reg [23:0] color;
 	
 	assign color_out = color; //(iteration == 255) ? 24'h000000 : color;
@@ -74,15 +74,15 @@ module colorRom255(
 		059: color <= 24'haa00ff; 058: color <= 24'hb000ff; 057: color <= 24'hb600ff; 056: color <= 24'hbc00ff; 055: color <= 24'hc200ff;
 		054: color <= 24'hc800ff; 053: color <= 24'hce00ff; 052: color <= 24'hd400ff; 051: color <= 24'hda00ff; 050: color <= 24'he000ff;
 		049: color <= 24'he600ff; 048: color <= 24'hec00ff; 047: color <= 24'hf200ff; 046: color <= 24'hf800ff; 045: color <= 24'hff00ff;
-		044: color <= 24'hfb00fb; 043: color <= 24'hf800f8; 042: color <= 24'hf500f5; 041: color <= 24'hf200f2; 040: color <= 24'hef00ef;
-		039: color <= 24'hec00ec; 038: color <= 24'he900e9; 037: color <= 24'he600e6; 036: color <= 24'he300e3; 035: color <= 24'he000e0;
-		034: color <= 24'hdd00dd; 033: color <= 24'hda00da; 032: color <= 24'hd700d7; 031: color <= 24'hd400d4; 030: color <= 24'hd100d1;
-		029: color <= 24'hce00ce; 028: color <= 24'hcb00cb; 027: color <= 24'hc800c8; 026: color <= 24'hc500c5; 025: color <= 24'hc200c2;
-		024: color <= 24'hbf00bf; 023: color <= 24'hbc00bc; 022: color <= 24'hb900b9; 021: color <= 24'hb600b6; 020: color <= 24'hb300b3;
-		019: color <= 24'hb000b0; 018: color <= 24'had00ad; 017: color <= 24'haa00aa; 016: color <= 24'ha600a6; 015: color <= 24'ha300a3;
-		014: color <= 24'ha000a0; 013: color <= 24'h9d009d; 012: color <= 24'h9a009a; 011: color <= 24'h970097; 010: color <= 24'h940094;
-		009: color <= 24'h910091; 008: color <= 24'h8e008e; 007: color <= 24'h8b008b; 006: color <= 24'h880088; 005: color <= 24'h850085;
-		004: color <= 24'h820082; 003: color <= 24'h7f007f; 002: color <= 24'h7f007f; 001: color <= 24'h7f007f; 000: color <= 24'h7f007f;
+		044: color <= 24'hff00f8; 043: color <= 24'hff00f2; 042: color <= 24'hff00ec; 041: color <= 24'hff00e6; 040: color <= 24'hff00e0;
+		039: color <= 24'hff00da; 038: color <= 24'hff00d4; 037: color <= 24'hff00ce; 036: color <= 24'hff00c8; 035: color <= 24'hff00c2;
+		034: color <= 24'hff00bc; 033: color <= 24'hff00b6; 032: color <= 24'hff00b0; 031: color <= 24'hff00a9; 030: color <= 24'hff00a3;
+		029: color <= 24'hff009d; 028: color <= 24'hff0097; 027: color <= 24'hff0091; 026: color <= 24'hff008b; 025: color <= 24'hff0085;
+		024: color <= 24'hff007f; 023: color <= 24'hff0079; 022: color <= 24'hff0073; 021: color <= 24'hff006d; 020: color <= 24'hff0067;
+		019: color <= 24'hff0061; 018: color <= 24'hff005b; 017: color <= 24'hff0054; 016: color <= 24'hff004e; 015: color <= 24'hff0048;
+		014: color <= 24'hff0042; 013: color <= 24'hff003c; 012: color <= 24'hff0036; 011: color <= 24'hff0030; 010: color <= 24'hff002a;
+		009: color <= 24'hff0024; 008: color <= 24'hff001e; 007: color <= 24'hff0018; 006: color <= 24'hff0012; 005: color <= 24'hff000c;
+		004: color <= 24'hff0006; 003: color <= 24'hff0000; 002: color <= 24'hff0000; 001: color <= 24'hff0000; 000: color <= 24'hff0000;
 		255: color <= 24'h000000;
 		endcase
 endmodule
