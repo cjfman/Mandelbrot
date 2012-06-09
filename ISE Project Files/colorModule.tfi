@@ -1,0 +1,27 @@
+
+
+
+// Instantiate the module
+colorModule instance_name (
+    .clk(clk), 
+    .reset(reset), 
+    .pwrup(pwrup), 
+    .SW(SW), 
+    .rd_data(rd_data), 
+    .rd_count(rd_count), 
+    .rd_empty(rd_empty), 
+    .rd_full(rd_full), 
+    .rd_en(rd_en), 
+    .wr_full(wr_full), 
+    .wr_empty(wr_empty), 
+    .wr_count(wr_count), 
+    .wr_data(wr_data), 
+    .wr_en(wr_en), 
+    .mem_calib_done(mem_calib_done), 
+    .cmd_instr(cmd_instr), 
+    .cmd_bl(cmd_bl), 
+    .cmd_byte_addr(cmd_byte_addr), 
+    .cmd_en(cmd_en)
+    );
+
+
