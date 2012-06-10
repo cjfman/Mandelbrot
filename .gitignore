@@ -11,7 +11,7 @@ _ngo
 #*.ngc
 *.ngd
 *.ngr
-*.par
+*.parf
 *.pcf
 *.prj
 *.stx
@@ -47,4 +47,3 @@ xst
 /ISE Project Files/mainController.ptwx
 /ISE Project Files/mainController.xpi
 /ISE Project Files/mainController_bitgen.xwbt
-/ISE Project Files/maincontroller.bit

@@ -274,7 +274,7 @@ module mainController(
 /// Mandelbrot Generator
 //////////////////////////////////////
 
-	parameter set_size = 1;
+	parameter set_size = 2;
 	parameter max_iterations = 255;
 
 	// Outputs
