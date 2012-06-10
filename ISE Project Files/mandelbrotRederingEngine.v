@@ -32,7 +32,7 @@ module mandelbrotRederingEngine # (
 	 input clear_frame,
 	 input pwrup,
 	 input [3:0] SW,
-	 input [4:0] btn,
+	 input [5:0] btn,
     output reg [31:0] data,
 	 output wire render_reset,
     output wire ready,
@@ -112,11 +112,11 @@ module mandelbrotRederingEngine # (
 /// Debounce and Syncronize Buttons
 //////////////////////////////////////
 
-	//always @ (posedge CLK)
-	//	LED[7:5] <= btn[2:0];
+	wire  [5:0] btn_sync; //synchronous output
 
-	wire  [4:0] btn_sync; //synchronous output
-
+	synchro #(.INITIALIZE("LOGIC0"))
+	synchro_btn_5 (.async(btn[5]),.sync(btn_sync[5]),.clk(CLK));
+	
 	synchro #(.INITIALIZE("LOGIC0"))
 	synchro_btn_4 (.async(btn[4]),.sync(btn_sync[4]),.clk(CLK));
 	
@@ -132,13 +132,13 @@ module mandelbrotRederingEngine # (
 	synchro #(.INITIALIZE("LOGIC0"))
 	synchro_btn_0 (.async(btn[0]),.sync(btn_sync[0]),.clk(CLK));
 	
-	reg [4:0] button;
+	reg [5:0] button;
 	always @ (posedge CLK)
 	begin
 		button <= btn_sync;
 	end
 
-	wire btn0_rdy, btn1_rdy, btn2_rdy, btn3_rdy, btn4_rdy;
+	wire btn0_rdy, btn1_rdy, btn2_rdy, btn3_rdy, btn4_rdy, btn5_rdy;
 	
 	debnce deb_btn0 (
 		.sync(button[0]),
@@ -164,13 +164,18 @@ module mandelbrotRederingEngine # (
 		.sync(button[4]),
 		.debnced(btn4_rdy),
 		.clk(CLK));
+		
+	debnce deb_btn5 (
+		.sync(button[5]),
+		.debnced(btn5_rdy),
+		.clk(CLK));
 
 
   reg btn_update = 1'b0;
   
   always @ (posedge CLK)
   begin
-    btn_update <= btn0_rdy | btn1_rdy | btn2_rdy | btn3_rdy | btn4_rdy;
+    btn_update <= btn0_rdy | btn1_rdy | btn2_rdy | btn3_rdy | btn4_rdy | btn5_rdy;
   end
   
   
@@ -365,11 +370,21 @@ module mandelbrotRederingEngine # (
 			end else if (button[3]) begin // RIGHT
 				re_start <= re_start + re_increment;
 				re_end   <= re_end   + re_increment;
+			end else if (&button[5:4]) begin // RESET
+				re_start <= {-4'd2, 29'h0};
+				re_end 	<=  {4'd0, 29'd0};
+				im_start <= {-4'd1, 29'h0};
+				im_end	<=  {4'd1, 29'd0};
 			end else if (button[4]) begin // IN
 				re_start <= re_start + re_increment;
 				re_end   <= re_end   - re_increment;
 				im_start <= im_start + im_increment;
 				im_end   <= im_end   - im_increment;
+			end else if (button[5]) begin // OUT
+				re_start <= re_start - re_increment;
+				re_end   <= re_end   + re_increment;
+				im_start <= im_start - im_increment;
+				im_end   <= im_end   + im_increment;
 			end
 		end
 	end

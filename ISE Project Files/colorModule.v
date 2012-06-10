@@ -23,6 +23,7 @@ module colorModule (
     input reset,
 	 input pwrup,
 	 input [3:0] SW,
+	 input [1:0] encoder,
 	 
 	 output reg [7:0] LED,
 	 	 	 

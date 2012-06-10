@@ -50,6 +50,9 @@ module mainController(
 	input [4:0] btn,
 	input [3:0] SW,
 	
+	// JB
+	input [7:0] JB,
+	
 	// HDMI Out
 	output HDMIOUTCLKP,
 	output HDMIOUTCLKN,
@@ -104,14 +107,12 @@ module mainController(
     .Color_CLK(color_clk),	  // OUT
 	 .Read_CLK(read_clk));	  // OUT
 		
-		
-	/*reg [27:0] led_count;
-	assign LED[7:6] = led_count[27:26];
-	assign LED[4] = update;
-	assign LED[5] = 1;
-	
-	always @(posedge color_clk)
-		led_count <= led_count + 1;*/
+////////////////////
+// Button Setup
+////////////////////
+
+	wire [7:0] JBn = ~JB;
+	wire [5:0] command = {JBn[7], {JBn[6], JBn[3:0]} | btn}; 
 
 
 //////////////////////////////////////
@@ -295,7 +296,7 @@ module mainController(
 	 .SYS_RESET(SYS_RESET),
 	 .pwrup(pwrup),
 	 .SW(SW),
-	 .btn(btn),
+	 .btn(command),
     .send_data(mandelbrot_send_data), 
     .start_render(start_render), 
 	 .clear_frame(clear_frame),
@@ -379,8 +380,6 @@ module mainController(
 	 .pclk(pclk),
     .data_out({red_data_in, green_data_in, blue_data_in}), 
     .data_out_valid(data_out_valid)
-	 //.LED(LED[3:0])
-	 //.LED(LED[1])
     );
 	
 
@@ -393,7 +392,7 @@ module mainController(
     .reset(SYS_RESET), 
     .pwrup(pwrup), 
     .SW(SW), 
-	 //.LED(LED),
+	 .encoder(JB[5:4]),
     .rd_data(p1_rd_data), 
     .rd_count(p1_rd_count), 
     .rd_empty(p1_rd_empty), 
