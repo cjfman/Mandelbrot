@@ -1,6 +1,6 @@
-max_iterations = 1000
+max_iterations = 255
 
-red = 255
+red = 0
 green = 0
 blue = 0
 colors = []
@@ -21,6 +21,7 @@ for x in range(max_iterations):
         s = x / size
         pos = x % size
         if s == 0:
+            red = 255
             green += increment
         elif s == 1:
             green = 255
@@ -35,9 +36,8 @@ for x in range(max_iterations):
             green = 0
             red += increment
         elif s == 5:
-            blue -= increment / 2
-            red  -= increment / 2
-
+            red = 255
+            blue -= increment
         color = hex((int(red) << 16) | (int(green) << 8) | int(blue))[2:]
         if   len(color) != 6: color = "0"*(6-len(color)) + color
         colors.append(color)
@@ -45,8 +45,8 @@ for x in range(max_iterations):
 result = "case(iteration)"
 
 for x in range(max_iterations):
-    num = str(x)
-    if len(num) != 4: num = "0"*(4-len(num)) + num
+    num = str(max_iterations - x - 1)
+    if len(num) != 3: num = "0"*(3-len(num)) + num
     if x % 5 == 0:
         result += '\n'
         
