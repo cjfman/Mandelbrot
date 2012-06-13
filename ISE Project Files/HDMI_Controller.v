@@ -26,14 +26,13 @@ module HDMI_Controller(
 	input [3:0] SW,
 	output wire [3:0] TMDSP,
 	output wire [3:0] TMDSN,
-	output wire [3:0] LED,
 	output wire pclk_lckd,
 	input [7:0] red_data_in,
 	input [7:0] green_data_in,
 	input [7:0] blue_data_in,
-	output wire retrieve_data,
+	output wire retrieve_data, // Active when pixel data should be streamed in
 	output wire pclk,
-	output wire end_line,
+	output wire end_line, 		// Active for one clock cycle when the active section of one line ends
 	output wire [10:0] y_pos
     );
 
@@ -102,11 +101,6 @@ module HDMI_Controller(
     .CLK(clk50m_bufg),
     .D(switch)
   );
-  
-  // LEDS
-  reg [3:0] led1;
-  //reg [3:0] led2;
-  assign LED = led1;
  
 
   // The following defparam declaration 
@@ -127,35 +121,30 @@ module HDMI_Controller(
         begin
           pclk_M <= 8'd2 - 8'd1;
           pclk_D <= 8'd4 - 8'd1;
-			 led1 <= SW_VGA;
         end
 
         SW_SVGA: //40 MHz pixel clock
         begin
          pclk_M <= 8'd4 - 8'd1;
          pclk_D <= 8'd5 - 8'd1;
-			led1 <= SW_SVGA;
         end
 
         SW_XGA: //65 MHz pixel clock
         begin
           pclk_M <= 8'd13 - 8'd1;
           pclk_D <= 8'd10 - 8'd1;
-			 led1 <= SW_XGA;
         end
 
         SW_SXGA: //108 MHz pixel clock
         begin
           pclk_M <= 8'd54 - 8'd1;
           pclk_D <= 8'd25 - 8'd1;
-			 led1 <= SW_SXGA;
         end
 
         default: //74.25 MHz pixel clock
         begin
           pclk_M <= 8'd37 - 8'd1;
           pclk_D <= 8'd25 - 8'd1;
-			 led1 <= SW_HDTV720P;
         end
        endcase
     end
@@ -510,20 +499,6 @@ module HDMI_Controller(
     .o_b(blue_data)
   );
   `else
-		/*reg [7:0] red_reg;
-		reg [7:0] green_reg;
-		reg [7:0] blue_reg;
-		
-		assign red_data = red_reg;
-		assign green_data = green_reg;
-		assign blue_data = blue_reg;
-		
-		always @(posedge pclk) begin
-			red_reg   <= (bgnd_hcount < 200 || bgnd_hcount > 400) ? 8'hFF : 8'h00;
-			green_reg <= (bgnd_hcount < 100 || bgnd_hcount > 300) ? 8'hFF : 8'h00;
-			blue_reg  <= (bgnd_vcount < 200 || bgnd_hcount > 400) ? 8'hFF : 8'h00;
-		end*/
-		
 		assign red_data   = red_data_in;
 		assign green_data = green_data_in;
 		assign blue_data  = blue_data_in;
@@ -647,15 +622,5 @@ module HDMI_Controller(
     .datain       (tmdsclkint));
 
   OBUFDS TMDS3 (.I(tmdsclk), .O(TMDSP[3]), .OB(TMDSN[3])) ;// clock
-
-  //
-  // Debug Ports
-  //
-
- //assign DEBUG[0] = VGA_HSYNC;
- //assign DEBUG[1] = VGA_VSYNC;
-
- // LEDs
- //assign LED = {bufpll_lock, RSTBTN, VGA_HSYNC, VGA_VSYNC} ;
 	
 endmodule

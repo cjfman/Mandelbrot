@@ -7,6 +7,12 @@
    <ItemView engineview="SynthesisOnly" guiview="Source" compilemode="AutoCompile" >
       <ClosedNodes>
          <ClosedNodesVersion>2</ClosedNodesVersion>
+         <ClosedNode>/MandelbrotMainController C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|mainController.v/HDMI - HDMI_Controller</ClosedNode>
+         <ClosedNode>/MandelbrotMainController C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|mainController.v/mandelbrot - mandelbrotRederingEngine</ClosedNode>
+         <ClosedNode>/MandelbrotMainController C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|mainController.v/mandelbrot - mandelbrotRederingEngine/point_gen - pointGenerator</ClosedNode>
+         <ClosedNode>/MandelbrotMainController C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|mainController.v/port1Controller - colorModule</ClosedNode>
+         <ClosedNode>/MandelbrotMainController C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|mainController.v/port2Controller - ddrPort1Controller</ClosedNode>
+         <ClosedNode>/MandelbrotMainController C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|mainController.v/vram - videoRam</ClosedNode>
          <ClosedNode>/atlys_ddr_test C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot2|atlys_ddr_test.v/ddr_interface - ddr_interface</ClosedNode>
          <ClosedNode>/ddrPort1Controller C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|ddrPort1Controller.v</ClosedNode>
          <ClosedNode>/dvi_out_native C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot2|dvi_out_native.v</ClosedNode>
@@ -18,7 +24,9 @@
          <ClosedNode>/mainController C:|Users|Charles Franklin|Documents|FPGA|ISE Project Files|mainController.v/vram - videoRam</ClosedNode>
          <ClosedNode>/mainController C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|mainController.v/HDMI - HDMI_Controller</ClosedNode>
          <ClosedNode>/mainController C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|mainController.v/mandelbrot - mandelbrotRederingEngine</ClosedNode>
+         <ClosedNode>/mainController C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|mainController.v/port1Controller - colorModule</ClosedNode>
          <ClosedNode>/mainController C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|mainController.v/port1Controller - ddrPort1Controller</ClosedNode>
+         <ClosedNode>/mainController C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|mainController.v/port2Controller - ddrPort1Controller</ClosedNode>
          <ClosedNode>/mainController C:|Users|Charles Franklin|Documents|FPGA|Mandelbrot|ISE Project Files|mainController.v/vram - videoRam</ClosedNode>
          <ClosedNode>/mainControllerTriplePort C:|Users|Charles Franklin|Documents|FPGA|ISE Project Files|mainController.v/HDMI - HDMI_Controller</ClosedNode>
          <ClosedNode>/mainControllerTriplePort C:|Users|Charles Franklin|Documents|FPGA|ISE Project Files|mainController.v/mandelbrot - mandelbrotRederingEngine</ClosedNode>
@@ -27,13 +35,13 @@
          <ClosedNode>/mainControllerTriplePort C:|Users|Charles Franklin|Documents|FPGA|ISE Project Files|mainController.v/vram - videoRam</ClosedNode>
       </ClosedNodes>
       <SelectedItems>
-         <SelectedItem>mainController (C:/Users/Charles Franklin/Documents/FPGA/ISE Project Files/mainController.v)</SelectedItem>
+         <SelectedItem>MandelbrotMainController (C:/Users/Charles Franklin/Documents/FPGA/Mandelbrot/ISE Project Files/mainController.v)</SelectedItem>
       </SelectedItems>
       <ScrollbarPosition orientation="vertical" >0</ScrollbarPosition>
       <ScrollbarPosition orientation="horizontal" >0</ScrollbarPosition>
-      <ViewHeaderState orientation="horizontal" >000000ff0000000000000001000000010000000000000000000000000000000002020000000100000001000000640000031b000000020000000000000000000000000200000064ffffffff0000008100000003000000020000031b0000000100000003000000000000000100000003</ViewHeaderState>
+      <ViewHeaderState orientation="horizontal" >000000ff0000000000000001000000010000000000000000000000000000000002020000000100000001000000640000035e000000020000000000000000000000000200000064ffffffff0000008100000003000000020000035e0000000100000003000000000000000100000003</ViewHeaderState>
       <UserChangedColumnWidths orientation="horizontal" >true</UserChangedColumnWidths>
-      <CurrentItem>mainController (C:/Users/Charles Franklin/Documents/FPGA/ISE Project Files/mainController.v)</CurrentItem>
+      <CurrentItem>MandelbrotMainController (C:/Users/Charles Franklin/Documents/FPGA/Mandelbrot/ISE Project Files/mainController.v)</CurrentItem>
    </ItemView>
    <ItemView engineview="SynthesisOnly" sourcetype="DESUT_VERILOG" guiview="Process" >
       <ClosedNodes>
@@ -49,13 +57,13 @@
          <ClosedNode>User Constraints</ClosedNode>
       </ClosedNodes>
       <SelectedItems>
-         <SelectedItem></SelectedItem>
+         <SelectedItem>Synthesize - XST</SelectedItem>
       </SelectedItems>
       <ScrollbarPosition orientation="vertical" >0</ScrollbarPosition>
       <ScrollbarPosition orientation="horizontal" >0</ScrollbarPosition>
       <ViewHeaderState orientation="horizontal" >000000ff000000000000000100000001000000000000000000000000000000000000000000000000f8000000010000000100000000000000000000000064ffffffff000000810000000000000001000000f80000000100000000</ViewHeaderState>
       <UserChangedColumnWidths orientation="horizontal" >false</UserChangedColumnWidths>
-      <CurrentItem></CurrentItem>
+      <CurrentItem>Synthesize - XST</CurrentItem>
    </ItemView>
    <ItemView guiview="File" >
       <ClosedNodes>
@@ -66,7 +74,7 @@
       <ScrollbarPosition orientation="horizontal" >0</ScrollbarPosition>
       <ViewHeaderState orientation="horizontal" >000000ff00000000000000010000000000000000010000000000000000000000000000000000000449000000040101000100000000000000000000000064ffffffff000000810000000000000004000002b20000000100000000000000d700000001000000000000006600000001000000000000005a0000000100000000</ViewHeaderState>
       <UserChangedColumnWidths orientation="horizontal" >false</UserChangedColumnWidths>
-      <CurrentItem></CurrentItem>
+      <CurrentItem>C:\Users\Charles Franklin\Documents\FPGA\Mandelbrot\ISE Project Files\AtlysGeneral.ucf</CurrentItem>
    </ItemView>
    <ItemView guiview="Library" >
       <ClosedNodes>

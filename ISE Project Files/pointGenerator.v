@@ -19,7 +19,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 	
-module pointGenerator # (
+module iterationCalculator # (
 	 parameter HBP = 32,
 	 parameter HBS = 32,
 	 parameter HBI = 32,
@@ -59,7 +59,7 @@ module pointGenerator # (
 	wire signed [3:-(HBP-3)] re2;
 	wire signed [3:-(HBP-3)] im2;
 	wire signed [3:-(HBP-3)] product;
-	wire signed [3:-(HBP-3)] productX2;
+	wire signed [3:-(HBP-3)] productX2 = product << 1;
 	wire signed [3:-(HBP-3)] xscale;
 	wire signed [3:-(HBP-3)] yscale;
 	
@@ -97,35 +97,24 @@ module pointGenerator # (
 		);
 		
 	signedFixedPointMult # (
-		.iD(4),
-		.iF(HBP-3),
-		.oD(4),
-		.oF(HBP-3)
-	) factorX2 (	
-		.A(product), 
-		.B({4'd2, 29'd0}), 
-		.O(productX2)
-		);
-		
-	signedFixedPointMult # (
-		.iD(12),
+		.iD(13),
 		.iF(HBP-3),
 		.oD(4),
 		.oF(HBP-3)
 	) x_scale (	
-		.A({8'd0, re_scale}), 
-		.B({0, x, 29'd0}), 
+		.A({9'd0, re_scale}), 
+		.B({1'b0, x, 29'd0}), 
 		.O(xscale)
 		);
 		
 	signedFixedPointMult # (
-		.iD(12),
+		.iD(13),
 		.iF(HBP-3),
 		.oD(4),
 		.oF(HBP-3)
 	) y_scale (	
-		.A({8'd0, im_scale}), 
-		.B({0, y, 29'd0}), 
+		.A({9'd0, im_scale}), 
+		.B({1'b0, y, 29'd0}), 
 		.O(yscale)
 		);
 	
@@ -136,7 +125,7 @@ module pointGenerator # (
 		iteration <= 'b0;
 	end
 	
-	reg [3:0] state;
+	reg state;
 	
 	always @ (posedge CLK) begin
 		case (state)
@@ -152,9 +141,6 @@ module pointGenerator # (
 			end
 		end
 		1: begin
-			/*if (x == y) iteration <= max_iterations;
-			state <= 0;
-			done <= 1;*/
 			if (!ready) begin
 				iteration <= iteration + 'b1;
 				re <= re2 - im2 + re_pos;

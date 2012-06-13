@@ -1,21 +1,11 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
+// Company: Digilent
+// Engineer: Charles Jessup Franklin
 // 
 // Create Date:    02:07:49 05/31/2012 
-// Design Name: 
-// Module Name:    ddrPort1Controller 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
+// Module Name:    pixelFIFO 
+// Description:    Loads pixel data from memory
 //
 //////////////////////////////////////////////////////////////////////////////////
 module ddrPort1Controller # (
@@ -155,7 +145,7 @@ module ddrPort1Controller # (
 	//////////////////
 	
 	//Inputs
-	wire [23:0] FIFO_data_in = rd_data; //(rd_data == max_iterations) ? 24'b0 : 24'hFFFFFF;
+	wire [23:0] FIFO_data_in = rd_data;
 	reg FIFO_wr_en;
 	wire FIFO_rd_en = (FIFO_state != 4) ? (stream_data && !FIFO_empty) : 1'bz;
 	wire FIFO_wr =    (FIFO_state != 4) ? FIFO_wr_en : 1'bz;
@@ -186,7 +176,7 @@ module ddrPort1Controller # (
 	assign data_out = FIFO_dout;
 	
 	// Feed FIFO
-	reg [5:0] FIFO_state;
+	reg [2:0] FIFO_state;
 	reg continue_feed;
 	reg [26:0] led_count;
 	reg [2:0] reset_count;
@@ -249,7 +239,7 @@ module ddrPort1Controller # (
 	reg [29:0] line_pointer;
 	reg [29:0] pointer;
 	
-	reg [5:0] state = 0;
+	reg [2:0] state = 0;
 	reg [7:0] read_count;
 	
 	wire [29:0] next_pointer = pointer + (64 << 2);

@@ -1,29 +1,22 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
+// Company: Digilent
+// Engineer: Charles Jessup Franklin
 // 
-// Create Date:    23:34:00 05/23/2012 
-// Design Name: 
-// Module Name:    ddrPort0Controller 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
+// Create Date: 23:34:00 05/23/2012 
+// Module Name: iterationMemoryWritter 
+// Tool versions: ISE 13.3
+// Description: Writes information from the mandelbrot rendering engine to memory
 //
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module ddrPort0Controller # (
-   parameter set_size = 1
+module iterationMemoryWritter # (
+	parameter set_size = 1
 	)(
 	input clk,
 	input reset,
 	
+	// Mandelbrot Engine
 	input [31:0] data,
 	input render_reset,
 	input ready,
@@ -31,6 +24,7 @@ module ddrPort0Controller # (
 	output reg send_data,
 	output wire clear_frame,
 	
+	// Memory
 	input mem_calib_done,
 	input p0_wr_full,
 	input p0_wr_empty,
@@ -45,20 +39,10 @@ module ddrPort0Controller # (
 	output reg [5:0] p0_cmd_bl,
 	output reg [29:0] p0_cmd_byte_addr,
 	output reg [31:0] p0_wr_data,
-	output reg memory_frame,
-	output reg [3:0] LED
-    );
-	 	
-	always @(posedge clk) begin
-		LED <= state;
-	end
-	 
-	 
-	//////////////////////
-	// Memory Controller
-	//////////////////////
+	output reg memory_frame
+   );
 			 
-	wire [29:0] base_pointer = 0; //(memory_frame) ? 0 : 30'd5242880;
+	wire [29:0] base_pointer = 0;
 	reg [29:0] pointer;
 	reg [1:0] calib_done;
 	reg [5:0] write_count;
@@ -72,7 +56,7 @@ module ddrPort0Controller # (
 		calib_done <= {calib_done[0], mem_calib_done};
 	end
 
-	reg [4:0] state;
+	reg [2:0] state;
 	reg [11:0] count;
 	reg [26:0] hold;
 	
@@ -129,33 +113,8 @@ module ddrPort0Controller # (
 			end
 			6: begin
 				p0_cmd_en <= 0;
-				//state <= (pointer < (1310720 << 2)) ? 1 : 6;
 				state <= 1;
 			end
-			/*1: begin
-				if (p0_wr_empty) begin
-					p0_wr_en <= 1;
-					p0_wr_data <= (pointer < 153600 << 2) ? 255 : 0; //~p0_wr_data;
-					state <= 2;
-				end
-			end
-			2: begin
-				if (p0_wr_count == 63) begin
-					p0_wr_en <= 0;
-					p0_cmd_instr <= 3'b000;
-					p0_cmd_en <= 1;
-					p0_cmd_bl <= 63;
-					p0_cmd_byte_addr <= pointer;
-					pointer <= pointer + (64 << 2);
-					state <= 3;
-				end else begin
-					p0_wr_data <= (pointer < 153600 << 2) ? 255 : 0; //p0_wr_data + 1;
-				end
-			end
-			3: begin
-				p0_cmd_en <= 0;
-				state <= (pointer < (1310720 << 2)) ? 1 : 4;
-			end*/
 			endcase
 		end
 	end

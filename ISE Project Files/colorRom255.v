@@ -1,21 +1,11 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
+// Company: Digilent
+// Engineer: Charles Jessup Franklin
 // 
 // Create Date:    15:09:03 06/06/2012 
-// Design Name: 
 // Module Name:    colorRom255 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
+// Description: 	 Mandelbrot color rom for 255 max iterations
 //
 //////////////////////////////////////////////////////////////////////////////////
 module colorRom255(
@@ -28,7 +18,7 @@ module colorRom255(
 	wire [31:0] color_select = (iteration == 255) ? 255 : (iteration + offset) % 255;
 	reg [23:0] color;
 	
-	assign color_out = color; //(iteration == 255) ? 24'h000000 : color;
+	assign color_out = color;
 
 	always @ (posedge clk)
 		case(color_select)

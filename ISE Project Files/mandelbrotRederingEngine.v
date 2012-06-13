@@ -1,21 +1,15 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
+//////////////////////////////////////////////////////////////////////////////////// Company: Digilent
+// Engineer: Charles Jessup Franklin
 // 
-// Create Date:    04:31:31 05/15/2012 
-// Design Name: 
-// Module Name:    mandelbrotRederingEngine 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
+// Module Name:    mandelbrotRederingEngin
+// Tool versions: ISE 13.3
+// Description: Renders the mandelbrot image
 //
 // Revision: 
 // Revision 0.01 - File Created
 // Additional Comments: 
+// - This module uses signed fixed point numbers {sign bit, 3 bits left, HBP-3 right}
 //
 //////////////////////////////////////////////////////////////////////////////////
 module mandelbrotRederingEngine # (
@@ -28,9 +22,10 @@ module mandelbrotRederingEngine # (
     input CLK,
 	 input SYS_RESET,
 	 input send_data,
-	 input start_render,
 	 input clear_frame,
 	 input pwrup,
+	 input direction,
+	 input force_reset,
 	 input [3:0] SW,
 	 input [5:0] btn,
     output reg [31:0] data,
@@ -43,15 +38,8 @@ module mandelbrotRederingEngine # (
 	wire reset = (SYS_RESET || update || button);
 	assign render_reset = (update || button);
 	
-	reg [7:0] led_count;
-	reg old_frame;
-	
 	always @ (posedge CLK) begin
-	//	if (data != 255 && data > LED) LED <= data[7:0];
-		//if (frame_ready && !old_frame) led_count <= led_count + 1;
-		//LED <= led_count;
-		//old_frame <= frame_ready;
-		LED <= {output_state, render_state};
+		LED <= {direction, force_reset, output_state, render_state};
 	end
 	
 	
@@ -179,9 +167,9 @@ module mandelbrotRederingEngine # (
   end
   
   
-	////////////////////////////
-	// Resolution configuration
-	////////////////////////////
+////////////////////////////
+/// Resolution configuration
+////////////////////////////
 	
 	parameter SW_VGA       = 4'b0000; //  640x480
 	parameter SW_SVGA      = 4'b0001; //  800x600
@@ -237,25 +225,16 @@ module mandelbrotRederingEngine # (
 		end
 	end
 	
-	//////////////////////////
-	// Other Stuff
-	//////////////////////////
 	
-	// Things that need to be labled better
-	wire start = (render_state == 1);
-			
-	// Point Sets
-	reg [11:0] x [set_size - 1 : 0];								// X coordinate
-	reg [11:0] y [set_size - 1 : 0];								// Y coordinate
-	wire [HBI - 1 : 0] iterations     [set_size - 1 : 0];	// Output from calculator point_gen units
-	reg  [HBI - 1 : 0] iterations_reg [set_size - 1 : 0];
-	wire [set_size - 1 : 0] set_ready;							// Signal taht point_gen units are done calculating
-	
+///////////////////////
+/// Plot Settings
+///////////////////////
+
 	// Setable Parameters
-	reg signed [3:-(HBP-3)] re_start;
-	reg signed [3:-(HBP-3)] im_start;
-	reg signed [3:-(HBP-3)] re_end;
-	reg signed [3:-(HBP-3)] im_end;
+	reg signed [3:-(HBP-3)] re_start = {-4'd2, 29'h0};
+	reg signed [3:-(HBP-3)] im_start = { 4'd0, 29'd0};
+	reg signed [3:-(HBP-3)] re_end   = {-4'd1, 29'h0};
+	reg signed [3:-(HBP-3)] im_end   = { 4'd1, 29'd0};
 	
 	// Calculate parameters
 	wire signed [3:-(HBP-3)] re_diff = (re_end - re_start);
@@ -285,51 +264,6 @@ module mandelbrotRederingEngine # (
 		.O(im_scale)
 		);
 	
-	// Pixels
-	reg  [23:0] base_pixel;
-	
-	genvar i;
-	
-	generate
-		for (i = 0; i < set_size; i = i + 1) begin : points
-			pointGenerator point_gen (
-				.CLK(CLK),
-				.start(start),
-				.re_scale(re_scale),
-				.im_scale(im_scale),
-				.x(x[i]),
-				.y(y[i]),
-				.re_start(re_start),
-				.im_start(im_start),
-				.done(set_ready[i]),
-				.iteration(iterations[i])
-				);
-		end
-	endgenerate
-	
-	// Initialize
-	
-	integer j;
-
-	initial begin
-		for (j = 0; j < set_size; j = j + 1) begin
-			iterations_reg[j] <= 'd0;
-			x[j] = j;
-			y[j] = 0;
-		end
-	end
-	
-///////////////////////
-// Changing Parameters
-///////////////////////
-		
-	initial begin
-		re_start <= {-4'd2, 29'h0};
-		re_end 	<=  {4'd0, 29'd0};
-		im_start <= {-4'd1, 29'h0};
-		im_end	<=  {4'd1, 29'd0};
-	end
-	
 	wire signed [3:-(HBP-3)] percent10 = 33'b0000_00011001100110011001100110011;
 	wire signed [3:-(HBP-3)] re_increment;
 	wire signed [3:-(HBP-3)] im_increment;
@@ -356,9 +290,16 @@ module mandelbrotRederingEngine # (
 		.O(im_increment)
 		);
 	
+	// Zooming and panning logic
+	
 	always @ (posedge CLK) begin
 		if (btn_update) begin
-			if (button[0]) begin // UP
+			if (force_reset) begin
+				re_start <= {-4'd2, 29'h0};
+				re_end 	<=  {4'd0, 29'd0};
+				im_start <= {-4'd1, 29'h0};
+				im_end	<=  {4'd1, 29'd0};
+			end else if (button[0]) begin // UP
 				im_start <= im_start - im_increment;
 				im_end   <= im_end   - im_increment;
 			end else if (button[1]) begin // LEFT
@@ -375,11 +316,18 @@ module mandelbrotRederingEngine # (
 				re_end 	<=  {4'd0, 29'd0};
 				im_start <= {-4'd1, 29'h0};
 				im_end	<=  {4'd1, 29'd0};
-			end else if (button[4]) begin // IN
-				re_start <= re_start + re_increment;
-				re_end   <= re_end   - re_increment;
-				im_start <= im_start + im_increment;
-				im_end   <= im_end   - im_increment;
+			end else if (button[4]) begin // IN/OUT
+				if (direction) begin // OUT
+					re_start <= re_start - re_increment;
+					re_end   <= re_end   + re_increment;
+					im_start <= im_start - im_increment;
+					im_end   <= im_end   + im_increment;
+				end else begin // IN
+					re_start <= re_start + re_increment;
+					re_end   <= re_end   - re_increment;
+					im_start <= im_start + im_increment;
+					im_end   <= im_end   - im_increment;
+				end
 			end else if (button[5]) begin // OUT
 				re_start <= re_start - re_increment;
 				re_end   <= re_end   + re_increment;
@@ -390,11 +338,58 @@ module mandelbrotRederingEngine # (
 	end
 		
 		
-	/////////////////////////
-	// Render Control Logic
-	/////////////////////////
+//////////////////////////
+/// Iteration Calculators
+//////////////////////////
 	
-	reg [7:0] render_state;
+	// Things that need to be labled better
+	wire start = (render_state == 1);
+			
+	// Point Sets
+	reg [11:0] x [set_size - 1 : 0];								// X coordinate
+	reg [11:0] y [set_size - 1 : 0];								// Y coordinate
+	wire [HBI - 1 : 0] iterations     [set_size - 1 : 0];	// Output from calculator point_gen units
+	reg  [HBI - 1 : 0] iterations_reg [set_size - 1 : 0];
+	wire [set_size - 1 : 0] set_ready;							// Signal taht point_gen units are done calculating
+		
+	genvar i;
+	
+	generate
+		for (i = 0; i < set_size; i = i + 1) begin : points
+			iterationCalculator iteration_gen (
+				.CLK(CLK),
+				.start(start),
+				.re_scale(re_scale),
+				.im_scale(im_scale),
+				.x(x[i]),
+				.y(y[i]),
+				.re_start(re_start),
+				.im_start(im_start),
+				.done(set_ready[i]),
+				.iteration(iterations[i])
+				);
+		end
+	endgenerate
+	
+	// Initialize
+	
+	integer j;
+
+	initial begin
+		for (j = 0; j < set_size; j = j + 1) begin
+			iterations_reg[j] <= 'd0;
+			x[j] = j;
+			y[j] = 0;
+		end
+	end
+	
+		
+/////////////////////////
+/// Render Control Logic
+/////////////////////////
+	
+	reg [23:0] base_pixel;
+	reg [1:0] render_state;
 	
 	always @(posedge CLK, posedge reset) begin
 		if (reset) begin
@@ -407,13 +402,9 @@ module mandelbrotRederingEngine # (
 		end else begin
 			case(render_state)
 			0: begin
-			//Wait until the start_render signal is asserted
-				if (start_render) begin
-					render_state <= 'd1;
-				end
+				render_state <= 'd1;
 			end
 			1: begin
-			// Set up the point_gen units and wait until they are done
 				for (j = 0; j < set_size; j = j + 1) begin
 					x[j] <= (x[j] + set_size < x_size) ? x[j] + set_size : x[j] + set_size - x_size;
 					y[j] <= (x[j] + set_size < x_size) ? y[j] : y[j] + 1;
@@ -443,21 +434,16 @@ module mandelbrotRederingEngine # (
 		end
 	end
 	
-	/////////////////////
-	//
-	/////////////////////
-		
-	always @ (posedge CLK) begin
-		frame_ready <= (clear_frame) ? 0 : (output_total >= total_pixels || frame_ready);
-	end
-
 	
 	///////////////////////
 	// Output controller
 	///////////////////////
 	
-	//reg frame_ready;
-	reg [3:0] output_state;
+	always @ (posedge CLK) begin
+		frame_ready <= (clear_frame) ? 0 : (output_total >= total_pixels || frame_ready);
+	end
+	
+	reg [1:0] output_state;
 	reg [7:0] output_count;
 	reg [20:0] output_total;
 	wire output_done = (output_state == 0);

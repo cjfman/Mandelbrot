@@ -1,3 +1,4 @@
 <message-tags>
  <tag num="1127" task="xst" type="WARNING" hcolor="Red" args="Half_MV_DU" file="HDLCompiler" />
+ <tag num="924" task="xst" type="WARNING" hcolor="Red" args="fdb" file="HDLCompiler" />
 </message-tags>

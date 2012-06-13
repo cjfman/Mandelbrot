@@ -1,24 +1,22 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
+// Company: Digilent
+// Engineer: Charles Jessup Franklin
 // 
-// Create Date:    21:56:56 07/31/2011 
-// Design Name: 
-// Module Name:    mainController
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
+// Design Name: Live Mandelbrot Renderer
+// Module Name:    MandelbrotMainController
+// Project Name:   Live Mandelbrot Renderer
+// Target Devices: Digilent Atlys / Xilinx Spartan-6 development board
+// Tool versions: ISE 13.3
+// Description: This Project renders the Mandelbrot Fractal live
 //
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
+// Revision: B
+// Change Log
+// -Added color fading functionality
+// -Added pmod control
 //
 //////////////////////////////////////////////////////////////////////////////////
-module mainController(
+module MandelbrotMainController(
 
 	// DDR2 Ram
 	output DDR2CLK_P,
@@ -48,7 +46,7 @@ module mainController(
 	
 	// Buttons and switches
 	input [4:0] btn,
-	input [3:0] SW,
+	input [7:0] SW,
 	
 	// JB
 	input [7:0] JB,
@@ -66,15 +64,13 @@ module mainController(
 	//******************************************************************//
 	// Create global clock and synchronous system reset.                //
 	//******************************************************************//
-	wire          locked;
-	//wire          reset;
+	wire locked;
 	wire sysreset = ~SYS_RESETn;
 	wire SYS_RESET;
 	
 	BUF sys_reset_buf (.I(sysreset), .O(SYS_RESET));
 
 	wire          clk50m, clk50m_bufg;
-
 	wire          pwrup;
 
 	IBUFG sysclk_buf (.I(SYS_CLK), .O(sysclk));
@@ -97,9 +93,9 @@ module mainController(
 		.D(1'b0)
 	);
 	
-	wire render_clk;
-	wire color_clk;
-	wire read_clk;
+	wire render_clk;	// For the Mandelbrot Rendering Engine
+	wire color_clk;	// For the color calculator
+	wire read_clk;		// For the HDMI memory access
 	
 	clockGeneration mainClockGen (
     .CLK_IN100m(sysclk),     // IN
@@ -116,10 +112,11 @@ module mainController(
 
 
 //////////////////////////////////////
-/// Memory Controller
+/// Memory Controller Wrapper
 //////////////////////////////////////
 	 
 	// Inputs
+	// Port0
 	wire [2:0] p0_cmd_instr;
 	wire [5:0] p0_cmd_bl;
 	wire [29:0] p0_cmd_byte_addr;
@@ -128,6 +125,7 @@ module mainController(
 	wire p0_rd_en;
 	wire p0_wr_en;
 	
+	// Port1
 	wire [2:0] p1_cmd_instr;
 	wire [5:0] p1_cmd_bl;
 	wire [29:0] p1_cmd_byte_addr;
@@ -136,6 +134,7 @@ module mainController(
 	wire p1_rd_en;
 	wire p1_wr_en;
 	
+	// Port2
 	wire [2:0] p2_cmd_instr;
 	wire [5:0] p2_cmd_bl;
 	wire [29:0] p2_cmd_byte_addr;
@@ -146,6 +145,7 @@ module mainController(
 	wire mem_reset;
 
 	// Outputs
+	// Port0
 	wire [6:0] p0_wr_count;
 	wire [31:0] p0_rd_data;
 	wire [6:0] p0_rd_count;
@@ -153,6 +153,7 @@ module mainController(
 	wire p0_wr_full;
 	wire p0_wr_empty;
 	
+	// Port1
 	wire [6:0] p1_wr_count;
 	wire [31:0] p1_rd_data;
 	wire [6:0] p1_rd_count;
@@ -160,6 +161,7 @@ module mainController(
 	wire p1_rd_full;
 	wire p1_wr_empty;
 	
+	// Port2
 	wire [31:0] p2_rd_data;
 	wire [6:0] p2_rd_count;
 	wire p2_rd_empty;
@@ -167,9 +169,8 @@ module mainController(
 	wire mem_calib_done;
 	wire clk0;
 
-
-	// Instantiate the Unit Under Test (UUT)
 	videoRam vram (
+		// DDR2 Control Signals
 		.DDR2CLK_P(DDR2CLK_P), 
 		.DDR2CLK_N(DDR2CLK_N), 
 		.DDR2CKE(DDR2CKE), 
@@ -188,7 +189,13 @@ module mainController(
 		.DDR2LDM(DDR2LDM), 
 		.DDR2UDM(DDR2UDM), 
 		.DDR2ODT(DDR2ODT), 
+		// System Clock and other global signals
 		.clk(sysclk), 
+		.calib_done(mem_calib_done), 
+		.reset(mem_reset),
+		// Port0
+		.p0clk(render_clk),
+		.p0_cmd_en(p0_cmd_en),
 		.p0_cmd_instr(p0_cmd_instr), 
 		.p0_cmd_bl(p0_cmd_bl), 
 		.p0_cmd_byte_addr(p0_cmd_byte_addr), 
@@ -202,6 +209,9 @@ module mainController(
 		.p0_wr_full(p0_wr_full),
 		.p0_wr_empty(p0_wr_empty),
 		.p0_wr_en(p0_wr_en), 
+		// Port1
+		.p1clk(color_clk),
+		.p1_cmd_en(p1_cmd_en),
 		.p1_cmd_instr(p1_cmd_instr), 
 		.p1_cmd_bl(p1_cmd_bl), 
 		.p1_cmd_byte_addr(p1_cmd_byte_addr), 
@@ -215,6 +225,9 @@ module mainController(
 		.p1_rd_full(p1_rd_full),
 		.p1_wr_empty(p1_wr_empty),
 		.p1_wr_en(p1_wr_en), 
+		// Port2
+		.p2clk(read_clk),
+		.p2_cmd_en(p2_cmd_en),
 		.p2_cmd_instr(p2_cmd_instr), 
 		.p2_cmd_bl(p2_cmd_bl), 
 		.p2_cmd_byte_addr(p2_cmd_byte_addr), 
@@ -222,16 +235,7 @@ module mainController(
 		.p2_rd_count(p2_rd_count), 
 		.p2_rd_en(p2_rd_en), 
 		.p2_rd_empty(p2_rd_empty),
-		.p2_rd_full(p2_rd_full),
-		.p0_cmd_en(p0_cmd_en),
-		.p1_cmd_en(p1_cmd_en),
-		.p2_cmd_en(p2_cmd_en),
-		.calib_done(mem_calib_done), 
-		.reset(mem_reset),
-		.clk0(clk0),
-		.p0clk(render_clk),
-		.p1clk(color_clk),
-		.p2clk(read_clk)
+		.p2_rd_full(p2_rd_full)
 	);
 	
 
@@ -274,7 +278,7 @@ module mainController(
 /// Mandelbrot Generator
 //////////////////////////////////////
 
-	parameter set_size = 2;
+	parameter set_size = 4;
 	parameter max_iterations = 255;
 
 	// Outputs
@@ -285,8 +289,8 @@ module mainController(
 	
 	// Inputs
 	wire mandelbrot_send_data;
-	wire start_render = 1;
 	wire clear_frame;
+	wire force_reset = SW[6];
 	
 	mandelbrotRederingEngine  # (
 		 .set_size(set_size),
@@ -295,27 +299,29 @@ module mainController(
     .CLK(render_clk), 
 	 .SYS_RESET(SYS_RESET),
 	 .pwrup(pwrup),
-	 .SW(SW),
+	 .SW(SW[3:0]),
+	 .direction(SW[7]),
+	 .force_reset(SW[6]),
 	 .btn(command),
     .send_data(mandelbrot_send_data), 
-    .start_render(start_render), 
 	 .clear_frame(clear_frame),
     .data(point_data), 
 	 .render_reset(render_reset),
     .ready(mandelbrot_data_ready), 
     .frame_ready(frame_ready),
-	 .LED(LED[7:0])
+	 .LED(LED)
     );
 	 
 	 
-//////////////////////////////////////
+////////////////////////////////////////////////////////////
 /// Port0 Controller
-//////////////////////////////////////
+/// Writes information from Mandelbrot Generator to memory
+////////////////////////////////////////////////////////////
 
 	// Outputs
 	wire frame_selector;
 	 
-	ddrPort0Controller # (
+	iterationMemoryWritter  # (
 		 .set_size(set_size)
 	) port0Controller (
 		 .clk(render_clk), 
@@ -341,50 +347,12 @@ module mainController(
 		 .p0_cmd_byte_addr(p0_cmd_byte_addr), 
 		 .p0_wr_data(p0_wr_data),
 		 .memory_frame(frame_selector)
-		 //.LED(LED[3:0])
-		 //.LED(LED[0])
 		 );
-		 
-		 //assign LED[3:2] = 2'b11;
-		 
+		 		 
 
 //////////////////////////////////////
-/// Port2 Controller
-//////////////////////////////////////
-
-	// Outputs
-	//wire [23:0] data_out;
-	wire data_out_valid;
-
-	ddrPort1Controller # (
-	 .max_iterations(max_iterations)
-	) port2Controller (
-    .clk(read_clk), 
-    .reset(SYS_RESET), 
-    .base_selector(frame_selector), 
-	 .pwrup(pwrup),
-    .SW(SW), 
-    .rd_data(p2_rd_data), 
-    .rd_count(p2_rd_count), 
-    .rd_empty(p2_rd_empty), 
-    .rd_full(p2_rd_full), 
-    .mem_calib_done(mem_calib_done), 
-    .cmd_instr(p2_cmd_instr), 
-    .cmd_bl(p2_cmd_bl), 
-    .cmd_byte_addr(p2_cmd_byte_addr), 
-    .rd_en(p2_rd_en), 
-    .cmd_en(p2_cmd_en), 
-    .stream_data(stream_data), 
-    .end_line(end_line),
-    .y_pos(y_pos),	 
-	 .pclk(pclk),
-    .data_out({red_data_in, green_data_in, blue_data_in}), 
-    .data_out_valid(data_out_valid)
-    );
-	
-
-//////////////////////////////////////
-/// Color Rom Controller
+/// Port1 Controller
+/// Contains the Color Rom
 //////////////////////////////////////
 	
 	colorModule port1Controller (
@@ -406,6 +374,39 @@ module mainController(
     .cmd_bl(p1_cmd_bl), 
     .cmd_byte_addr(p1_cmd_byte_addr), 
     .cmd_en(p1_cmd_en)
+    );
+	 
+	 
+//////////////////////////////////////
+/// Port2 Controller
+/// Accesses the memory for the HDMI
+//////////////////////////////////////
+
+	// Outputs
+	wire data_out_valid;
+
+	ddrPort1Controller port2Controller (
+    .clk(read_clk), 
+    .reset(SYS_RESET), 
+    .base_selector(frame_selector), 
+	 .pwrup(pwrup),
+    .SW(SW), 
+    .rd_data(p2_rd_data), 
+    .rd_count(p2_rd_count), 
+    .rd_empty(p2_rd_empty), 
+    .rd_full(p2_rd_full), 
+    .mem_calib_done(mem_calib_done), 
+    .cmd_instr(p2_cmd_instr), 
+    .cmd_bl(p2_cmd_bl), 
+    .cmd_byte_addr(p2_cmd_byte_addr), 
+    .rd_en(p2_rd_en), 
+    .cmd_en(p2_cmd_en), 
+    .stream_data(stream_data), 
+    .end_line(end_line),
+    .y_pos(y_pos),	 
+	 .pclk(pclk),
+    .data_out({red_data_in, green_data_in, blue_data_in}), 
+    .data_out_valid(data_out_valid)
     );
 		
 endmodule

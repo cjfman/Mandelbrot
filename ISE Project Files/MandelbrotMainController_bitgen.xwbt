@@ -1,0 +1,8 @@
+INTSTYLE=ise
+INFILE=C:\Users\Charles Franklin\Documents\FPGA\Mandelbrot\ISE Project Files\MandelbrotMainController.ncd
+OUTFILE=C:\Users\Charles Franklin\Documents\FPGA\Mandelbrot\ISE Project Files\MandelbrotMainController.bit
+FAMILY=Spartan6
+PART=xc6slx45-3csg324
+WORKINGDIR=C:\Users\Charles Franklin\Documents\FPGA\Mandelbrot\ISE Project Files
+LICENSE=WebPack
+USER_INFO=_0_0_1317699683_010

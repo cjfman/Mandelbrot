@@ -1,21 +1,14 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
+// Company: Digilent
+// Engineer: Charles Jessup Franklin
 // 
 // Create Date:    00:47:20 06/09/2012 
-// Design Name: 
 // Module Name:    colorModule 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
+// Tool versions: ISE 13.3
+// Description: 	 Reads the number of iterations from the first frame buffer in memory,
+//						 looks up the color in the rom, and writes the color to the second frame
+//						 in memory.
 //
 //////////////////////////////////////////////////////////////////////////////////
 module colorModule (
@@ -24,9 +17,7 @@ module colorModule (
 	 input pwrup,
 	 input [3:0] SW,
 	 input [1:0] encoder,
-	 
-	 output reg [7:0] LED,
-	 	 	 
+	 	 	 	 
 	 // Memory Read
 	 input [31:0] rd_data,
     input [6:0] rd_count,
@@ -158,16 +149,16 @@ module colorModule (
 	assign wr_data = {8'b0, color};
 
 
-	// Color Change
+	// Color Fader
 
-	reg [26:0] color_count;
+	reg [22:0] color_count;
 
 	always @ (posedge clk, posedge reset) begin
 		if (reset) begin
 			color_count <= 27'd0;
 			offset <= 32'd0;
 		end else begin
-			if (color_count[23]) begin
+			if (&color_count) begin
 				color_count <= 27'd0;
 				offset <= offset + 1;
 			end else color_count <= color_count + 1;
@@ -194,11 +185,8 @@ module colorModule (
 	wire [7:0] amount = (inrange) ? 64 : (total_pixels - (pointer >> 2));
 	wire loaded = (rd_count == read_count);
 
-	reg [4:0] state;
+	reg [2:0] state;
 	reg [7:0] read_count;
-	
-	always @(posedge clk)
-		LED <= state;
 		
 	always @(posedge clk, posedge reset) begin
 		if (reset) begin
